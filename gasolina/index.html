@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>¿Cuándo echo gasolina?</title>
+  <meta name="description" content="Precio medio de la gasolina y el diésel en España hoy, lo que cuesta llenar el depósito y cómo ha cambiado en los últimos 6 meses.">
+  <meta name="theme-color" content="#f5f4fa">
+
+  <!-- Es parte de la misma app instalable que la luz -->
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../iconos/gasolina.svg" type="image/svg+xml">
+  <link rel="icon" href="../iconos/gasolina-96.png" type="image/png" sizes="96x96">
+  <link rel="apple-touch-icon" href="../iconos/apple-touch-icon.png">
+
+  <!-- Tema y tamaño de letra guardados, antes de pintar nada -->
+  <script>
+    (function () {
+      try {
+        var a = JSON.parse(localStorage.getItem('cuando-lavadora:ajustes')) || {};
+        var tema = a.tema || 'claro';
+        if (tema === 'auto') { var h = new Date().getHours(); tema = h >= 20 || h < 8 ? 'oscuro' : 'claro'; }
+        document.documentElement.dataset.tema = tema;
+        if (a.letra && a.letra !== 100) document.documentElement.style.fontSize = a.letra + '%';
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="stylesheet" href="../css/comun.css">
+  <link rel="stylesheet" href="../css/gasolina.css">
+  <script type="module" src="../js/gasolina/app.js"></script>
+</head>
+<body>
+  <div class="marco">
+
+    <aside class="panel" id="panel" aria-label="Ajustes"></aside>
+
+    <div class="app">
+      <header class="cabecera">
+        <button type="button" class="boton-icono cabecera__ajustes" id="abrir-panel"
+          aria-label="Abrir ajustes" aria-controls="panel" aria-expanded="false">
+          <svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-ajustes"></use></svg>
+        </button>
+        <img class="cabecera__logo cabecera__logo--gasolina" src="../iconos/gasolina.svg" alt="" width="44" height="44">
+        <div class="cabecera__textos">
+          <h1 class="cabecera__titulo">¿Cuándo echo gasolina?</h1>
+          <p class="cabecera__fecha" id="fecha">Precio medio en España</p>
+        </div>
+        <a class="cabecera__volver" href="../" aria-label="Volver al precio de la luz">
+          <svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-rayo"></use></svg>
+          Luz
+        </a>
+      </header>
+
+      <main>
+        <!-- 1. Un botón por carburante (se desliza en horizontal) -->
+        <section aria-labelledby="titulo-carburantes">
+          <h2 class="solo-lectores" id="titulo-carburantes">Elige el carburante</h2>
+          <div class="carburantes" id="carburantes" role="group" aria-labelledby="titulo-carburantes">
+            <div class="carburante esqueleto"></div>
+            <div class="carburante esqueleto"></div>
+            <div class="carburante esqueleto"></div>
+          </div>
+        </section>
+
+        <!-- 2. Precio de hoy del carburante elegido -->
+        <section class="tarjeta destacado" id="destacado" aria-live="polite">
+          <div class="esqueleto" style="height:14px;width:45%"></div>
+          <div class="esqueleto" style="height:52px;width:60%;margin:16px 0"></div>
+          <div class="esqueleto" style="height:14px;width:75%"></div>
+        </section>
+
+        <!-- 3. Calculadora: cuánto cuesta repostar hoy y lo que se espera -->
+        <section class="bloque" aria-labelledby="titulo-calculadora">
+          <h2 class="bloque__titulo" id="titulo-calculadora">¿Cuánto me cuesta repostar?</h2>
+          <div class="tarjeta calculadora">
+            <label class="calculadora__etiqueta" for="litros">
+              <span>Litros</span>
+              <output id="litros-valor" for="litros">40 litros</output>
+            </label>
+            <div class="deslizador">
+              <span class="deslizador__a deslizador__a--pequena" aria-hidden="true">5</span>
+              <input type="range" id="litros" min="5" max="100" step="1" value="40">
+              <span class="deslizador__a deslizador__a--pequena" aria-hidden="true">100</span>
+            </div>
+            <div class="calculadora__atajos" role="group" aria-label="Cantidades habituales">
+              <button type="button" class="chip" data-litros="20">20 L</button>
+              <button type="button" class="chip" data-litros="40">40 L</button>
+              <button type="button" class="chip" data-litros="50">50 L</button>
+              <button type="button" class="chip" data-litros="70">70 L</button>
+            </div>
+            <div id="calculadora"></div>
+          </div>
+        </section>
+
+        <!-- 4. Evolución del precio -->
+        <section class="bloque" aria-labelledby="titulo-evolucion">
+          <div class="bloque__cabecera">
+            <h2 class="bloque__titulo" id="titulo-evolucion">Cómo ha cambiado</h2>
+            <div class="pestanas" role="group" aria-label="Periodo">
+              <button type="button" class="pestana" data-periodo="30" aria-pressed="false">1 mes</button>
+              <button type="button" class="pestana" data-periodo="90" aria-pressed="false">3 meses</button>
+              <button type="button" class="pestana" data-periodo="0" aria-pressed="true">6 meses</button>
+            </div>
+          </div>
+          <div class="tarjeta">
+            <div class="lectura-gas" id="lectura-gas"></div>
+            <div class="linea" id="grafico-gas" role="img" aria-label="Gráfico del precio en los últimos meses"></div>
+          </div>
+        </section>
+
+        <!-- 5. Calendario de los últimos 6 meses -->
+        <section class="bloque" aria-labelledby="titulo-calendario-gas">
+          <h2 class="bloque__titulo" id="titulo-calendario-gas">Calendario de precios</h2>
+          <div class="calendario tarjeta-calendario" id="calendario-gas"></div>
+          <div class="tarjeta dia-elegido" id="dia-elegido" aria-live="polite"></div>
+        </section>
+      </main>
+
+      <footer class="pie">
+        <p class="pie__estado" id="estado" hidden></p>
+        <p>Precio medio de todas las gasolineras de España, en euros por litro, impuestos incluidos. Cada gasolinera puede estar más cara o más barata que la media.</p>
+        <p>El precio esperado es una estimación según la tendencia de las últimas 4 semanas, no una predicción segura.</p>
+        <p>Datos: <a href="https://geoportalgasolineras.es/" rel="noopener">Ministerio para la Transición Ecológica</a>. Se actualizan cada día.</p>
+        <p><a href="../">← Volver al precio de la luz</a></p>
+      </footer>
+    </div>
+  </div>
+
+  <div class="velo" id="velo" hidden></div>
+</body>
+</html>

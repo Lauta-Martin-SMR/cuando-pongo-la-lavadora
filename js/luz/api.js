@@ -18,16 +18,18 @@
  * Si el día aún no está publicado, REE responde con un error 502.
  */
 
-import { sumarDias } from './calculos.js';
+import { sumarDias, fechaEnEspana } from './calculos.js';
 
 const URL_REE = 'https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real';
 const ID_PVPC = '1001';
 const HORA = 60 * 60 * 1000;
+const MAXIMO_DIAS_POR_PETICION = 31; // REE no da más de un mes por horas de una vez
 
 // Las copias se guardan como «cuando-lavadora:2026-11-22».
 // (En GitHub Pages todas tus webs comparten localStorage: el prefijo evita mezclas.)
 const PREFIJO = 'cuando-lavadora:';
 const VERSION_COPIA = 1;
+const DIAS_GUARDADOS = 70; // un poco más de los dos meses del calendario
 
 
 /**
@@ -39,16 +41,60 @@ export async function preciosDelDia(fecha) {
   const copia = leerCopia(fecha);
   if (copia) return copia;
 
-  const horas = await descargar(fecha);
+  const horas = await descargar(fecha, fecha);
   if (horas) guardarCopia(fecha, horas);
   return horas;
+}
+
+/**
+ * Precios de varios días seguidos, para el calendario.
+ * Devuelve un Map 'AAAA-MM-DD' → horas. Los días que ya están guardados no
+ * se vuelven a pedir; el resto se pide a REE en tramos de hasta 31 días.
+ */
+export async function historial(desde, hasta) {
+  const dias = new Map();
+  const faltan = [];
+  for (let fecha = desde; fecha <= hasta; fecha = sumarDias(fecha, 1)) {
+    const copia = leerCopia(fecha);
+    if (copia) dias.set(fecha, copia);
+    else faltan.push(fecha);
+  }
+
+  // Juntamos los días que faltan en tramos seguidos (como mucho 31 días cada uno)
+  const tramos = [];
+  for (const fecha of faltan) {
+    const ultimo = tramos[tramos.length - 1];
+    if (ultimo && sumarDias(ultimo.hasta, 1) === fecha && ultimo.dias < MAXIMO_DIAS_POR_PETICION) {
+      ultimo.hasta = fecha;
+      ultimo.dias++;
+    } else {
+      tramos.push({ desde: fecha, hasta: fecha, dias: 1 });
+    }
+  }
+
+  for (const tramo of tramos) {
+    const horas = await descargar(tramo.desde, tramo.hasta);
+    if (!horas) continue;
+    // Repartimos las horas por días (en hora de España)
+    const porDia = new Map();
+    for (const hora of horas) {
+      const fecha = fechaEnEspana(hora.inicio);
+      if (!porDia.has(fecha)) porDia.set(fecha, []);
+      porDia.get(fecha).push(hora);
+    }
+    for (const [fecha, horasDelDia] of porDia) {
+      dias.set(fecha, horasDelDia);
+      guardarCopia(fecha, horasDelDia);
+    }
+  }
+  return dias;
 }
 
 
 /* ---------- Descarga desde Red Eléctrica ---------- */
 
-async function descargar(fecha) {
-  const url = `${URL_REE}?start_date=${fecha}T00:00&end_date=${fecha}T23:59&time_trunc=hour`;
+async function descargar(desde, hasta) {
+  const url = `${URL_REE}?start_date=${desde}T00:00&end_date=${hasta}T23:59&time_trunc=hour`;
   let ultimoError;
 
   // Hasta 2 intentos: el cortafuegos de REE a veces rechaza una petición suelta.
@@ -119,6 +165,7 @@ function leerCopia(fecha) {
 }
 
 function guardarCopia(fecha, horas) {
+  if (horas.length < 23) return; // solo guardamos días completos
   try {
     // JSON.stringify convierte las fechas (Date) en texto automáticamente.
     localStorage.setItem(PREFIJO + fecha, JSON.stringify({ version: VERSION_COPIA, horas }));
@@ -128,13 +175,13 @@ function guardarCopia(fecha, horas) {
   }
 }
 
-/** Borra las copias de hace más de dos días para no acumular datos. */
+/** Borra las copias de hace más de 70 días para no acumular datos. */
 function borrarCopiasViejas(fecha) {
-  const limite = sumarDias(fecha, -2);
+  const limite = sumarDias(fecha, -DIAS_GUARDADOS);
   for (const clave of Object.keys(localStorage)) {
     if (!clave.startsWith(PREFIJO)) continue;
     const dia = clave.slice(PREFIJO.length);
-    if (/^\d{4}-\d{2}-\d{2}$/.test(dia) && dia < limite) localStorage.removeItem(clave);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dia) && dia < limite && dia < fechaEnEspana()) localStorage.removeItem(clave);
   }
 }
 

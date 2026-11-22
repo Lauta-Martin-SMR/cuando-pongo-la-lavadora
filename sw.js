@@ -16,23 +16,43 @@
 
 // Cambia la versión si añades o quitas archivos de la lista.
 const PREFIJO = 'cuando-lavadora-';
-const CACHE = `${PREFIJO}v1`;
+const CACHE = `${PREFIJO}v2`;
 
 const ARCHIVOS = [
+  // App de la luz
   './',
   './index.html',
+  './css/comun.css',
+  './css/luz.css',
+  './js/comun/ajustes.js',
+  './js/comun/calendario.js',
+  './js/comun/iconos.js',
+  './js/comun/ordenar.js',
+  './js/luz/app.js',
+  './js/luz/api.js',
+  './js/luz/calculos.js',
+  './js/luz/electrodomesticos.js',
+  './js/luz/interfaz.js',
+  './js/luz/personalizar.js',
+  // App de la gasolina
+  './gasolina/',
+  './gasolina/index.html',
+  './css/gasolina.css',
+  './js/gasolina/app.js',
+  './js/gasolina/calculos.js',
+  './js/gasolina/interfaz.js',
+  './datos/gasolina.json',
+  // Iconos y manifiesto
   './manifest.webmanifest',
-  './css/estilos.css',
-  './js/app.js',
-  './js/api.js',
-  './js/calculos.js',
-  './js/interfaz.js',
+  './iconos/iconos.svg',
   './iconos/favicon.svg',
   './iconos/favicon-32.png',
   './iconos/icono-192.png',
   './iconos/icono-512.png',
   './iconos/icono-maskable-512.png',
   './iconos/apple-touch-icon.png',
+  './iconos/gasolina.svg',
+  './iconos/gasolina-96.png',
 ];
 
 // Al instalarse: guarda los archivos de la app

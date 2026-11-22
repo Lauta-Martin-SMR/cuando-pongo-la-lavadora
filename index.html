@@ -4,11 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>¿Cuándo pongo la lavadora?</title>
-  <meta name="description" content="Precio de la luz (PVPC) por horas en España y la mejor hora para poner la lavadora, el lavavajillas o la secadora.">
+  <meta name="description" content="Precio de la luz (PVPC) por horas en España, cuánto cuesta cada electrodoméstico y la mejor hora para ponerlo.">
 
-  <!-- Color de la barra del navegador (y de la app instalada) -->
+  <!-- Color de la barra del navegador (cambia con el tema) -->
   <meta name="theme-color" content="#f5f4fa">
-  <meta name="color-scheme" content="light">
 
   <!-- PWA: el manifiesto describe la app instalable (nombre, iconos, colores) -->
   <link rel="manifest" href="manifest.webmanifest">
@@ -17,191 +16,244 @@
   <link rel="apple-touch-icon" href="iconos/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-title" content="Lavadora">
 
-  <link rel="stylesheet" href="css/estilos.css">
-  <!-- type="module" permite repartir el código en varios archivos (import/export).
-       Los módulos esperan solos a que el HTML esté cargado. -->
-  <script type="module" src="js/app.js"></script>
+  <!-- Pone el tema y el tamaño de letra guardados ANTES de pintar (así no hay un destello blanco) -->
+  <script>
+    (function () {
+      try {
+        var a = JSON.parse(localStorage.getItem('cuando-lavadora:ajustes')) || {};
+        var tema = a.tema || 'claro';
+        if (tema === 'auto') { var h = new Date().getHours(); tema = h >= 20 || h < 8 ? 'oscuro' : 'claro'; }
+        document.documentElement.dataset.tema = tema;
+        if (a.letra && a.letra !== 100) document.documentElement.style.fontSize = a.letra + '%';
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="stylesheet" href="css/comun.css">
+  <link rel="stylesheet" href="css/luz.css">
+  <!-- type="module" permite repartir el código en varios archivos (import/export) -->
+  <script type="module" src="js/luz/app.js"></script>
 </head>
 <body>
+  <div class="marco">
 
-  <!-- Iconos dibujados en SVG. Se definen una vez aquí y se usan con <use href="#nombre">.
-       Todos son de 24 × 24 y toman el color del texto (currentColor). -->
-  <svg class="sprite" aria-hidden="true" focusable="false">
-    <symbol id="i-lavadora" viewBox="0 0 24 24">
-      <rect x="4" y="2.5" width="16" height="19" rx="3"/>
-      <path d="M4 7h16M7.5 4.75h.01M10 4.75h.01"/>
-      <circle cx="12" cy="14.25" r="4.5"/>
-      <path d="M9.6 14.9c.8.55 1.6.55 2.4 0s1.6-.55 2.4 0"/>
-    </symbol>
-    <symbol id="i-lavavajillas" viewBox="0 0 24 24">
-      <rect x="4" y="2.5" width="16" height="19" rx="3"/>
-      <path d="M4 7h16M7.5 4.75h.01M10 4.75h.01M9.5 9.75h5"/>
-      <path d="M7.5 18.25a2.5 2.5 0 0 1 5 0M11.5 18.25a2.5 2.5 0 0 1 5 0M6.75 18.25h10.5"/>
-    </symbol>
-    <symbol id="i-secadora" viewBox="0 0 24 24">
-      <rect x="4" y="2.5" width="16" height="19" rx="3"/>
-      <path d="M4 7h16M7.5 4.75h.01M13 4.75h3.5"/>
-      <circle cx="12" cy="14.25" r="4.5"/>
-      <path d="M10 13.4h2.9a1.1 1.1 0 1 0-1.1-1.1M10 15.4h3.6a1.1 1.1 0 1 1-1.1 1.1"/>
-    </symbol>
-    <symbol id="i-horno" viewBox="0 0 24 24">
-      <rect x="3" y="3.5" width="18" height="17" rx="3"/>
-      <path d="M3 8h18M7 5.75h.01M10 5.75h.01M13 5.75h.01"/>
-      <rect x="6.5" y="10.75" width="11" height="6.5" rx="1.5"/>
-    </symbol>
-    <symbol id="i-termo" viewBox="0 0 24 24">
-      <rect x="6" y="2" width="12" height="17" rx="6"/>
-      <path d="M10 19v3M14 19v3"/>
-      <path d="M12 7.25c1.5 2 2.4 3.1 2.4 4.4a2.4 2.4 0 0 1-4.8 0c0-1.3.9-2.4 2.4-4.4z"/>
-    </symbol>
-    <symbol id="i-coche" viewBox="0 0 24 24">
-      <path d="M5 11.5l1.5-4.1A2 2 0 0 1 8.4 6h7.2a2 2 0 0 1 1.9 1.4l1.5 4.1"/>
-      <rect x="3" y="11.5" width="18" height="6" rx="2"/>
-      <path d="M6 17.5v2M18 17.5v2M6.5 14.5h1.5M16 14.5h1.5"/>
-    </symbol>
-    <symbol id="i-menos" viewBox="0 0 24 24"><path d="M6 12h12"/></symbol>
-    <symbol id="i-mas" viewBox="0 0 24 24"><path d="M12 6v12M6 12h12"/></symbol>
-    <symbol id="i-reloj" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></symbol>
-    <symbol id="i-enchufe" viewBox="0 0 24 24"><path d="M9 2.5v4.5M15 2.5v4.5M6 7h12v3a6 6 0 0 1-12 0zM12 16v5.5"/></symbol>
-    <symbol id="i-instalar" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/></symbol>
-    <symbol id="i-compartir" viewBox="0 0 24 24"><path d="M12 3.5v11M8.5 7 12 3.5 15.5 7M8.5 10.5H7a1.5 1.5 0 0 0-1.5 1.5v7A1.5 1.5 0 0 0 7 20.5h10a1.5 1.5 0 0 0 1.5-1.5v-7a1.5 1.5 0 0 0-1.5-1.5h-1.5"/></symbol>
-    <symbol id="i-flecha" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
-  </svg>
+    <!-- Panel de ajustes (lo rellena js/comun/ajustes.js) -->
+    <aside class="panel" id="panel" aria-label="Ajustes"></aside>
 
-  <div class="app">
-
-    <header class="cabecera">
-      <img class="cabecera__logo" src="iconos/favicon.svg" alt="" width="44" height="44">
-      <div>
-        <h1 class="cabecera__titulo">¿Cuándo pongo la lavadora?</h1>
-        <p class="cabecera__fecha" id="fecha">Precio de la luz por horas</p>
-      </div>
-    </header>
-
-    <main>
-      <!-- 1. PRECIO DE AHORA. Mientras carga se ven unas formas grises ("esqueleto"). -->
-      <section class="tarjeta ahora" id="ahora" aria-label="Precio de la luz ahora">
-        <div class="esqueleto esqueleto--linea"></div>
-        <div class="esqueleto esqueleto--grande"></div>
-        <div class="esqueleto esqueleto--linea esqueleto--larga"></div>
-      </section>
-
-      <!-- Todo lo demás. Se oculta si no hay precios que enseñar. -->
-      <div id="contenido">
-
-        <!-- 2. LAS 3 HORAS MÁS BARATAS QUE QUEDAN HOY -->
-        <section class="bloque" aria-labelledby="titulo-baratas">
-          <h2 class="bloque__titulo" id="titulo-baratas">Las 3 horas más baratas que quedan hoy</h2>
-          <ol class="baratas" id="baratas">
-            <li class="barata barata--esqueleto"><div class="esqueleto"></div></li>
-            <li class="barata barata--esqueleto"><div class="esqueleto"></div></li>
-            <li class="barata barata--esqueleto"><div class="esqueleto"></div></li>
-          </ol>
-          <div class="aviso" id="aviso-manana" hidden>
-            <span>Ya están los precios de mañana.</span>
-            <button type="button" class="aviso__boton" id="ver-manana">Verlos</button>
-          </div>
-        </section>
-
-        <!-- 3. ELECTRODOMÉSTICOS: eliges uno y calcula la franja seguida más barata -->
-        <section class="bloque" aria-labelledby="titulo-electros">
-          <h2 class="bloque__titulo" id="titulo-electros">¿Qué quieres poner?</h2>
-          <!-- Los botones los crea interfaz.js a partir de la lista de app.js -->
-          <div class="electros" id="electros" role="group" aria-labelledby="titulo-electros"></div>
-
-          <div class="tarjeta resultado">
-            <div class="duracion">
-              <span class="duracion__texto">Duración</span>
-              <div class="duracion__control">
-                <button type="button" class="boton-redondo" id="menos" aria-label="Media hora menos">
-                  <svg class="icono" aria-hidden="true"><use href="#i-menos"></use></svg>
-                </button>
-                <output class="duracion__valor" id="duracion">2 h</output>
-                <button type="button" class="boton-redondo" id="mas" aria-label="Media hora más">
-                  <svg class="icono" aria-hidden="true"><use href="#i-mas"></use></svg>
-                </button>
-              </div>
-            </div>
-            <div class="resultado__cuerpo" id="resultado">
-              <div class="esqueleto esqueleto--linea esqueleto--corta"></div>
-              <div class="esqueleto esqueleto--titulo"></div>
-              <div class="esqueleto esqueleto--linea"></div>
-            </div>
-          </div>
-        </section>
-
-        <!-- 4. GRÁFICO DE LAS 24 HORAS -->
-        <section class="bloque" id="bloque-grafico" aria-labelledby="titulo-grafico">
-          <div class="bloque__cabecera">
-            <h2 class="bloque__titulo" id="titulo-grafico">Precio por horas</h2>
-            <div class="pestanas" role="group" aria-label="Día del gráfico">
-              <button type="button" class="pestana" data-dia="hoy" aria-pressed="true">Hoy</button>
-              <button type="button" class="pestana" data-dia="manana" aria-pressed="false">Mañana</button>
-            </div>
-          </div>
-
-          <div class="tarjeta tarjeta--grafico">
-            <div id="con-datos">
-              <!-- Lectura: el precio de la barra que tocas (o de la hora actual) -->
-              <div class="lectura" id="lectura"></div>
-              <!-- Las barras las dibuja interfaz.js -->
-              <div class="grafico" id="grafico">
-                <div class="esqueleto esqueleto--grafico"></div>
-              </div>
-
-              <ul class="leyenda" aria-label="Leyenda de colores">
-                <li class="leyenda__barata">Barata</li>
-                <li class="leyenda__media">Media</li>
-                <li class="leyenda__cara">Cara</li>
-              </ul>
-
-              <dl class="resumen" id="resumen"></dl>
-
-              <details class="tabla">
-                <summary>Ver todas las horas en una tabla</summary>
-                <table>
-                  <thead>
-                    <tr><th scope="col">Hora</th><th scope="col">€/kWh</th><th scope="col">Precio</th></tr>
-                  </thead>
-                  <tbody id="tabla"></tbody>
-                </table>
-              </details>
-            </div>
-
-            <!-- Se enseña en «Mañana» mientras Red Eléctrica no haya publicado los precios -->
-            <div class="vacio" id="sin-manana" hidden>
-              <svg class="icono vacio__icono" aria-hidden="true"><use href="#i-reloj"></use></svg>
-              <p class="vacio__titulo">Los precios de mañana aún no están</p>
-              <p class="vacio__texto" id="sin-manana-texto">Red Eléctrica los publica cada tarde, hacia las 20:30.</p>
-            </div>
-          </div>
-        </section>
-
-      </div>
-
-      <!-- Invitación a instalar la app (solo aparece si el navegador lo permite) -->
-      <aside class="tarjeta instalar" id="instalar" hidden>
-        <img class="instalar__icono" src="iconos/icono-192.png" alt="" width="48" height="48">
-        <p class="instalar__texto" id="instalar-texto">
-          <strong>Tenla a mano</strong>
-          Instálala en tu móvil y ábrela como una app más.
-        </p>
-        <button type="button" class="boton" id="boton-instalar">
-          <svg class="icono" aria-hidden="true"><use href="#i-instalar"></use></svg>
-          Instalar
+    <div class="app">
+      <header class="cabecera">
+        <button type="button" class="boton-icono cabecera__ajustes" id="abrir-panel"
+          aria-label="Abrir ajustes" aria-controls="panel" aria-expanded="false">
+          <svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-ajustes"></use></svg>
         </button>
-      </aside>
-    </main>
+        <img class="cabecera__logo" src="iconos/favicon.svg" alt="" width="44" height="44">
+        <div class="cabecera__textos">
+          <h1 class="cabecera__titulo">¿Cuándo pongo la lavadora?</h1>
+          <p class="cabecera__fecha" id="fecha">Precio de la luz por horas</p>
+        </div>
+      </header>
 
-    <footer class="pie">
-      <p class="pie__estado" id="estado" hidden></p>
-      <p>Precio PVPC (tarifa 2.0TD) en la península, en €/kWh y en hora peninsular. Incluye peajes y cargos, pero no los impuestos ni el término de potencia.</p>
-      <p>Verde: al menos un 10&nbsp;% más barata que la media del día. Rojo: al menos un 10&nbsp;% más cara. Amarillo: entre medias.</p>
-      <p>Datos: <a href="https://www.ree.es/es/apidatos" rel="noopener">API de Red Eléctrica</a>.</p>
-    </footer>
+      <main>
+        <!-- Cada «movible» es una tarjeta que se puede cambiar de sitio en el modo Personalizar -->
+        <div class="secciones" id="secciones">
 
-    <!-- Aquí se escriben avisos para lectores de pantalla (no se ve) -->
-    <p class="solo-lectores" id="anuncio" aria-live="polite"></p>
+          <!-- 1. PRECIO DE AHORA -->
+          <div class="movible" data-seccion="ahora">
+            <div class="movible__controles">
+              <span class="movible__nombre">Precio de ahora</span>
+              <button type="button" class="movible__boton" data-mover="-1" aria-label="Subir «Precio de ahora»"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-arriba"></use></svg></button>
+              <button type="button" class="movible__boton" data-mover="1" aria-label="Bajar «Precio de ahora»"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-abajo"></use></svg></button>
+              <span class="movible__asa" title="Arrastra para mover"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-asa"></use></svg></span>
+            </div>
+            <section class="tarjeta ahora" id="ahora" aria-label="Precio de la luz ahora">
+              <div class="esqueleto" style="height:14px;width:45%"></div>
+              <div class="esqueleto" style="height:52px;width:65%;margin:16px 0"></div>
+              <div class="esqueleto" style="height:14px;width:75%"></div>
+            </section>
+          </div>
+
+          <!-- 2. LAS 3 HORAS MÁS BARATAS QUE QUEDAN HOY -->
+          <div class="movible necesita-datos" data-seccion="baratas">
+            <div class="movible__controles">
+              <span class="movible__nombre">Horas más baratas</span>
+              <button type="button" class="movible__boton" data-mover="-1" aria-label="Subir «Horas más baratas»"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-arriba"></use></svg></button>
+              <button type="button" class="movible__boton" data-mover="1" aria-label="Bajar «Horas más baratas»"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-abajo"></use></svg></button>
+              <span class="movible__asa" title="Arrastra para mover"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-asa"></use></svg></span>
+            </div>
+            <section class="bloque" aria-labelledby="titulo-baratas">
+              <h2 class="bloque__titulo" id="titulo-baratas">Las 3 horas más baratas que quedan hoy</h2>
+              <ol class="baratas" id="baratas">
+                <li class="barata--esqueleto esqueleto"></li>
+                <li class="barata--esqueleto esqueleto"></li>
+                <li class="barata--esqueleto esqueleto"></li>
+              </ol>
+              <div class="aviso" id="aviso-manana" hidden>
+                <span>Ya están los precios de mañana.</span>
+                <button type="button" class="aviso__boton" id="ver-manana">Verlos</button>
+              </div>
+            </section>
+          </div>
+
+          <!-- 3. ELECTRODOMÉSTICOS: eliges uno y calcula la franja más barata y lo que cuesta -->
+          <div class="movible necesita-datos" data-seccion="electros">
+            <div class="movible__controles">
+              <span class="movible__nombre">Electrodomésticos</span>
+              <button type="button" class="movible__boton" data-mover="-1" aria-label="Subir «Electrodomésticos»"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-arriba"></use></svg></button>
+              <button type="button" class="movible__boton" data-mover="1" aria-label="Bajar «Electrodomésticos»"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-abajo"></use></svg></button>
+              <span class="movible__asa" title="Arrastra para mover"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-asa"></use></svg></span>
+            </div>
+            <section class="bloque" aria-labelledby="titulo-electros">
+              <div class="bloque__cabecera">
+                <h2 class="bloque__titulo" id="titulo-electros">¿Qué quieres poner?</h2>
+                <button type="button" class="boton-mas" id="boton-mas" aria-expanded="false" aria-controls="zona-mas">
+                  Más
+                  <span class="boton-mas__signo"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-mas"></use></svg></span>
+                </button>
+              </div>
+
+              <!-- Los botones los crea interfaz.js a partir de electrodomesticos.js -->
+              <div class="electros" id="electros" role="group" aria-labelledby="titulo-electros"></div>
+
+              <div class="zona-mas" id="zona-mas" inert>
+                <div class="zona-mas__dentro">
+                  <p class="zona-mas__titulo" id="titulo-mas">Más aparatos</p>
+                  <div class="electros" id="electros-mas" role="group" aria-labelledby="titulo-mas"></div>
+                </div>
+              </div>
+
+              <div class="tarjeta resultado" id="tarjeta-resultado">
+                <div class="ajuste">
+                  <span class="ajuste__texto">Duración</span>
+                  <div class="ajuste__control">
+                    <button type="button" class="boton-redondo" id="duracion-menos" aria-label="Menos tiempo"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-menos"></use></svg></button>
+                    <output class="ajuste__valor" id="duracion">2 h</output>
+                    <button type="button" class="boton-redondo" id="duracion-mas" aria-label="Más tiempo"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-mas"></use></svg></button>
+                  </div>
+                </div>
+                <div class="ajuste">
+                  <span class="ajuste__texto">Potencia media</span>
+                  <div class="ajuste__control">
+                    <button type="button" class="boton-redondo" id="potencia-menos" aria-label="Menos potencia"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-menos"></use></svg></button>
+                    <output class="ajuste__valor" id="potencia">0,5 kW</output>
+                    <button type="button" class="boton-redondo" id="potencia-mas" aria-label="Más potencia"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-mas"></use></svg></button>
+                  </div>
+                </div>
+                <div class="resultado__cuerpo" id="resultado">
+                  <div class="esqueleto" style="height:14px;width:30%"></div>
+                  <div class="esqueleto" style="height:26px;width:70%;margin:12px 0"></div>
+                  <div class="esqueleto" style="height:14px;width:45%"></div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- 4. GRÁFICO DE LAS 24 HORAS (hoy, mañana o un día del calendario) -->
+          <div class="movible necesita-datos" data-seccion="grafico">
+            <div class="movible__controles">
+              <span class="movible__nombre">Gráfico y calendario</span>
+              <button type="button" class="movible__boton" data-mover="-1" aria-label="Subir «Gráfico y calendario»"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-arriba"></use></svg></button>
+              <button type="button" class="movible__boton" data-mover="1" aria-label="Bajar «Gráfico y calendario»"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-abajo"></use></svg></button>
+              <span class="movible__asa" title="Arrastra para mover"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-asa"></use></svg></span>
+            </div>
+            <section class="bloque bloque-grafico" id="bloque-grafico" aria-labelledby="titulo-grafico">
+              <div class="bloque__cabecera">
+                <h2 class="bloque__titulo" id="titulo-grafico">Precio por horas</h2>
+                <div class="pestanas" role="group" aria-label="Día del gráfico">
+                  <button type="button" class="pestana" data-dia="hoy" aria-pressed="true">Hoy</button>
+                  <button type="button" class="pestana" data-dia="manana" aria-pressed="false">Mañana</button>
+                  <button type="button" class="pestana" data-dia="calendario" aria-pressed="false" aria-label="Calendario de los dos últimos meses">
+                    <svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-calendario"></use></svg><span id="texto-calendario"></span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Calendario de los dos últimos meses (lo pinta js/comun/calendario.js) -->
+              <div class="calendario" id="calendario-luz" hidden></div>
+
+              <div class="tarjeta tarjeta--grafico">
+                <div id="con-datos">
+                  <p class="grafico__dia" id="dia-grafico" hidden></p>
+                  <div class="lectura" id="lectura"></div>
+                  <div class="grafico" id="grafico">
+                    <div class="esqueleto" style="height:226px"></div>
+                  </div>
+                  <ul class="leyenda" aria-label="Leyenda de colores">
+                    <li class="nivel--barata">Barata</li>
+                    <li class="nivel--media">Media</li>
+                    <li class="nivel--cara">Cara</li>
+                  </ul>
+                  <div class="resumen" id="resumen"></div>
+                  <details class="tabla">
+                    <summary>Ver todas las horas en una tabla</summary>
+                    <table>
+                      <thead>
+                        <tr><th scope="col">Hora</th><th scope="col">€/kWh</th><th scope="col">Precio</th></tr>
+                      </thead>
+                      <tbody id="tabla"></tbody>
+                    </table>
+                  </details>
+                </div>
+
+                <!-- Se enseña en «Mañana» mientras Red Eléctrica no haya publicado los precios -->
+                <div class="vacio" id="sin-manana" hidden>
+                  <svg class="icono vacio__icono" aria-hidden="true"><use href="iconos/iconos.svg#i-reloj"></use></svg>
+                  <p class="vacio__titulo">Los precios de mañana aún no están</p>
+                  <p class="vacio__texto" id="sin-manana-texto">Red Eléctrica los publica cada tarde, hacia las 20:30.</p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <!-- Invitación a instalar la app (solo aparece si el navegador lo permite) -->
+        <aside class="tarjeta instalar" id="instalar" hidden>
+          <img class="instalar__icono" src="iconos/icono-192.png" alt="" width="48" height="48">
+          <p class="instalar__texto" id="instalar-texto">
+            <strong>Tenla a mano</strong>
+            Instálala en tu móvil y ábrela como una app más.
+          </p>
+          <button type="button" class="boton" id="boton-instalar">
+            <svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-instalar"></use></svg>
+            Instalar
+          </button>
+        </aside>
+      </main>
+
+      <footer class="pie">
+        <p class="pie__estado" id="estado" hidden></p>
+        <p>Precio PVPC (tarifa 2.0TD) en la península, en €/kWh y en hora peninsular. Incluye peajes y cargos, pero no los impuestos ni el término de potencia.</p>
+        <p>El coste de cada aparato es aproximado: usa su potencia media y suma los impuestos (impuesto eléctrico e IVA).</p>
+        <p>Verde: al menos un 10&nbsp;% más barata que la media del día. Rojo: al menos un 10&nbsp;% más cara. Amarillo: entre medias.</p>
+        <p>Datos: <a href="https://www.ree.es/es/apidatos" rel="noopener">API de Red Eléctrica</a>.</p>
+      </footer>
+
+      <!-- Aquí se escriben avisos para lectores de pantalla (no se ve) -->
+      <p class="solo-lectores" id="anuncio" aria-live="polite"></p>
+    </div>
   </div>
+
+  <!-- Fondo oscuro detrás del panel de ajustes (en el móvil) -->
+  <div class="velo" id="velo" hidden></div>
+
+  <!-- Barra flotante del modo Personalizar -->
+  <div class="barra-edicion" id="barra-edicion" hidden>
+    <button type="button" class="boton boton--peligro" id="barra-restaurar">
+      <svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-restaurar"></use></svg>
+      Restaurar todo
+    </button>
+    <button type="button" class="boton" id="barra-listo">Listo</button>
+  </div>
+
+  <!-- Confirmación antes de restaurar -->
+  <dialog class="dialogo" id="dialogo-restaurar">
+    <form method="dialog">
+      <p class="dialogo__titulo">¿Restaurar todo?</p>
+      <p class="dialogo__texto">Las tarjetas, los aparatos, sus tiempos y potencias, el tema y el tamaño de letra volverán a estar como al principio.</p>
+      <div class="dialogo__botones">
+        <button type="submit" value="cancelar" class="boton boton--suave">Cancelar</button>
+        <button type="submit" value="restaurar" class="boton boton--peligro">Restaurar</button>
+      </div>
+    </form>
+  </dialog>
 </body>
 </html>

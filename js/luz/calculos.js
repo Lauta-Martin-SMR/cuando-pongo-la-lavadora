@@ -15,6 +15,10 @@ export const ZONA_HORARIA = 'Europe/Madrid';
 // si cuesta un 10 % más, es «cara». Cambia este número si quieres.
 export const MARGEN = 0.10;
 
+// Impuestos que se suman al precio de la energía en la factura:
+// impuesto especial sobre la electricidad (5,11 %) y luego el IVA (21 %).
+export const IMPUESTOS = 1.0511269632 * 1.21;
+
 const MINUTO = 60 * 1000; // en milisegundos, que es como cuenta JavaScript
 const CUARTO_DE_HORA = 15 * MINUTO;
 
@@ -102,7 +106,7 @@ export function horasMasBaratas(horas, desde, cuantas = 3) {
 /**
  * Busca cuándo empezar un programa de `minutos` de duración para que salga lo más barato posible.
  *   - horas:   los precios que conocemos (hoy, y mañana si ya se ha publicado)
- *   - minutos: lo que dura el programa (de 15 en 15)
+ *   - minutos: lo que dura el programa (5 minutos, 2 horas…)
  *   - desde:   no se puede empezar antes de este momento (normalmente, ahora)
  *
  * Devuelve { mejor, empezandoYa } o null si no cabe ninguna franja.
@@ -121,7 +125,9 @@ export function buscarMejorFranja(horas, minutos, desde) {
     }
   }
 
-  const necesarios = Math.round(minutos / 15); // por ejemplo, 2 h = 8 tramos
+  // Por ejemplo, 2 h = 8 tramos; 20 minutos = 2 tramos (el último solo se usa 5 minutos)
+  const necesarios = Math.ceil(minutos / 15);
+  const minutosUltimo = minutos - (necesarios - 1) * 15;
   let mejor = null;
   let empezandoYa = null;
 
@@ -136,13 +142,16 @@ export function buscarMejorFranja(horas, minutos, desde) {
     // Los tramos tienen que ir seguidos (sin huecos sin precio entre medias).
     if (ultimo.inicio - primero.inicio !== (necesarios - 1) * CUARTO_DE_HORA) continue;
 
+    // Media ponderada por los minutos que se usa cada tramo
     let suma = 0;
-    for (let j = i; j < i + necesarios; j++) suma += tramos[j].precio;
+    for (let j = 0; j < necesarios; j++) {
+      suma += tramos[i + j].precio * (j === necesarios - 1 ? minutosUltimo : 15);
+    }
 
     const franja = {
       inicio: new Date(primero.inicio),
-      fin: new Date(primero.inicio + necesarios * CUARTO_DE_HORA),
-      precioMedio: suma / necesarios,
+      fin: new Date(primero.inicio + minutos * MINUTO),
+      precioMedio: suma / minutos,
     };
 
     // La primera franja posible es la de «empezar ahora mismo».
@@ -153,4 +162,21 @@ export function buscarMejorFranja(horas, minutos, desde) {
   }
 
   return mejor ? { mejor, empezandoYa } : null;
+}
+
+
+/* ---------- Coste aproximado ---------- */
+
+/**
+ * Lo que cuesta usar un aparato de `kw` kilovatios durante `minutos`,
+ * a un precio medio de `precio` €/kWh. Devuelve { kWh, euros } con impuestos.
+ */
+export function costeAproximado(kw, minutos, precio) {
+  const kWh = kw * (minutos / 60);
+  return { kWh, euros: kWh * precio * IMPUESTOS };
+}
+
+/** Las próximas `cuantas` horas a partir de la actual (puede incluir las de mañana) */
+export function proximasHoras(horas, ahora, cuantas = 6) {
+  return horas.filter((hora) => hora.fin.getTime() > ahora.getTime()).slice(0, cuantas);
 }

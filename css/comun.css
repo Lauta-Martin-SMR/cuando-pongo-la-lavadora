@@ -1,0 +1,1064 @@
+/* ==========================================================================
+   Estilos comunes de las dos apps (luz y gasolina)
+   Los colores y medidas están aquí arriba, en variables: así el tema oscuro
+   solo tiene que cambiar los valores (ver [data-tema="oscuro"]).
+
+   1. Colores (claro y oscuro)     6. Panel de ajustes
+   2. Base                         7. Calendario
+   3. Estructura y cabecera        8. Carga, diálogo y pie
+   4. Tarjetas y títulos           9. Ratón y movimiento reducido
+   5. Botones, pestañas y niveles
+   ========================================================================== */
+
+
+/* 1. Colores ---------------------------------------------------------------- */
+
+:root {
+  color-scheme: light;
+
+  /* Fondo y texto */
+  --fondo: #f5f4fa;           /* blanco con un toque lavanda */
+  --superficie: #ffffff;      /* tarjetas */
+  --superficie-2: #eceaf4;    /* pestañas, controles */
+  --tinta: #1f2333;           /* texto principal */
+  --tinta-suave: #5b6275;     /* texto secundario */
+  --tinta-tenue: #6b7185;     /* notas, ejes */
+  --linea: #ebe9f3;
+  --linea-base: #d8d5e6;
+  --mancha-1: #dff4e9;        /* manchas pastel del fondo */
+  --mancha-2: #e8e5fc;
+
+  /* Marca: lavanda */
+  --acento: #5b5fd6;
+  --acento-texto: #4b4fc4;
+  --acento-suave: #ecebfb;
+  --acento-velo: #f8f7ff;
+  --sobre-acento: #ffffff;    /* texto encima del color de acento */
+
+  /* Niveles de precio: color de barra, fondo suave y texto legible */
+  --barata: #66cf9a;
+  --barata-suave: #e3f6ec;
+  --barata-texto: #1f6b45;
+  --media: #f1be44;
+  --media-suave: #fdf3d6;
+  --media-texto: #7a5300;
+  --cara: #d95c5f;
+  --cara-suave: #fde4e3;
+  --cara-texto: #9b2c2c;
+
+  /* Formas, sombras y movimiento */
+  --radio-grande: 24px;
+  --radio: 18px;
+  --sombra: 0 1px 2px rgb(31 35 51 / 0.05), 0 10px 28px -14px rgb(31 35 51 / 0.16);
+  --sombra-alta: 0 2px 6px rgb(31 35 51 / 0.08), 0 18px 40px -16px rgb(31 35 51 / 0.28);
+  --salida: cubic-bezier(0.22, 1, 0.36, 1);   /* arranca rápido y frena suave */
+  --muelle: cubic-bezier(0.34, 1.56, 0.64, 1); /* con un pequeño rebote */
+
+  --fuente: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Tema oscuro: mismos nombres, otros valores (colores comprobados para daltonismo y contraste) */
+:root[data-tema="oscuro"] {
+  color-scheme: dark;
+
+  --fondo: #14151d;
+  --superficie: #1e2030;
+  --superficie-2: #2a2c40;
+  --tinta: #ecebf7;
+  --tinta-suave: #b4b6cc;
+  --tinta-tenue: #9a9cb5;
+  --linea: #2c2f45;
+  --linea-base: #3c405c;
+  --mancha-1: #16302a;
+  --mancha-2: #262447;
+
+  --acento: #8b8ff0;
+  --acento-texto: #a5a8f5;
+  --acento-suave: #2a2c4a;
+  --acento-velo: #232540;
+  --sobre-acento: #14151d;
+
+  --barata: #74dda8;
+  --barata-suave: #1d3a2d;
+  --barata-texto: #8be3b5;
+  --media: #f0c04a;
+  --media-suave: #3d3320;
+  --media-texto: #f5d27e;
+  --cara: #e2605f;
+  --cara-suave: #422428;
+  --cara-texto: #f7a5a6;
+
+  --sombra: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 30px -14px rgb(0 0 0 / 0.6);
+  --sombra-alta: 0 2px 8px rgb(0 0 0 / 0.4), 0 20px 44px -16px rgb(0 0 0 / 0.75);
+}
+
+
+/* 2. Base ------------------------------------------------------------------ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;          /* el móvil no agranda el texto al girarlo */
+  -webkit-tap-highlight-color: transparent; /* sin destello gris al tocar */
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: var(--fuente);
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--tinta);
+  background:
+    radial-gradient(90% 340px at 0% 0%, var(--mancha-1) 0%, transparent 72%),
+    radial-gradient(85% 320px at 100% 0%, var(--mancha-2) 0%, transparent 72%),
+    var(--fondo);
+  background-repeat: no-repeat;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 300ms ease, color 300ms ease;
+}
+
+h1, h2, h3, p, ol, ul, dl, dd {
+  margin: 0;
+  padding: 0;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+a {
+  color: var(--acento-texto);
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  touch-action: manipulation;   /* responde al toque sin esperar al doble toque */
+  -webkit-user-select: none;    /* mantener pulsado no selecciona el texto del botón */
+  user-select: none;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+:focus-visible {
+  outline: 2.5px solid var(--acento);
+  outline-offset: 2px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.icono {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: none;
+}
+
+/* Texto que solo leen los lectores de pantalla */
+.solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+
+/* 3. Estructura y cabecera ------------------------------------------------- */
+
+/* En el móvil: una columna. En pantallas anchas: panel a la izquierda + app. */
+.marco {
+  display: block;
+}
+
+.app {
+  max-width: 560px;
+  margin: 0 auto;
+  /* env(safe-area-inset-…) deja sitio a la muesca y a la barra de inicio del móvil */
+  padding:
+    calc(env(safe-area-inset-top, 0px) + 18px)
+    calc(env(safe-area-inset-right, 0px) + 16px)
+    calc(env(safe-area-inset-bottom, 0px) + 28px)
+    calc(env(safe-area-inset-left, 0px) + 16px);
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 2px 18px;
+}
+
+.cabecera__logo {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 13px;
+  box-shadow: 0 6px 14px -6px rgb(91 95 214 / 0.45);
+}
+
+.cabecera__textos {
+  min-width: 0;
+}
+
+.cabecera__titulo {
+  font-size: 1.1875rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.cabecera__fecha {
+  font-size: 0.875rem;
+  color: var(--tinta-suave);
+}
+
+/* Botón redondo solo con icono (abrir ajustes, volver…) */
+.boton-icono {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--superficie);
+  color: var(--tinta-suave);
+  box-shadow: var(--sombra);
+  text-decoration: none;
+  transition: transform 140ms var(--salida), color 160ms ease;
+}
+
+.boton-icono:active {
+  transform: scale(0.92);
+}
+
+
+/* 4. Tarjetas y títulos ------------------------------------------------------ */
+
+.tarjeta {
+  background: var(--superficie);
+  border-radius: var(--radio-grande);
+  box-shadow: var(--sombra);
+  padding: 18px;
+  transition: background-color 300ms ease, box-shadow 200ms ease;
+}
+
+/* Tarjetas que se pueden tocar: se hunden un poco al pulsarlas */
+.tocable {
+  transition: transform 160ms var(--salida), box-shadow 200ms ease, background-color 200ms ease;
+}
+
+.tocable:active {
+  transform: scale(0.97);
+}
+
+.bloque {
+  margin-top: 28px;
+}
+
+.bloque__titulo {
+  margin: 0 4px 12px;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+.bloque__cabecera {
+  display: flex;
+  flex-wrap: wrap; /* si no cabe, las pestañas bajan a otra línea */
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 12px;
+  margin: 0 0 12px 4px;
+}
+
+/* En móviles muy estrechos quitamos el logo para que quepa el título */
+@media (max-width: 359px) {
+  .cabecera__logo {
+    display: none;
+  }
+}
+
+.bloque__cabecera .bloque__titulo {
+  margin: 0;
+}
+
+
+/* 5. Botones, pestañas y niveles ------------------------------------------- */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: none;
+  padding: 11px 18px;
+  border-radius: 999px;
+  background: var(--acento);
+  color: var(--sobre-acento);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 8px 18px -8px rgb(91 95 214 / 0.7);
+  transition: transform 120ms var(--salida), filter 160ms ease;
+}
+
+.boton:active {
+  transform: scale(0.97);
+}
+
+.boton .icono {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+.boton--suave {
+  background: var(--acento-suave);
+  color: var(--acento-texto);
+  box-shadow: none;
+}
+
+.boton--peligro {
+  background: var(--cara-suave);
+  color: var(--cara-texto);
+  box-shadow: none;
+}
+
+.boton-redondo {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--acento-suave);
+  color: var(--acento-texto);
+  transition: transform 120ms var(--salida), opacity 160ms ease;
+}
+
+.boton-redondo:active {
+  transform: scale(0.88);
+}
+
+.boton-redondo:disabled {
+  opacity: 0.4;
+  transform: none;
+}
+
+.boton-redondo .icono {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+/* Grupo de pestañas tipo «interruptor» */
+.pestanas {
+  display: inline-flex;
+  flex: none;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--superficie-2);
+}
+
+.pestana {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 650;
+  color: var(--tinta-suave);
+  white-space: nowrap;
+  transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease, transform 140ms var(--salida);
+}
+
+.pestana:active {
+  transform: scale(0.94);
+}
+
+.pestana[aria-pressed="true"],
+.pestana[aria-checked="true"] {
+  background: var(--superficie);
+  color: var(--tinta);
+  box-shadow: 0 1px 3px rgb(31 35 51 / 0.14);
+}
+
+.pestana .icono {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+}
+
+/* Cada nivel define sus colores en variables; los demás estilos los reutilizan */
+.nivel--barata { --punto: var(--barata); --suave: var(--barata-suave); --texto: var(--barata-texto); }
+.nivel--media  { --punto: var(--media);  --suave: var(--media-suave);  --texto: var(--media-texto); }
+.nivel--cara   { --punto: var(--cara);   --suave: var(--cara-suave);   --texto: var(--cara-texto); }
+
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px 4px 9px;
+  border-radius: 999px;
+  background: var(--suave);
+  color: var(--texto);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.etiqueta::before,
+.punto {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--punto);
+  flex: none;
+}
+
+.punto {
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: 1px;
+}
+
+.pastilla {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 7px 13px;
+  border-radius: 16px;
+  background: var(--superficie-2);
+  color: var(--tinta-suave);
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.pastilla--buena {
+  background: var(--barata-suave);
+  color: var(--barata-texto);
+}
+
+.pastilla .icono {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.2;
+}
+
+
+/* Cifras en euros, una al lado de otra (coste de un aparato, de un repostaje…) */
+.coste {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.coste--uno {
+  grid-template-columns: 1fr;
+}
+
+.coste__dato {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--superficie-2);
+}
+
+.coste__dato--mejor {
+  background: var(--barata-suave);
+  color: var(--barata-texto);
+}
+
+.coste__valor {
+  font-size: 1.5rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.coste__texto {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.coste__nota {
+  margin-top: 10px;
+  font-size: 0.8125rem;
+  color: var(--tinta-tenue);
+}
+
+
+/* 6. Panel de ajustes (a la izquierda) ------------------------------------ */
+
+/* En el móvil es un cajón que sale desde la izquierda */
+.panel {
+  position: fixed;
+  z-index: 40;
+  inset: 0 auto 0 0;
+  width: min(330px, 88vw);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding:
+    calc(env(safe-area-inset-top, 0px) + 18px)
+    18px
+    calc(env(safe-area-inset-bottom, 0px) + 22px)
+    calc(env(safe-area-inset-left, 0px) + 18px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--fondo);
+  box-shadow: var(--sombra-alta);
+  transform: translateX(-105%);
+  visibility: hidden;
+  transition: transform 320ms var(--salida), visibility 0s linear 320ms;
+}
+
+.panel--abierto {
+  transform: none;
+  visibility: visible;
+  transition: transform 320ms var(--salida), visibility 0s;
+}
+
+.velo {
+  position: fixed;
+  z-index: 39;
+  inset: 0;
+  background: rgb(15 16 28 / 0.4);
+  animation: aparecer 240ms ease;
+}
+
+.panel__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel__titulo {
+  font-size: 1.25rem;
+  font-weight: 750;
+}
+
+.panel__grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border-radius: var(--radio);
+  background: var(--superficie);
+  box-shadow: var(--sombra);
+}
+
+.panel__etiqueta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tinta-tenue);
+}
+
+.panel__etiqueta output {
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 0.875rem;
+  color: var(--acento-texto);
+  font-variant-numeric: tabular-nums;
+}
+
+.panel__nota {
+  font-size: 0.8125rem;
+  color: var(--tinta-tenue);
+}
+
+.panel .pestanas {
+  display: flex;
+}
+
+.panel .pestana {
+  flex: 1;
+  justify-content: center;
+  padding: 9px 6px;
+}
+
+.panel__botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.panel__botones .boton {
+  padding: 10px 15px;
+  font-size: 0.875rem;
+}
+
+/* Deslizador del tamaño de letra */
+.deslizador {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.deslizador__a {
+  flex: none;
+  font-weight: 700;
+  color: var(--tinta-suave);
+  line-height: 1;
+}
+
+.deslizador__a--pequena { font-size: 13px; }
+.deslizador__a--grande { font-size: 22px; }
+
+input[type="range"] {
+  flex: 1;
+  height: 32px;
+  margin: 0;
+  background: transparent;
+  accent-color: var(--acento);
+  cursor: pointer;
+  touch-action: pan-y;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--acento) var(--progreso, 50%), var(--superficie-2) var(--progreso, 50%));
+}
+
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--superficie-2);
+}
+
+input[type="range"]::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--acento);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  width: 26px;
+  height: 26px;
+  margin-top: -10px;
+  border: 3px solid var(--superficie);
+  border-radius: 50%;
+  background: var(--acento);
+  box-shadow: 0 2px 8px rgb(31 35 51 / 0.3);
+  -webkit-appearance: none;
+  appearance: none;
+  transition: transform 140ms var(--salida);
+}
+
+input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--superficie);
+  border-radius: 50%;
+  background: var(--acento);
+  box-shadow: 0 2px 8px rgb(31 35 51 / 0.3);
+}
+
+.deslizador__muestra {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--superficie-2);
+  color: var(--tinta-suave);
+  font-size: 0.9375rem;
+}
+
+/* Acceso directo a la otra app, bien decorado */
+.atajo {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 18px 16px;
+  border-radius: var(--radio-grande);
+  color: #3b2a12;
+  text-decoration: none;
+  background:
+    radial-gradient(130px 130px at 100% 0%, rgb(255 255 255 / 0.55), transparent 70%),
+    linear-gradient(140deg, #ffe2b3 0%, #ffc9a8 55%, #f7b4c4 100%);
+  box-shadow: 0 14px 30px -16px rgb(214 120 60 / 0.6);
+  transition: transform 180ms var(--salida), box-shadow 200ms ease;
+}
+
+.atajo:active {
+  transform: scale(0.97);
+}
+
+.atajo--luz {
+  color: #1f2a4a;
+  background:
+    radial-gradient(130px 130px at 100% 0%, rgb(255 255 255 / 0.55), transparent 70%),
+    linear-gradient(140deg, #d6f3e5 0%, #d9e4fb 55%, #dcd8fb 100%);
+  box-shadow: 0 14px 30px -16px rgb(91 95 214 / 0.55);
+}
+
+.atajo__icono {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 8px;
+  border-radius: 14px;
+  background: rgb(255 255 255 / 0.7);
+  box-shadow: 0 4px 12px -4px rgb(0 0 0 / 0.18);
+}
+
+.atajo__icono .icono {
+  width: 26px;
+  height: 26px;
+  stroke-width: 1.9;
+}
+
+.atajo__titulo {
+  font-size: 1.0625rem;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
+.atajo__texto {
+  font-size: 0.875rem;
+  opacity: 0.85;
+}
+
+.atajo__flecha {
+  position: absolute;
+  top: 18px;
+  right: 16px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.65);
+  transition: transform 200ms var(--salida);
+}
+
+.atajo__flecha .icono {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.4;
+}
+
+/* Gotas decorativas */
+.atajo::before,
+.atajo::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.35);
+  pointer-events: none;
+}
+
+.atajo::before { width: 90px; height: 90px; right: -24px; bottom: -36px; }
+.atajo::after { width: 46px; height: 46px; right: 60px; bottom: -22px; }
+
+/* En pantallas anchas el panel se queda fijo a la izquierda */
+@media (min-width: 1000px) {
+  .marco {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 560px);
+    justify-content: center;
+    gap: 36px;
+    padding: 0 24px;
+  }
+
+  .app {
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .panel {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    width: auto;
+    height: 100dvh;
+    padding: 24px 2px 24px 0;
+    background: transparent;
+    box-shadow: none;
+    transform: none;
+    visibility: visible;
+    transition: none;
+  }
+
+  .panel__cerrar,
+  .cabecera__ajustes,
+  .velo {
+    display: none !important;
+  }
+}
+
+
+/* 7. Calendario -------------------------------------------------------------- */
+
+.calendario {
+  padding: 14px 12px 12px;
+  border-radius: var(--radio);
+  background: var(--superficie);
+}
+
+.calendario__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.calendario__mes {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.calendario__mes::first-letter {
+  text-transform: uppercase;
+}
+
+.calendario__cabecera .boton-redondo {
+  width: 36px;
+  height: 36px;
+}
+
+.calendario__semana,
+.calendario__dias {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.calendario__semana span {
+  padding: 4px 0;
+  text-align: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--tinta-tenue);
+}
+
+.calendario__dia {
+  position: relative;
+  aspect-ratio: 1;
+  min-height: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--suave, transparent);
+  color: var(--texto, var(--tinta-tenue));
+  font-size: 0.875rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  transition: transform 140ms var(--salida), box-shadow 160ms ease;
+}
+
+.calendario__dia:not(:disabled):active {
+  transform: scale(0.9);
+}
+
+.calendario__dia:disabled {
+  opacity: 0.35;
+}
+
+.calendario__dia small {
+  font-size: 0.5625rem;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.calendario__dia--hoy::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.calendario__dia[aria-pressed="true"] {
+  box-shadow: 0 0 0 2px var(--superficie), 0 0 0 4px var(--acento);
+}
+
+.calendario__leyenda {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 0.75rem;
+  color: var(--tinta-tenue);
+}
+
+.calendario__leyenda i {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--suave);
+}
+
+.calendario__estado {
+  padding: 26px 8px;
+  text-align: center;
+  font-size: 0.9375rem;
+  color: var(--tinta-suave);
+}
+
+
+/* 8. Carga, diálogo y pie --------------------------------------------------- */
+
+.esqueleto {
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--superficie-2) 25%, var(--fondo) 50%, var(--superficie-2) 75%);
+  background-size: 200% 100%;
+  animation: brillo 1.4s ease-in-out infinite;
+}
+
+@keyframes brillo {
+  from { background-position: 100% 0; }
+  to   { background-position: -100% 0; }
+}
+
+@keyframes aparecer {
+  from { opacity: 0; }
+}
+
+@keyframes subir {
+  from { opacity: 0; transform: translateY(8px); }
+}
+
+.dialogo {
+  width: min(360px, calc(100vw - 32px));
+  padding: 24px 22px 20px;
+  border: 0;
+  border-radius: var(--radio-grande);
+  background: var(--superficie);
+  color: var(--tinta);
+  box-shadow: var(--sombra-alta);
+}
+
+.dialogo[open] {
+  animation: dialogo-entra 260ms var(--salida);
+}
+
+.dialogo::backdrop {
+  background: rgb(15 16 28 / 0.45);
+}
+
+@keyframes dialogo-entra {
+  from { opacity: 0; transform: scale(0.94); }
+}
+
+.dialogo__titulo {
+  font-size: 1.125rem;
+  font-weight: 750;
+}
+
+.dialogo__texto {
+  margin-top: 8px;
+  color: var(--tinta-suave);
+  font-size: 0.9375rem;
+}
+
+.dialogo__botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pie {
+  display: grid;
+  gap: 8px;
+  margin-top: 28px;
+  padding: 0 4px;
+  font-size: 0.8125rem;
+  color: var(--tinta-tenue);
+}
+
+.pie__estado {
+  font-weight: 600;
+  color: var(--tinta-suave);
+}
+
+
+/* 9. Ratón y movimiento reducido ------------------------------------------- */
+
+/* Efectos «hover» solo con ratón: en el móvil se quedarían pegados */
+@media (hover: hover) and (pointer: fine) {
+  .tocable:hover,
+  .atajo:hover {
+    box-shadow: var(--sombra-alta);
+  }
+
+  .atajo:hover .atajo__flecha {
+    transform: translateX(3px);
+  }
+
+  .boton-icono:hover,
+  .pestana:hover {
+    color: var(--tinta);
+  }
+
+  .boton:hover {
+    filter: brightness(1.06);
+  }
+
+  .boton-redondo:not(:disabled):hover {
+    filter: brightness(0.97);
+  }
+
+  .calendario__dia:not(:disabled):hover {
+    box-shadow: 0 0 0 2px var(--linea-base);
+  }
+}
+
+/* Si el sistema pide menos movimiento, quitamos animaciones y transiciones */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,131 +1,154 @@
 # ¿Cuándo pongo la lavadora?
 
-Web app (PWA) que muestra el precio de la luz **PVPC** en España hora a hora y te dice cuándo es más barato poner la lavadora, el lavavajillas, la secadora o cualquier otro electrodoméstico.
+Web app (PWA) con dos partes:
+
+- **La luz:** el precio **PVPC** en España hora a hora, cuándo es más barato poner cada electrodoméstico y cuánto te costará.
+- **La gasolina** (*¿Cuándo echo gasolina?*): el precio medio de cada carburante, lo que cuesta repostar y cómo ha cambiado en los últimos 6 meses.
 
 Está hecha con **HTML, CSS y JavaScript sin frameworks ni compilación**: lo que ves en los archivos es exactamente lo que se ejecuta.
 
 ## Qué hace
 
-- **Precio de ahora**, con un color según lo cara que esté la luz frente a la media del día.
-- **Las 3 horas más baratas que quedan hoy.**
-- **Electrodomésticos** (lavadora 2 h, lavavajillas 3 h, secadora 1,5 h, horno, termo y coche eléctrico): calcula la **franja seguida más barata** a partir de ahora. La duración se puede ajustar de media en media hora. Si ya están los precios de mañana, también busca en mañana.
-- **Gráfico de barras** de las 24 horas, en verde, amarillo o rojo según el precio. Toca una barra o desliza el dedo para ver el precio de cada hora. Debajo tienes el mínimo, la media, el máximo y una tabla con todas las horas.
-- **Hoy y mañana:** los precios de mañana aparecen solos cuando Red Eléctrica los publica, hacia las 20:30.
-- **Instalable** en el móvil y funciona **sin conexión** con los últimos precios guardados.
+### La luz (`index.html`)
+
+- **Precio de ahora**, con un color según lo cara que esté la luz frente a la media del día. Toca «Ver las próximas horas» para ver un mini gráfico de las siguientes 6 horas.
+- **Las 3 horas más baratas que quedan hoy.** Al tocar una, se marca en el gráfico.
+- **Electrodomésticos.** En la pantalla principal salen 6: lavadora, lavavajillas, secadora, horno, termo y coche eléctrico. Con **Más ＋** aparecen otros 16, como la freidora de aire, el microondas, las luces, el aire acondicionado o la estufa.
+  - Calcula la **franja seguida más barata** a partir de ahora (con mañana incluida si ya está publicado).
+  - Te dice el **coste aproximado en euros**, en la mejor franja y si empiezas ya, y cuánto ahorras.
+  - La **duración** y la **potencia** de cada aparato se pueden ajustar, y la app las recuerda.
+- **Gráfico** de las 24 horas en verde, amarillo o rojo. Toca o desliza el dedo para leer cada hora. Las pestañas son **Hoy**, **Mañana** y **calendario** (📅), que enseña los **dos últimos meses**, cada día con el color de su precio medio.
+- **Panel de ajustes**, a la izquierda. En el móvil se abre con el botón de arriba; en pantallas anchas está siempre visible.
+  - **Tema** claro, oscuro o automático (oscuro de 20:00 a 8:00).
+  - **Tamaño de letra**, con una barra.
+  - **Personalizar:** las tarjetas tiemblan como en el iPhone. Puedes **arrastrarlas** (por el asa ⋮⋮) o moverlas con las flechas. Con **−** y **＋** eliges qué aparatos van en la pantalla principal y cuáles en «Más». También se entra en este modo **manteniendo pulsado** un aparato.
+  - **Restaurar todo:** lo deja todo como al principio. Aparece al lado de «Personalizar».
+  - **Acceso directo** a la app de la gasolina.
+
+### La gasolina (`gasolina/index.html`)
+
+- **Tarjetas por carburante** (Gasolina 95 y 98, Diésel, Diésel Premium y GLP): precio, cambio en una semana y un mini gráfico del último mes.
+- **Precio de hoy** del carburante elegido: si está barato o caro frente a la media de 6 meses, su tendencia y el mínimo y el máximo.
+- **Calculadora:** eliges los litros con una barra y te dice **lo que cuesta hoy** y **lo que se espera dentro de 7 días**, según la tendencia de las últimas 4 semanas.
+- **Gráfico** de 1, 3 o 6 meses, en el que puedes deslizar el dedo para ver cada día.
+- **Calendario de 6 meses**, con el color de cada día. Al tocar un día ves su precio y la diferencia con hoy.
 
 ## Cómo probarla en tu ordenador
 
-Esta app **no se abre con doble clic** en `index.html`. Los módulos de JavaScript y el service worker necesitan un servidor, aunque sea local. Con Python, que suele venir instalado:
+Esta app **no se abre con doble clic** en `index.html`. Los módulos de JavaScript y el service worker necesitan un servidor, aunque sea local. Con Python:
 
 ```bash
 cd cuando-pongo-la-lavadora
-python3 -m http.server 8000
+python -m http.server 8000
 ```
 
-Abre **http://localhost:8000** en el navegador. Para pararlo, pulsa `Ctrl + C`.
+En Mac o Linux, escribe `python3` en lugar de `python`. Abre **http://localhost:8000** (la luz) o **http://localhost:8000/gasolina/** (la gasolina). Para pararlo, pulsa `Ctrl + C`.
 
-Otras opciones: la extensión *Live Server* de VS Code, o `npx serve` si tienes Node.
+**Trucos:**
 
-**Trucos para probar:**
-
-- En Chrome, abre las herramientas de desarrollo (F12) y pulsa el icono de móvil para ver el diseño en tamaño teléfono.
-- En la pestaña **Application** de esas herramientas verás el manifiesto, el service worker y los precios guardados (*Local storage*).
-- Si cambias algo y no lo ves, recarga la página. El service worker siempre pide primero la versión nueva. Si aun así no cambia, marca *Update on reload* en *Application → Service workers*.
-- Desde el móvil, conectado a la misma wifi, puedes abrir `http://IP-de-tu-ordenador:8000` para ver el diseño. Pero **instalarla** solo funciona con HTTPS, así que eso pruébalo cuando esté en GitHub Pages.
+- En Chrome, pulsa `F12` y luego el icono del móvil para ver el diseño en tamaño teléfono.
+- En la pestaña **Application** de esas herramientas verás el manifiesto, el service worker y lo que guarda la app (*Local storage*).
+- Si cambias algo y no lo ves, recarga la página.
 
 ## Estructura de archivos
 
 ```
-cuando-pongo-la-lavadora/
-├── index.html             La página: estructura, textos e iconos SVG (al principio del <body>)
-├── manifest.webmanifest   Ficha de la app instalable: nombre, iconos y colores
-├── sw.js                  Service worker: guarda la app para abrirla sin conexión
-├── css/
-│   └── estilos.css        Todo el diseño. Colores y medidas en :root, arriba del todo
-├── js/
-│   ├── app.js             Punto de entrada: estado, lista de electrodomésticos y el «reloj»
-│   ├── api.js             Descarga los precios de Red Eléctrica y guarda una copia
-│   ├── calculos.js        Las cuentas: horas baratas, colores, mejor franja (no toca el HTML)
-│   └── interfaz.js        Pinta la pantalla: tarjetas, resultado y gráfico
-└── iconos/                Icono de la app (SVG y PNG en varios tamaños)
+index.html                  App de la luz
+gasolina/index.html         App de la gasolina
+manifest.webmanifest        Ficha de la app instalable (con acceso directo a la gasolina)
+sw.js                       Service worker: guarda la app para abrirla sin conexión
+
+css/
+├── comun.css               Colores (tema claro y oscuro), botones, panel, calendario…
+├── luz.css                 Lo propio de la app de la luz (gráfico, aparatos, Personalizar)
+└── gasolina.css            Lo propio de la app de la gasolina
+
+js/
+├── comun/                  Piezas que usan las dos apps
+│   ├── ajustes.js          Panel de ajustes: tema, tamaño de letra y acceso directo
+│   ├── calendario.js       Calendario mensual con colores
+│   ├── ordenar.js          Arrastrar para cambiar el orden (con el dedo o el ratón)
+│   └── iconos.js           Para usar los iconos de iconos/iconos.svg
+├── luz/
+│   ├── app.js              Punto de entrada: estado y coordinación
+│   ├── api.js              Descarga los precios de Red Eléctrica y guarda copia
+│   ├── calculos.js         Cuentas: niveles, horas baratas, mejor franja y coste
+│   ├── electrodomesticos.js Lista de aparatos con su duración y potencia
+│   ├── interfaz.js         Pinta la pantalla
+│   └── personalizar.js     Modo Personalizar
+└── gasolina/
+    ├── app.js              Punto de entrada: lee los datos y responde a los botones
+    ├── calculos.js         Cuentas: medias, variación, tendencia
+    └── interfaz.js         Pinta la pantalla (incluido el gráfico de líneas)
+
+datos/gasolina.json         Precio medio de cada carburante, día a día (unos 6 meses)
+herramientas/actualizar-gasolina.mjs   Script que genera datos/gasolina.json
+.github/workflows/gasolina.yml         Tarea diaria de GitHub que ejecuta el script
+iconos/                     Iconos de la app y iconos.svg (todos los dibujos de la interfaz)
 ```
 
-### Cómo encajan las piezas
+### Cómo encajan las piezas (luz)
 
-1. **`app.js`** arranca y pide a **`api.js`** los precios de hoy.
-2. **`api.js`** mira si ya los tiene guardados en el navegador (`localStorage`). Si no, los descarga de Red Eléctrica. Los precios de un día no cambian, así que guardarlos es seguro y la app abre al instante.
-3. **`app.js`** pasa los precios a **`calculos.js`**: qué hora es barata, cuáles son las 3 más baratas y cuál es la mejor franja para el electrodoméstico.
-4. **`interfaz.js`** recibe esos resultados y los pinta.
-5. Cada 20 segundos, `app.js` comprueba tres cosas: si empezó otro cuarto de hora (repinta), si pasó la medianoche (carga el día nuevo) y, a partir de las 20:00, si ya están los precios de mañana.
+1. **`app.js`** arranca. Aplica tus ajustes, coloca las tarjetas como las dejaste y pide a **`api.js`** los precios de hoy.
+2. **`api.js`** mira si ya los tiene guardados en el navegador. Si no, los descarga de Red Eléctrica.
+3. **`calculos.js`** hace las cuentas: nivel de cada hora, las más baratas, la mejor franja y su coste.
+4. **`interfaz.js`** lo pinta.
+5. Cada 20 segundos, `app.js` comprueba si empezó otro cuarto de hora, si pasó la medianoche o, a partir de las 20:00, si ya están los precios de mañana.
 
-### Cómo se calcula la mejor franja
+## Los datos
 
-`buscarMejorFranja()`, en `calculos.js`, parte el tiempo en tramos de 15 minutos y prueba todas las horas de inicio posibles desde ahora. Para cada una calcula el precio medio durante el programa y se queda con la más barata; si hay empate, con la que empieza antes. Por eso puede recomendar, por ejemplo, la secadora «de 14:30 a 16:00».
-
-Si empezar ya cuesta casi lo mismo (menos de un 3 % más), la app te lo dice, por si no te compensa esperar.
-
-## Los datos de Red Eléctrica
-
-Los precios salen de la API pública y gratuita de Red Eléctrica (no hace falta clave):
+### Luz: API de Red Eléctrica
 
 ```
 https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real
     ?start_date=2026-11-22T00:00&end_date=2026-11-22T23:59&time_trunc=hour
 ```
 
-- La respuesta trae varios indicadores en `included`. El PVPC es el de `id: "1001"`: 24 valores en **€/MWh**, que la app divide entre 1000 para pasarlos a €/kWh.
-- Los días de cambio de hora trae 23 o 25 valores, y la app los dibuja tal cual.
-- Si pides un día que aún no está publicado, responde con un **error 502**. La app lo interpreta como «todavía no hay precios de mañana».
-- La API permite llamadas desde cualquier web (CORS abierto), por eso funciona en GitHub Pages sin servidor propio.
-- Red Eléctrica tiene un cortafuegos que a veces rechaza alguna petición. La app reintenta, guarda los precios en el navegador y, si no consigue nada, muestra un aviso con el botón «Reintentar».
+- El PVPC es el indicador `id: "1001"`, en €/MWh. La app lo divide entre 1000 para pasarlo a €/kWh.
+- Los días aún no publicados responden con un error 502. Los precios de mañana salen hacia las 20:30.
+- Para el calendario, la app pide los dos meses en tramos de 31 días, que es el máximo de REE, y los guarda en el navegador.
+- A veces el cortafuegos de Red Eléctrica rechaza alguna petición. La app reintenta y, si no lo consigue, muestra «Reintentar».
 
-**Qué precio es:** el PVPC de la tarifa 2.0TD en la península y en hora peninsular. Incluye peajes y cargos, pero no los impuestos ni el término de potencia.
+**Qué precio es:** el PVPC de la tarifa 2.0TD en la península, con peajes y cargos, pero sin impuestos ni término de potencia.
+
+**El coste de los aparatos** es aproximado. Se calcula como potencia media × horas × precio medio de la franja, y luego se suman el impuesto eléctrico (5,11 %) y el IVA (21 %). Lo puedes cambiar en `IMPUESTOS`, en `js/luz/calculos.js`.
+
+### Gasolina: Ministerio para la Transición Ecológica
+
+La API pública del Ministerio da los precios de las ~11.500 gasolineras de España, pero son **12 MB**: demasiado para el móvil. Por eso:
+
+1. `herramientas/actualizar-gasolina.mjs` descarga los datos, calcula la **media de cada carburante** y la guarda en `datos/gasolina.json` (unos pocos KB).
+2. **GitHub Actions** ejecuta ese script **cada día** (`.github/workflows/gasolina.yml`). Al guardarse el archivo, GitHub Pages publica la versión nueva.
+3. La app solo lee `datos/gasolina.json`.
+
+Si quieres actualizarlo a mano: `node herramientas/actualizar-gasolina.mjs`. Para rellenar días que falten: `node herramientas/actualizar-gasolina.mjs --rellenar 183`.
+
+El «precio esperado» es una recta ajustada a las últimas 4 semanas (regresión lineal) y proyectada 7 días. Es orientativo.
 
 ### Colores
 
-Cada hora se compara con la media de su día:
+- **Luz:** cada hora se compara con la media de su día. Verde si está al menos un 10 % por debajo, rojo si está un 10 % por encima y amarillo entre medias. Se cambia con `MARGEN`, en `js/luz/calculos.js`.
+- **Calendarios:** los días se reparten en tercios. El tercio más barato va en verde, el más caro en rojo y el resto en amarillo.
+- **Gasolina:** el precio de hoy frente a la media de 6 meses, con un margen del 2 %.
 
-- **Verde (barata):** al menos un 10 % por debajo de la media.
-- **Rojo (cara):** al menos un 10 % por encima.
-- **Amarillo (media):** entre medias.
+## Personalizarla desde el código
 
-Así, un día con precios muy parecidos sale casi todo amarillo, que es la verdad: ese día da igual cuándo pongas la lavadora. El 10 % se cambia en la constante `MARGEN` de `calculos.js`.
-
-## Personalizarla
-
-- **Añadir o cambiar electrodomésticos:** edita la lista `ELECTRODOMESTICOS` al principio de `js/app.js`. El icono es el `id` de uno de los `<symbol>` del principio de `index.html`; puedes reutilizar uno o dibujar otro.
-- **Colores:** cambia las variables de `:root` al principio de `css/estilos.css`.
-- **Cuándo es «barata» o «cara»:** la constante `MARGEN` en `js/calculos.js`.
+- **Aparatos:** añade o cambia líneas en `js/luz/electrodomesticos.js` (nombre, minutos, potencia en kW e icono). Los iconos son los `<symbol>` de `iconos/iconos.svg`.
+- **Colores:** las variables del principio de `css/comun.css`. El tema oscuro está justo debajo.
+- **Horario del tema automático:** `HORA_OSCURO` y `HORA_CLARO`, en `js/comun/ajustes.js`. Hay que cambiarlo también en el pequeño `<script>` del `<head>` de las dos páginas.
 
 ## Publicarla en GitHub Pages
 
-Todos los enlaces son relativos (`./`), así que la app funciona tanto en la raíz de un repositorio como dentro de una carpeta.
-
-**Opción A: desde este repositorio**
-
-1. Lleva estos cambios a la rama principal (`main`), por ejemplo con un *pull request*.
-2. En GitHub, ve a **Settings → Pages**. En *Build and deployment* elige **Deploy from a branch**, la rama `main` y la carpeta `/ (root)`, y pulsa **Save**.
-3. En uno o dos minutos estará en `https://<tu-usuario>.github.io/Personal-Cosas/cuando-pongo-la-lavadora/`.
-
-   Con esta opción se publican también las otras webs del repositorio.
-
-**Opción B: un repositorio solo para la app** (dirección más corta)
-
-1. Crea un repositorio nuevo, por ejemplo `cuando-pongo-la-lavadora`.
-2. Sube el **contenido** de esta carpeta, de modo que `index.html` quede en la raíz.
-3. Activa Pages igual que en la opción A.
-4. Estará en `https://<tu-usuario>.github.io/cuando-pongo-la-lavadora/`.
+1. En el repositorio, ve a **Settings → Pages**. En *Source* elige **Deploy from a branch**, la rama `main` y la carpeta `/ (root)`, y pulsa **Save**.
+2. En uno o dos minutos estará en `https://<tu-usuario>.github.io/cuando-pongo-la-lavadora/`.
+3. **Tarea diaria de la gasolina:** funciona sola. Puedes verla en la pestaña **Actions**, y también lanzarla a mano con «Run workflow». Si fallara con un error de permisos, ve a **Settings → Actions → General → Workflow permissions** y marca **Read and write permissions**.
 
 Con una cuenta gratuita, GitHub Pages solo funciona en repositorios **públicos**.
 
-**Instalarla en el móvil:** abre la dirección. En Android (Chrome), pulsa el botón **Instalar** que aparece al final de la página o «Añadir a pantalla de inicio» en el menú. En iPhone (Safari), pulsa **Compartir** y luego **Añadir a pantalla de inicio**.
+**Al actualizar la app:** si añades o quitas archivos, añádelos a la lista `ARCHIVOS` de `sw.js` y sube la versión (`v2` → `v3`).
 
-**Al actualizarla:** sube los cambios y GitHub Pages los publica solo. Si añades o quitas archivos, actualiza la lista `ARCHIVOS` de `sw.js` y cambia `v1` por `v2`.
+## Ideas para más adelante
 
-## Ideas para una versión 2
-
-- Un aviso para no poner electrodomésticos de madrugada (por ruido o seguridad).
-- Coste aproximado en euros de cada lavado, según el consumo de cada aparato.
-- Otras zonas: Canarias (que además va una hora menos), Baleares, Ceuta y Melilla. La API tiene parámetros para elegir zona; habría que comprobar sus precios.
-- Modo oscuro.
+- Precio de la gasolina por provincia y las gasolineras más baratas cerca de ti.
 - Avisos en el móvil cuando empiece tu franja barata.
+- Otras zonas para la luz: Canarias, Baleares, Ceuta y Melilla.

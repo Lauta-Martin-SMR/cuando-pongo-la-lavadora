@@ -1,0 +1,46 @@
+# Cada día descarga los precios de los carburantes del Ministerio, calcula la
+# media de España y la guarda en datos/gasolina.json. Al guardarse, GitHub Pages
+# publica la web otra vez y la app de la gasolina enseña los precios nuevos.
+#
+# También se puede lanzar a mano: pestaña «Actions» → «Actualizar precios de la gasolina» → «Run workflow».
+
+name: Actualizar precios de la gasolina
+
+on:
+  schedule:
+    - cron: "23 6 * * *"   # todos los días hacia las 7:23-8:23 (hora de España)
+    - cron: "41 14 * * *"  # y otra vez por la tarde, por si la primera falla
+  workflow_dispatch:
+
+permissions:
+  contents: write  # para poder guardar el archivo de datos en el repositorio
+
+concurrency:
+  group: gasolina
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Descargar precios y calcular medias
+        run: node herramientas/actualizar-gasolina.mjs
+
+      - name: Guardar los cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add datos/gasolina.json
+          if git diff --cached --quiet; then
+            echo "Sin cambios"
+          else
+            git commit -m "Actualizar precios de la gasolina"
+            git push
+          fi

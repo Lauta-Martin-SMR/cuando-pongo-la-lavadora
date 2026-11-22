@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-11-22T15:12:28.665Z",
+ "actualizado": "2026-11-22T20:49:48.223Z",
  "fuente": "Ministerio para la Transición Ecológica y el Reto Demográfico (Geoportal de gasolineras)",
  "nota": "Precio medio de todas las gasolineras de España, en euros por litro, impuestos incluidos.",
  "carburantes": [{ "id": "g95", "nombre": "Gasolina 95" }, { "id": "g98", "nombre": "Gasolina 98" }, { "id": "diesel", "nombre": "Diésel" }, { "id": "dieselPremium", "nombre": "Diésel Premium" }, { "id": "glp", "nombre": "GLP (autogás)" }],
@@ -187,6 +187,6 @@
   "2026-11-19": [1.5732, 1.7666, 1.8025, 1.8968, 1.134],
   "2026-11-20": [1.5595, 1.7572, 1.7909, 1.8867, 1.1341],
   "2026-11-21": [1.5534, 1.7472, 1.7849, 1.8795, 1.1342],
-  "2026-11-22": [1.5497, 1.7418, 1.7823, 1.877, 1.1343]
+  "2026-11-22": [1.5493, 1.7418, 1.782, 1.8769, 1.1343]
  }
 }

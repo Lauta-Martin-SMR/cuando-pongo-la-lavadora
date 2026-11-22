@@ -72,6 +72,25 @@
             </section>
           </div>
 
+          <!-- ACCESO A LA APP DE LA GASOLINA (con borde de neón) -->
+          <div class="movible" data-seccion="gasolina">
+            <div class="movible__controles">
+              <span class="movible__nombre">Gasolina</span>
+              <button type="button" class="movible__boton" data-mover="-1" aria-label="Subir «Gasolina»"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-arriba"></use></svg></button>
+              <button type="button" class="movible__boton" data-mover="1" aria-label="Bajar «Gasolina»"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-abajo"></use></svg></button>
+              <span class="movible__asa" title="Arrastra para mover"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-asa"></use></svg></span>
+            </div>
+            <a class="atajo atajo--neon atajo--horizontal" href="gasolina/">
+              <span class="atajo__fondo" aria-hidden="true"></span>
+              <span class="atajo__icono"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-surtidor"></use></svg></span>
+              <span class="atajo__textos">
+                <span class="atajo__titulo">¿Cuándo echo gasolina?</span>
+                <span class="atajo__texto" id="atajo-principal-texto">Precios de todas las gasolineras, en un mapa</span>
+              </span>
+              <span class="atajo__flecha"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-flecha"></use></svg></span>
+            </a>
+          </div>
+
           <!-- 2. LAS 3 HORAS MÁS BARATAS QUE QUEDAN HOY -->
           <div class="movible necesita-datos" data-seccion="baratas">
             <div class="movible__controles">
@@ -106,7 +125,7 @@
               <div class="bloque__cabecera">
                 <h2 class="bloque__titulo" id="titulo-electros">¿Qué quieres poner?</h2>
                 <button type="button" class="boton-mas" id="boton-mas" aria-expanded="false" aria-controls="zona-mas">
-                  Más
+                  <span id="boton-mas-texto">Ver más</span>
                   <span class="boton-mas__signo"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-mas"></use></svg></span>
                 </button>
               </div>
@@ -184,7 +203,10 @@
                   </ul>
                   <div class="resumen" id="resumen"></div>
                   <details class="tabla">
-                    <summary>Ver todas las horas en una tabla</summary>
+                    <summary>
+                      <span class="tabla__cerrada">Ver todas las horas en una tabla</span>
+                      <span class="tabla__abierta">Ver menos</span>
+                    </summary>
                     <table>
                       <thead>
                         <tr><th scope="col">Hora</th><th scope="col">€/kWh</th><th scope="col">Precio</th></tr>

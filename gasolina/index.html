@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>¿Cuándo echo gasolina?</title>
-  <meta name="description" content="Precio medio de la gasolina y el diésel en España hoy, lo que cuesta llenar el depósito y cómo ha cambiado en los últimos 6 meses.">
+  <meta name="description" content="Precio de la gasolina y el diésel en todas las gasolineras de España, en un mapa, con la más barata recomendada y su historial de precios.">
   <meta name="theme-color" content="#f5f4fa">
 
   <!-- Es parte de la misma app instalable que la luz -->
@@ -26,6 +26,10 @@
     })();
   </script>
 
+  <!-- Leaflet: librería libre para el mapa (copiada en vendor/, funciona sin conexión) -->
+  <link rel="stylesheet" href="../vendor/leaflet/leaflet.css">
+  <script src="../vendor/leaflet/leaflet.js" defer></script>
+
   <link rel="stylesheet" href="../css/comun.css">
   <link rel="stylesheet" href="../css/gasolina.css">
   <script type="module" src="../js/gasolina/app.js"></script>
@@ -44,7 +48,7 @@
         <img class="cabecera__logo cabecera__logo--gasolina" src="../iconos/gasolina.svg" alt="" width="44" height="44">
         <div class="cabecera__textos">
           <h1 class="cabecera__titulo">¿Cuándo echo gasolina?</h1>
-          <p class="cabecera__fecha" id="fecha">Precio medio en España</p>
+          <p class="cabecera__fecha" id="fecha">Precios de las gasolineras de España</p>
         </div>
         <a class="cabecera__volver" href="../" aria-label="Volver al precio de la luz">
           <svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-rayo"></use></svg>
@@ -53,7 +57,28 @@
       </header>
 
       <main>
-        <!-- 1. Un botón por carburante (se desliza en horizontal) -->
+        <!-- BUSCADOR: pueblo, código postal, provincia, marca o dirección -->
+        <section class="buscador" role="search" aria-label="Buscar gasolineras">
+          <div class="buscador__fila">
+            <div class="buscador__caja">
+              <svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-lupa"></use></svg>
+              <input type="search" id="busqueda" placeholder="Pueblo, CP o marca"
+                autocomplete="off" enterkeyhint="search" spellcheck="false"
+                role="combobox" aria-expanded="false" aria-controls="sugerencias" aria-autocomplete="list"
+                aria-label="Buscar gasolineras por pueblo, código postal, provincia, marca o dirección">
+              <button type="button" class="buscador__borrar" id="borrar-busqueda" aria-label="Borrar la búsqueda" hidden>
+                <svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-cerrar"></use></svg>
+              </button>
+            </div>
+            <button type="button" class="boton buscador__cerca" id="cerca-de-mi">
+              <svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-ubicacion"></use></svg>
+              <span>Cerca de mí</span>
+            </button>
+          </div>
+          <ul class="sugerencias" id="sugerencias" role="listbox" aria-label="Sugerencias" hidden></ul>
+        </section>
+
+        <!-- 1. CARBURANTES: precio medio de España (elegir uno cambia también el mapa) -->
         <section aria-labelledby="titulo-carburantes">
           <h2 class="solo-lectores" id="titulo-carburantes">Elige el carburante</h2>
           <div class="carburantes" id="carburantes" role="group" aria-labelledby="titulo-carburantes">
@@ -63,14 +88,107 @@
           </div>
         </section>
 
-        <!-- 2. Precio de hoy del carburante elegido -->
+        <!-- 2. MAPA DE GASOLINERAS -->
+        <section class="bloque bloque--mapa" id="bloque-mapa" aria-labelledby="titulo-mapa">
+          <div class="bloque__cabecera">
+            <h2 class="bloque__titulo" id="titulo-mapa">Gasolineras</h2>
+            <span class="mapa__cuantas" id="cuantas" aria-live="polite"></span>
+          </div>
+          <div class="filtros" id="filtros"></div>
+
+          <div class="mapa-caja">
+            <div class="mapa" id="mapa" aria-label="Mapa de gasolineras"></div>
+
+            <!-- Antes de elegir una zona -->
+            <div class="mapa__vacio" id="mapa-vacio">
+              <p class="mapa__vacio-titulo">¿Dónde quieres repostar?</p>
+              <p class="mapa__vacio-texto">Busca un pueblo, un código postal o una marca, o usa tu ubicación.</p>
+              <div class="mapa__vacio-botones">
+                <button type="button" class="boton" data-accion="cerca">
+                  <svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-ubicacion"></use></svg>Cerca de mí
+                </button>
+                <button type="button" class="boton boton--suave" data-accion="buscar">
+                  <svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-lupa"></use></svg>Buscar
+                </button>
+              </div>
+              <div class="mapa__ciudades" aria-label="Ciudades">
+                <button type="button" class="chip" data-ciudad="Madrid|28">Madrid</button>
+                <button type="button" class="chip" data-ciudad="Barcelona|08">Barcelona</button>
+                <button type="button" class="chip" data-ciudad="Valencia|46">Valencia</button>
+                <button type="button" class="chip" data-ciudad="Sevilla|41">Sevilla</button>
+                <button type="button" class="chip" data-ciudad="Zaragoza|50">Zaragoza</button>
+                <button type="button" class="chip" data-ciudad="Málaga|29">Málaga</button>
+                <button type="button" class="chip" data-ciudad="Bilbao|48">Bilbao</button>
+              </div>
+            </div>
+
+            <p class="mapa__cargando" id="mapa-cargando" role="status" hidden></p>
+
+            <!-- Tarjeta de la gasolinera tocada, con los enlaces a Apple Maps y Google Maps -->
+            <div class="tarjeta-mapa" id="mapa-tarjeta" hidden></div>
+          </div>
+
+          <ul class="leyenda-mapa" aria-label="Leyenda: precio comparado con las demás gasolineras de la zona">
+            <li class="nivel5--1">Muy bajo</li>
+            <li class="nivel5--2">Bajo</li>
+            <li class="nivel5--3">Medio</li>
+            <li class="nivel5--4">Alto</li>
+            <li class="nivel5--5">Muy alto</li>
+            <li class="leyenda-mapa__estrella">★ Recomendada</li>
+          </ul>
+
+          <div id="resultados" hidden>
+            <div class="recomendada" id="recomendada" hidden></div>
+
+            <div class="tarjeta lista" id="bloque-lista">
+              <div class="lista__cabecera">
+                <h3 class="lista__titulo" id="lista-titulo">Las más baratas</h3>
+                <div class="pestanas pestanas--pequenas" id="orden-lista" role="group" aria-label="Ordenar" hidden>
+                  <button type="button" class="pestana" data-orden="precio" aria-pressed="true">Precio</button>
+                  <button type="button" class="pestana" data-orden="distancia" aria-pressed="false">Distancia</button>
+                </div>
+              </div>
+              <ol class="lista__gasolineras" id="lista-gasolineras"></ol>
+              <button type="button" class="ver-mas" id="ver-mas-lista" aria-expanded="false" hidden>
+                <span>Ver más</span>
+                <svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-abajo"></use></svg>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. FICHA DE LA GASOLINERA ELEGIDA (precios, historial con gráfico y calendario) -->
+        <section class="bloque" id="bloque-ficha" aria-labelledby="titulo-ficha" hidden>
+          <h2 class="bloque__titulo" id="titulo-ficha">Ficha de la gasolinera</h2>
+          <div class="tarjeta ficha" id="ficha"></div>
+
+          <div class="tarjeta historial">
+            <div class="historial__cabecera">
+              <h3 class="historial__titulo">Historial de precios</h3>
+              <div class="pestanas pestanas--pequenas" role="group" aria-label="Periodo del historial">
+                <button type="button" class="pestana" data-dias="30" aria-pressed="true">1 mes</button>
+                <button type="button" class="pestana" data-dias="90" aria-pressed="false">3 meses</button>
+              </div>
+            </div>
+            <p class="historial__estado" id="historial-estado" role="status"></p>
+            <div id="contenido-historial" hidden>
+              <div class="historial__carburantes" id="carburantes-historial" role="group" aria-label="Carburante"></div>
+              <div class="lectura-gas" id="lectura-estacion"></div>
+              <div class="linea" id="grafico-estacion" role="img" aria-label="Gráfico del precio de esta gasolinera"></div>
+              <div class="calendario historial__calendario" id="calendario-estacion"></div>
+              <div class="dia-elegido dia-elegido--plano" id="dia-estacion" aria-live="polite"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. PRECIO MEDIO DE ESPAÑA -->
         <section class="tarjeta destacado" id="destacado" aria-live="polite">
           <div class="esqueleto" style="height:14px;width:45%"></div>
           <div class="esqueleto" style="height:52px;width:60%;margin:16px 0"></div>
           <div class="esqueleto" style="height:14px;width:75%"></div>
         </section>
 
-        <!-- 3. Calculadora: cuánto cuesta repostar hoy y lo que se espera -->
+        <!-- 5. Calculadora: cuánto cuesta repostar hoy y lo que se espera -->
         <section class="bloque" aria-labelledby="titulo-calculadora">
           <h2 class="bloque__titulo" id="titulo-calculadora">¿Cuánto me cuesta repostar?</h2>
           <div class="tarjeta calculadora">
@@ -93,10 +211,10 @@
           </div>
         </section>
 
-        <!-- 4. Evolución del precio -->
+        <!-- 6. Evolución del precio medio -->
         <section class="bloque" aria-labelledby="titulo-evolucion">
           <div class="bloque__cabecera">
-            <h2 class="bloque__titulo" id="titulo-evolucion">Cómo ha cambiado</h2>
+            <h2 class="bloque__titulo" id="titulo-evolucion">Cómo ha cambiado en España</h2>
             <div class="pestanas" role="group" aria-label="Periodo">
               <button type="button" class="pestana" data-periodo="30" aria-pressed="false">1 mes</button>
               <button type="button" class="pestana" data-periodo="90" aria-pressed="false">3 meses</button>
@@ -105,13 +223,13 @@
           </div>
           <div class="tarjeta">
             <div class="lectura-gas" id="lectura-gas"></div>
-            <div class="linea" id="grafico-gas" role="img" aria-label="Gráfico del precio en los últimos meses"></div>
+            <div class="linea" id="grafico-gas" role="img" aria-label="Gráfico del precio medio en los últimos meses"></div>
           </div>
         </section>
 
-        <!-- 5. Calendario de los últimos 6 meses -->
+        <!-- 7. Calendario de los últimos 6 meses -->
         <section class="bloque" aria-labelledby="titulo-calendario-gas">
-          <h2 class="bloque__titulo" id="titulo-calendario-gas">Calendario de precios</h2>
+          <h2 class="bloque__titulo" id="titulo-calendario-gas">Calendario del precio medio</h2>
           <div class="calendario tarjeta-calendario" id="calendario-gas"></div>
           <div class="tarjeta dia-elegido" id="dia-elegido" aria-live="polite"></div>
         </section>
@@ -119,9 +237,10 @@
 
       <footer class="pie">
         <p class="pie__estado" id="estado" hidden></p>
-        <p>Precio medio de todas las gasolineras de España, en euros por litro, impuestos incluidos. Cada gasolinera puede estar más cara o más barata que la media.</p>
+        <p>Precios de cada gasolinera según el Ministerio para la Transición Ecológica, en euros por litro e impuestos incluidos. Se actualizan cada día; la gasolinera puede haberlos cambiado después.</p>
+        <p>Los colores comparan cada gasolinera con las demás de la zona que estás viendo: el 20&nbsp;% más barato es «muy bajo» y el 20&nbsp;% más caro, «muy alto».</p>
         <p>El precio esperado es una estimación según la tendencia de las últimas 4 semanas, no una predicción segura.</p>
-        <p>Datos: <a href="https://geoportalgasolineras.es/" rel="noopener">Ministerio para la Transición Ecológica</a>. Se actualizan cada día.</p>
+        <p>Datos: <a href="https://geoportalgasolineras.es/" rel="noopener">Ministerio para la Transición Ecológica</a>. Mapa: © OpenStreetMap y CARTO.</p>
         <p><a href="../">← Volver al precio de la luz</a></p>
       </footer>
     </div>

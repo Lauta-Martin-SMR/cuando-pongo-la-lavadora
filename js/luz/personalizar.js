@@ -13,7 +13,7 @@ import { hacerOrdenable } from '../comun/ordenar.js';
 import { ELECTRODOMESTICOS, PRINCIPALES_INICIALES } from './electrodomesticos.js';
 
 const CLAVE = 'cuando-lavadora:diseno';
-const SECCIONES = ['ahora', 'baratas', 'electros', 'grafico'];
+const SECCIONES = ['ahora', 'gasolina', 'baratas', 'electros', 'grafico'];
 const SUAVE = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
 /** Cómo está todo al principio */

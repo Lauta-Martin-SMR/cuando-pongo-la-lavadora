@@ -484,7 +484,11 @@ async function precioGasolinaEnAtajo() {
     const fechas = Object.keys(datos.dias).sort();
     const ultimo = datos.dias[fechas[fechas.length - 1]];
     const g95 = ultimo[datos.carburantes.findIndex((c) => c.id === 'g95')];
-    if (g95) panel.ponerTextoAtajo(`Gasolina 95: ${g95.toLocaleString('es-ES', { minimumFractionDigits: 3 })} €/l de media`);
+    if (g95) {
+      const texto = `Gasolina 95: ${g95.toLocaleString('es-ES', { minimumFractionDigits: 3 })} €/l de media`;
+      panel.ponerTextoAtajo(texto);
+      document.querySelector('#atajo-principal-texto').textContent = `${texto} · mira el mapa`;
+    }
   } catch {
     // Sin conexión: se queda el texto de siempre
   }

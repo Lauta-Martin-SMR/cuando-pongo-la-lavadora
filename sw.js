@@ -16,7 +16,7 @@
 
 // Cambia la versión si añades o quitas archivos de la lista.
 const PREFIJO = 'cuando-lavadora-';
-const CACHE = `${PREFIJO}v2`;
+const CACHE = `${PREFIJO}v3`;
 
 const ARCHIVOS = [
   // App de la luz
@@ -40,8 +40,14 @@ const ARCHIVOS = [
   './css/gasolina.css',
   './js/gasolina/app.js',
   './js/gasolina/calculos.js',
+  './js/gasolina/estaciones.js',
   './js/gasolina/interfaz.js',
+  './js/gasolina/linea.js',
+  './js/gasolina/mapa.js',
+  './vendor/leaflet/leaflet.js',
+  './vendor/leaflet/leaflet.css',
   './datos/gasolina.json',
+  // (las gasolineras y su historial se guardan solos la primera vez que se usan)
   // Iconos y manifiesto
   './manifest.webmanifest',
   './iconos/iconos.svg',
@@ -84,11 +90,17 @@ self.addEventListener('fetch', (evento) => {
   evento.respondWith(primeroLaRed(peticion));
 });
 
+// El historial de cada gasolinera son muchos archivos pequeños (uno por provincia y
+// día): no se guardan, porque la copia ocuparía cada día un poco más.
+const NO_GUARDAR = /\/datos\/historial\//;
+
 async function primeroLaRed(peticion) {
   const cache = await caches.open(CACHE);
   try {
     const respuesta = await fetch(peticion);
-    if (respuesta.ok) await cache.put(peticion, respuesta.clone()); // actualizamos la copia
+    if (respuesta.ok && !NO_GUARDAR.test(new URL(peticion.url).pathname)) {
+      await cache.put(peticion, respuesta.clone()); // actualizamos la copia
+    }
     return respuesta;
   } catch (error) {
     // Sin conexión: devolvemos la copia guardada

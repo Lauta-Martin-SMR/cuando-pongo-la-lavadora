@@ -703,119 +703,164 @@ input[type="range"]::-moz-range-thumb {
   font-size: 0.9375rem;
 }
 
-/* Acceso directo a la otra app, bien decorado */
+/* Acceso directo a la otra app: tarjeta grande con borde de neón animado */
+@property --giro {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
 .atajo {
   position: relative;
-  overflow: hidden;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 18px 18px 16px;
+  padding: 22px 20px 20px;
   border-radius: var(--radio-grande);
   color: #3b2a12;
   text-decoration: none;
-  background:
-    radial-gradient(130px 130px at 100% 0%, rgb(255 255 255 / 0.55), transparent 70%),
-    linear-gradient(140deg, #ffe2b3 0%, #ffc9a8 55%, #f7b4c4 100%);
-  box-shadow: 0 14px 30px -16px rgb(214 120 60 / 0.6);
-  transition: transform 180ms var(--salida), box-shadow 200ms ease;
+  transition: transform 180ms var(--salida);
 }
 
 .atajo:active {
   transform: scale(0.97);
 }
 
+/* Fondo pastel (con dos burbujas) */
+.atajo__fondo {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  background:
+    radial-gradient(140px 140px at 100% 0%, rgb(255 255 255 / 0.55), transparent 70%),
+    linear-gradient(140deg, #ffe2b3 0%, #ffc9a8 55%, #f7b4c4 100%);
+}
+
+.atajo__fondo::before,
+.atajo__fondo::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.35);
+}
+
+.atajo__fondo::before { width: 96px; height: 96px; right: -26px; bottom: -38px; }
+.atajo__fondo::after { width: 48px; height: 48px; right: 64px; bottom: -24px; }
+
 .atajo--luz {
   color: #1f2a4a;
+}
+
+.atajo--luz .atajo__fondo {
   background:
-    radial-gradient(130px 130px at 100% 0%, rgb(255 255 255 / 0.55), transparent 70%),
+    radial-gradient(140px 140px at 100% 0%, rgb(255 255 255 / 0.55), transparent 70%),
     linear-gradient(140deg, #d6f3e5 0%, #d9e4fb 55%, #dcd8fb 100%);
-  box-shadow: 0 14px 30px -16px rgb(91 95 214 / 0.55);
+}
+
+/* Neón: un borde de colores que gira y un brillo difuminado detrás */
+.atajo--neon::before,
+.atajo--neon::after {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  inset: -2.5px;
+  border-radius: calc(var(--radio-grande) + 2.5px);
+  background: conic-gradient(from var(--giro), #ffb36b, #ff7eb3, #b48cff, #7fd1ff, #8be3b5, #ffb36b);
+  animation: girar-neon 6s linear infinite;
+}
+
+.atajo--neon::after {
+  z-index: -3;
+  inset: -6px;
+  filter: blur(16px);
+  opacity: 0.55;
+  animation: girar-neon 6s linear infinite, latir-neon 3s ease-in-out infinite;
+}
+
+:root[data-tema="oscuro"] .atajo--neon::after {
+  opacity: 0.8;
+}
+
+@keyframes girar-neon {
+  to { --giro: 360deg; }
+}
+
+@keyframes latir-neon {
+  50% { opacity: 0.85; }
 }
 
 .atajo__icono {
-  width: 46px;
-  height: 46px;
+  width: 52px;
+  height: 52px;
   display: grid;
   place-items: center;
-  margin-bottom: 8px;
-  border-radius: 14px;
-  background: rgb(255 255 255 / 0.7);
+  margin-bottom: 10px;
+  border-radius: 16px;
+  background: rgb(255 255 255 / 0.72);
   box-shadow: 0 4px 12px -4px rgb(0 0 0 / 0.18);
 }
 
 .atajo__icono .icono {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   stroke-width: 1.9;
 }
 
 .atajo__titulo {
-  font-size: 1.0625rem;
-  font-weight: 750;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
   line-height: 1.2;
 }
 
 .atajo__texto {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
   opacity: 0.85;
 }
 
 .atajo__flecha {
   position: absolute;
-  top: 18px;
-  right: 16px;
-  width: 34px;
-  height: 34px;
+  top: 20px;
+  right: 18px;
+  width: 38px;
+  height: 38px;
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: rgb(255 255 255 / 0.65);
+  background: rgb(255 255 255 / 0.7);
   transition: transform 200ms var(--salida);
 }
 
 .atajo__flecha .icono {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   stroke-width: 2.4;
 }
 
-/* Gotas decorativas */
-.atajo::before,
-.atajo::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  background: rgb(255 255 255 / 0.35);
-  pointer-events: none;
+@media (prefers-reduced-motion: reduce) {
+  .atajo--neon::before,
+  .atajo--neon::after {
+    animation: none;
+  }
 }
 
-.atajo::before { width: 90px; height: 90px; right: -24px; bottom: -36px; }
-.atajo::after { width: 46px; height: 46px; right: 60px; bottom: -22px; }
-
 /* En pantallas anchas el panel se queda fijo a la izquierda */
-@media (min-width: 1000px) {
-  .marco {
-    display: grid;
-    grid-template-columns: 300px minmax(0, 560px);
-    justify-content: center;
-    gap: 36px;
-    padding: 0 24px;
-  }
-
-  .app {
-    margin: 0;
-    padding-left: 0;
-    padding-right: 0;
-  }
-
+/* En pantallas anchas: lo principal, centrado; el panel, fijo a la izquierda
+   y separado (hasta 80 px) para que no se pegue al contenido. */
+@media (min-width: 1280px) {
   .panel {
-    position: sticky;
-    top: 0;
+    position: fixed;
     z-index: 1;
-    width: auto;
-    height: 100dvh;
-    padding: 24px 2px 24px 0;
+    top: 0;
+    bottom: 0;
+    /* 50vw − media app (280) − separación (80) − ancho del panel (290), y nunca a menos de 24 px del borde */
+    left: max(24px, calc(50vw - 650px));
+    width: 290px;
+    padding: 24px 6px 24px 2px;
     background: transparent;
     box-shadow: none;
     transform: none;
@@ -1061,4 +1106,29 @@ input[type="range"]::-moz-range-thumb {
     animation: none !important;
     transition: none !important;
   }
+}
+
+/* Versión horizontal del acceso directo (en la pantalla principal de la luz) */
+.atajo--horizontal {
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 66px 18px 18px;
+}
+
+.atajo--horizontal .atajo__icono {
+  flex: none;
+  margin: 0;
+}
+
+.atajo__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.atajo--horizontal .atajo__flecha {
+  top: 50%;
+  translate: 0 -50%;
 }

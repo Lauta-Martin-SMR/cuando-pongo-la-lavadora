@@ -1,6 +1,7 @@
-# Cada día descarga los precios de los carburantes del Ministerio, calcula la
-# media de España y la guarda en datos/gasolina.json. Al guardarse, GitHub Pages
-# publica la web otra vez y la app de la gasolina enseña los precios nuevos.
+# Cada día descarga los precios de los carburantes del Ministerio y prepara los
+# archivos de la carpeta datos/ (precio medio de España, todas las gasolineras,
+# sus precios de hoy y el historial de los últimos 90 días). Al guardarse,
+# GitHub Pages publica la web otra vez y la app enseña los precios nuevos.
 #
 # También se puede lanzar a mano: pestaña «Actions» → «Actualizar precios de la gasolina» → «Run workflow».
 
@@ -37,7 +38,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add datos/gasolina.json
+          git add -A datos
           if git diff --cached --quiet; then
             echo "Sin cambios"
           else

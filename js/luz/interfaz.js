@@ -234,7 +234,7 @@ export function pintarAhora(datos) {
     <p class="ahora__precio">${precio(actual.precio)}<span class="ahora__unidad">€/kWh</span></p>
     <p class="ahora__comparacion">${comparacion}</p>
     <button type="button" class="ahora__mas" aria-expanded="${proximasAbiertas}" aria-controls="proximas">
-      ${proximasAbiertas ? 'Ocultar las próximas horas' : 'Ver las próximas horas'} ${icono('i-abajo')}
+      ${proximasAbiertas ? 'Ver menos' : 'Ver las próximas horas'} ${icono('i-abajo')}
     </button>
     ${proximasHTML}`);
 }
@@ -304,6 +304,7 @@ export function abrirMas(abrir) {
   zona.classList.toggle('zona-mas--abierta', abrir);
   zona.inert = !abrir;
   $('#boton-mas').setAttribute('aria-expanded', String(abrir));
+  $('#boton-mas-texto').textContent = abrir ? 'Ver menos' : 'Ver más';
 }
 
 export function verResultado() {

@@ -48,7 +48,10 @@ export function temaActual(ahora = new Date()) {
 export function aplicarAjustes() {
   const raiz = document.documentElement;
   const tema = temaActual();
+  const cambia = raiz.dataset.tema !== tema;
   raiz.dataset.tema = tema;
+  // Avisamos a quien lo necesite (el mapa cambia su fondo claro u oscuro)
+  if (cambia) document.dispatchEvent(new CustomEvent('cambiotema', { detail: tema }));
   // Todo el CSS mide la letra en rem, así que cambiar el tamaño base lo agranda todo
   raiz.style.fontSize = ajustes.letra === 100 ? '' : `${ajustes.letra}%`;
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', COLOR_NAVEGADOR[tema]);
@@ -64,7 +67,7 @@ export function restaurarAjustes() {
 let panel;
 let velo;
 let botonAbrir;
-const escritorio = window.matchMedia('(min-width: 1000px)');
+const escritorio = window.matchMedia('(min-width: 1280px)');
 
 /**
  * Crea el panel dentro de <aside id="panel">.
@@ -119,7 +122,8 @@ export function iniciarPanel({ personalizar = null, atajo }) {
       <p class="panel__nota">Mueve las tarjetas y elige qué aparatos están en la pantalla principal y cuáles en «Más».</p>
     </section>` : ''}
 
-    <a class="atajo ${atajo.clase ?? ''}" href="${atajo.href}">
+    <a class="atajo atajo--neon ${atajo.clase ?? ''}" href="${atajo.href}">
+      <span class="atajo__fondo" aria-hidden="true"></span>
       <span class="atajo__icono">${icono(atajo.icono)}</span>
       <span class="atajo__titulo">${atajo.titulo}</span>
       <span class="atajo__texto" id="atajo-texto">${atajo.texto}</span>

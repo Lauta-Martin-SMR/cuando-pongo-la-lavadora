@@ -423,10 +423,6 @@ main > section + section {
   stroke-linecap: round;
 }
 
-.linea__area {
-  fill: url(#degradado-area);
-}
-
 .linea__cursor {
   stroke: var(--tinta);
   stroke-width: 1.5;
@@ -509,4 +505,932 @@ main > section + section {
 
 @media (min-width: 480px) {
   .destacado__precio { font-size: 3.75rem; }
+}
+
+
+/* ==========================================================================
+   Mapa de gasolineras
+   ========================================================================== */
+
+/* Cinco niveles de precio en el mapa: de muy bajo (verde) a muy alto (rojo) */
+:root {
+  --nivel-1: #2fa66a;
+  --nivel-2: #8fcf6a;
+  --nivel-3: #f1be44;
+  --nivel-4: #f08a48;
+  --nivel-5: #d9534f;
+}
+
+:root[data-tema="oscuro"] {
+  --nivel-1: #4cc98a;
+  --nivel-2: #a6de7e;
+  --nivel-3: #f0c04a;
+  --nivel-4: #f39a5c;
+  --nivel-5: #e5625e;
+}
+
+.nivel5--1 { --punto: var(--nivel-1); --suave: #dcf3e6; --texto: #1d6b44; }
+.nivel5--2 { --punto: var(--nivel-2); --suave: #eaf6df; --texto: #3f6b1f; }
+.nivel5--3 { --punto: var(--nivel-3); --suave: #fdf3d6; --texto: #7a5300; }
+.nivel5--4 { --punto: var(--nivel-4); --suave: #fde6d6; --texto: #924316; }
+.nivel5--5 { --punto: var(--nivel-5); --suave: #fbe1e0; --texto: #9b2c2c; }
+
+:root[data-tema="oscuro"] .nivel5--1 { --suave: #183a2a; --texto: #8be3b5; }
+:root[data-tema="oscuro"] .nivel5--2 { --suave: #263a1c; --texto: #bfe6a0; }
+:root[data-tema="oscuro"] .nivel5--3 { --suave: #3d3320; --texto: #f5d27e; }
+:root[data-tema="oscuro"] .nivel5--4 { --suave: #422b1c; --texto: #f7bf95; }
+:root[data-tema="oscuro"] .nivel5--5 { --suave: #422428; --texto: #f7a5a6; }
+
+
+/* ---------- Buscador ---------- */
+
+.buscador {
+  position: relative;
+  z-index: 20;
+  margin-bottom: 16px;
+}
+
+.buscador__fila {
+  display: flex;
+  gap: 8px;
+}
+
+.buscador__caja {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 6px 0 14px;
+  border: 1.5px solid transparent;
+  border-radius: 16px;
+  background: var(--superficie);
+  box-shadow: var(--sombra);
+  color: var(--tinta-tenue);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.buscador__caja:focus-within {
+  border-color: var(--acento);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--acento) 18%, transparent), var(--sombra);
+}
+
+.buscador__caja .icono {
+  width: 20px;
+  height: 20px;
+}
+
+.buscador input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  border: 0;
+  background: none;
+  color: var(--tinta);
+  font-size: 16px; /* 16 px como mínimo: así el iPhone no hace zoom al escribir */
+  outline: none;
+}
+
+.buscador input::placeholder {
+  color: var(--tinta-tenue);
+}
+
+.buscador input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.buscador__borrar {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--tinta-suave);
+}
+
+.buscador__borrar .icono {
+  width: 18px;
+  height: 18px;
+}
+
+.buscador__cerca {
+  height: 51px;
+  padding: 0 14px;
+  border-radius: 16px;
+}
+
+.sugerencias {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: min(60vh, 380px);
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: var(--radio);
+  background: var(--superficie);
+  box-shadow: var(--sombra-alta);
+  animation: subir 180ms var(--salida);
+}
+
+.sugerencia {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.sugerencia .icono {
+  width: 20px;
+  height: 20px;
+  color: var(--acento);
+}
+
+.sugerencia--activa {
+  background: var(--acento-suave);
+}
+
+.sugerencia__texto {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sugerencia__texto strong {
+  font-size: 0.9375rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sugerencia__texto small {
+  font-size: 0.8125rem;
+  color: var(--tinta-tenue);
+}
+
+
+/* ---------- Filtros y mapa ---------- */
+
+.mapa__cuantas {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--tinta-tenue);
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chip .icono {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+}
+
+.chip--quitar {
+  background: var(--acento-suave);
+  color: var(--acento-texto);
+}
+
+.chip--quitar span[aria-hidden] {
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+.mapa-caja {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radio-grande);
+  box-shadow: var(--sombra);
+  background: var(--superficie-2);
+  isolation: isolate;
+}
+
+.mapa {
+  height: min(62vh, 460px);
+  min-height: 320px;
+  background: var(--superficie-2);
+}
+
+/* Pantalla de antes de elegir zona, encima del mapa */
+.mapa__vacio {
+  position: absolute;
+  z-index: 1050; /* por encima de los botones de Leaflet (1000) */
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+  background: color-mix(in srgb, var(--fondo) 72%, transparent);
+  backdrop-filter: blur(3px);
+}
+
+.mapa__vacio-titulo {
+  font-size: 1.25rem;
+  font-weight: 750;
+}
+
+.mapa__vacio-texto {
+  max-width: 30ch;
+  color: var(--tinta-suave);
+}
+
+.mapa__vacio-botones,
+.mapa__ciudades {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.mapa__ciudades .chip {
+  background: var(--superficie);
+  box-shadow: var(--sombra);
+}
+
+.mapa__cargando {
+  position: absolute;
+  z-index: 1100;
+  top: 12px;
+  left: 50%;
+  max-width: calc(100% - 24px);
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--superficie);
+  box-shadow: var(--sombra-alta);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+/* Etiquetas con el precio encima de cada gasolinera (al acercar el mapa) */
+.pin {
+  display: inline-block;
+  padding: 3px 7px;
+  border: 2px solid var(--superficie);
+  border-radius: 999px;
+  background: var(--punto, var(--acento));
+  color: #1f2333;
+  font-size: 0.75rem;
+  font-weight: 750;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.25);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+.pin.nivel5--1,
+.pin.nivel5--5 {
+  color: #fff;
+}
+
+/* La recomendada: más grande, con estrella y un brillo */
+.pin--recomendada {
+  padding: 5px 10px;
+  border: 0;
+  background: linear-gradient(135deg, #ffd36b, #ff9a6b);
+  color: #3b1d0a;
+  font-size: 0.8125rem;
+  box-shadow: 0 0 0 3px var(--superficie), 0 0 18px 4px rgb(255 170 80 / 0.7);
+  animation: brillar 2.4s ease-in-out infinite;
+}
+
+@keyframes brillar {
+  50% { box-shadow: 0 0 0 3px var(--superficie), 0 0 26px 8px rgb(255 170 80 / 0.85); }
+}
+
+/* La gasolinera tocada: con un contorno oscuro y un poco más grande */
+.pin--elegida {
+  outline: 3px solid var(--tinta);
+  outline-offset: 2px;
+  transform: translate(-50%, -50%) scale(1.12);
+}
+
+/* Tu ubicación: punto azul con una onda */
+.yo {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 18px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #3b82f6;
+  box-shadow: 0 1px 6px rgb(0 0 0 / 0.35);
+  transform: translate(-50%, -50%);
+}
+
+.yo::after {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  background: rgb(59 130 246 / 0.25);
+  animation: onda 2s ease-out infinite;
+}
+
+@keyframes onda {
+  from { transform: scale(0.4); opacity: 1; }
+  to { transform: scale(1.6); opacity: 0; }
+}
+
+/* Leaflet con los colores de la app (botones de zoom y créditos) */
+.leaflet-container {
+  font-family: var(--fuente);
+}
+
+.leaflet-bar a,
+.leaflet-bar a:hover {
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  background: var(--superficie);
+  color: var(--tinta);
+  border-bottom-color: var(--linea) !important;
+}
+
+.leaflet-bar {
+  border: 0 !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: var(--sombra) !important;
+}
+
+.leaflet-control-attribution {
+  background: color-mix(in srgb, var(--superficie) 85%, transparent) !important;
+  color: var(--tinta-tenue) !important;
+  font-size: 10px !important;
+}
+
+.leaflet-control-attribution a {
+  color: var(--acento-texto) !important;
+}
+
+/* Tarjeta de la gasolinera tocada, encima del mapa */
+.tarjeta-mapa {
+  position: absolute;
+  z-index: 1100;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  padding: 14px 14px 12px;
+  border-radius: 20px;
+  background: var(--superficie);
+  box-shadow: var(--sombra-alta);
+}
+
+.tarjeta-mapa--entra {
+  animation: subir 260ms var(--salida);
+}
+
+.tarjeta-mapa__cabecera {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tarjeta-mapa__nombre {
+  flex: 1;
+  min-width: 0;
+}
+
+.tarjeta-mapa__nombre p:first-child {
+  font-size: 1rem;
+}
+
+.tarjeta-mapa__nombre p:last-child {
+  font-size: 0.8125rem;
+  color: var(--tinta-suave);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tarjeta-mapa__cerrar {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--superficie-2);
+  color: var(--tinta-suave);
+}
+
+.tarjeta-mapa__cerrar .icono {
+  width: 16px;
+  height: 16px;
+}
+
+.tarjeta-mapa__precio {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 8px;
+  margin: 8px 0 10px;
+}
+
+.tarjeta-mapa__precio strong {
+  font-size: 1.375rem;
+  font-weight: 750;
+}
+
+.tarjeta-mapa__precio small {
+  font-size: 0.8125rem;
+  color: var(--tinta-tenue);
+}
+
+.tarjeta-mapa__acciones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* «Abrir en / Apple Maps»: dos líneas a propósito, para que quepan los dos botones */
+.boton--mapa {
+  justify-content: flex-start;
+  gap: 8px;
+  min-width: 0;
+  padding: 8px 12px;
+  border-radius: 14px;
+  background: var(--superficie-2);
+  color: var(--tinta);
+  box-shadow: none;
+  font-size: 0.875rem;
+  line-height: 1.15;
+  text-align: left;
+}
+
+.boton--mapa span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.boton--mapa small {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--tinta-tenue);
+}
+
+.boton--mapa .icono {
+  color: var(--acento);
+}
+
+.tarjeta-mapa__mas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.tarjeta-mapa__mas .chip {
+  padding: 7px 12px;
+  font-size: 0.8125rem;
+}
+
+.estrella {
+  display: inline-flex;
+  margin-left: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ffe4a8, #ffc6a8);
+  color: #6b3410;
+  font-size: 0.75rem;
+  font-weight: 700;
+  vertical-align: 2px;
+}
+
+/* Avatar con las iniciales de la marca */
+.avatar {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--marca);
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.06);
+}
+
+.avatar--claro {
+  color: #a1161a;
+}
+
+/* Leyenda de colores del mapa */
+.leyenda-mapa {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 12px 4px 0;
+  font-size: 0.8125rem;
+  color: var(--tinta-suave);
+}
+
+.leyenda-mapa li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.leyenda-mapa li::before {
+  content: "";
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--punto);
+}
+
+.leyenda-mapa .leyenda-mapa__estrella::before {
+  display: none;
+}
+
+.leyenda-mapa__estrella {
+  font-weight: 700;
+  color: #b8611f;
+}
+
+
+/* ---------- Recomendada y lista ---------- */
+
+.recomendada {
+  margin-top: 16px;
+}
+
+.recomendada__boton {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--radio-grande);
+  background: linear-gradient(135deg, #fff2d6, #ffe0d2);
+  color: #3b1d0a;
+  text-align: left;
+  box-shadow: 0 0 0 1.5px rgb(255 170 80 / 0.55), 0 10px 28px -12px rgb(255 140 60 / 0.6);
+  transition: transform 160ms var(--salida);
+}
+
+:root[data-tema="oscuro"] .recomendada__boton {
+  background: linear-gradient(135deg, #3a2a18, #3a2120);
+  color: #ffe2c4;
+}
+
+.recomendada__boton:active {
+  transform: scale(0.98);
+}
+
+.recomendada__estrella {
+  width: 42px;
+  height: 42px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffd36b, #ff9a6b);
+  color: #3b1d0a;
+  font-size: 1.25rem;
+  box-shadow: 0 0 16px rgb(255 170 80 / 0.7);
+}
+
+.recomendada__texto {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.recomendada__texto small {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+}
+
+.recomendada__texto strong {
+  font-size: 1.0625rem;
+}
+
+.recomendada__texto span {
+  font-size: 0.8125rem;
+  opacity: 0.85;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lista {
+  margin-top: 14px;
+  padding: 14px 10px 8px;
+}
+
+.lista__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 6px 6px;
+}
+
+.lista__titulo {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.pestanas--pequenas .pestana {
+  padding: 6px 11px;
+  font-size: 0.8125rem;
+}
+
+.gasolinera {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px;
+  border-radius: 14px;
+  text-align: left;
+}
+
+.gasolinera:active {
+  background: var(--superficie-2);
+}
+
+.gasolinera__puesto {
+  width: 18px;
+  flex: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--tinta-tenue);
+  text-align: center;
+}
+
+.gasolinera__texto {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gasolinera__texto small {
+  font-size: 0.8125rem;
+  color: var(--tinta-tenue);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gasolinera__precio {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-variant-numeric: tabular-nums;
+}
+
+.gasolinera__precio strong {
+  font-size: 1.0625rem;
+  white-space: nowrap;
+}
+
+.gasolinera__precio small {
+  font-size: 0.75rem;
+  color: var(--tinta-tenue);
+}
+
+.lista-vacia {
+  padding: 16px 8px;
+  color: var(--tinta-suave);
+}
+
+/* Botón «Ver más / Ver menos» */
+.ver-mas {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 12px;
+  border-radius: 14px;
+  color: var(--acento-texto);
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.ver-mas .icono {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+  transition: transform 260ms var(--salida);
+}
+
+.ver-mas[aria-expanded="true"] .icono {
+  transform: rotate(180deg);
+}
+
+
+/* ---------- Ficha completa e historial ---------- */
+
+.ficha__cabecera {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.ficha__cabecera .avatar {
+  width: 48px;
+  height: 48px;
+  font-size: 0.9375rem;
+}
+
+.ficha__marca {
+  font-size: 1.25rem;
+  font-weight: 750;
+}
+
+.ficha__marca small {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--tinta-tenue);
+}
+
+.ficha__direccion {
+  font-size: 0.9375rem;
+  color: var(--tinta-suave);
+}
+
+.ficha__datos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.ficha__datos div {
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--superficie-2);
+}
+
+.ficha__datos dt {
+  font-size: 0.75rem;
+  color: var(--tinta-tenue);
+}
+
+.ficha__datos dd {
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.ficha__subtitulo {
+  margin: 16px 2px 6px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tinta-tenue);
+}
+
+.ficha__precio {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 4px;
+  border-top: 1px solid var(--linea);
+}
+
+.ficha__precio strong {
+  font-size: 1.0625rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.ficha__precio--elegido {
+  margin: 0 -8px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  border-top-color: transparent;
+  background: var(--acento-suave);
+}
+
+.ficha__no {
+  font-size: 0.8125rem;
+  color: var(--tinta-tenue);
+}
+
+.ficha__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.ficha__acciones .boton {
+  flex: 1 1 auto;
+}
+
+.historial {
+  margin-top: 12px;
+}
+
+.historial__cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.historial__titulo {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.historial__estado {
+  padding: 18px 4px;
+  text-align: center;
+  font-size: 0.9375rem;
+  color: var(--tinta-suave);
+}
+
+.historial__estado:empty {
+  display: none;
+}
+
+.historial__carburantes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.historial__calendario {
+  margin-top: 14px;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--linea);
+  border-radius: 0;
+}
+
+.dia-elegido--plano {
+  margin-top: 10px;
+  animation: none;
+}
+
+
+/* ---------- Pantallas anchas y movimiento reducido ---------- */
+
+@media (hover: hover) and (pointer: fine) {
+  .sugerencia:hover,
+  .gasolinera:hover {
+    background: var(--superficie-2);
+  }
+
+  .boton--mapa:hover {
+    filter: brightness(0.97);
+  }
+}
+
+@media (max-width: 380px) {
+  .buscador__cerca span {
+    display: none; /* en pantallas muy estrechas, solo el icono */
+  }
+
+  /* «Abrir en / Google Maps» sin icono, para que quepa en dos líneas */
+  .boton--mapa {
+    padding: 8px 10px;
+  }
+
+  .boton--mapa .icono {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pin--recomendada,
+  .yo::after {
+    animation: none;
+  }
 }

@@ -914,6 +914,16 @@ button.resumen__dato:active {
   transform: rotate(-135deg) translateY(-2px);
 }
 
+/* «Ver todas las horas…» al estar cerrada; «Ver menos» al estar abierta */
+.tabla__abierta,
+.tabla[open] .tabla__cerrada {
+  display: none;
+}
+
+.tabla[open] .tabla__abierta {
+  display: inline;
+}
+
 .tabla table {
   width: 100%;
   margin-top: 8px;
@@ -1192,7 +1202,7 @@ button.resumen__dato:active {
   .grafico__area { height: 200px; }
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 1280px) {
   .barra-edicion {
     display: none;
   }

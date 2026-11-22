@@ -82,3 +82,42 @@ export function tendencia(serie, { diasAtras = 28, diasAdelante = 7 } = {}) {
 
 /** Lo que cuestan `litros` a un precio por litro */
 export const coste = (litros, precio) => litros * precio;
+
+
+/* ---------- Gasolineras del mapa ---------- */
+
+/**
+ * Reparte los precios de una zona en 5 niveles del mismo tamaño (quintiles):
+ * 1 = muy bajo (el 20 % más barato) … 5 = muy alto (el 20 % más caro).
+ * Devuelve una función precio → nivel.
+ */
+export function nivelesQuintiles(precios) {
+  const ordenados = precios.filter((p) => p > 0).sort((a, b) => a - b);
+  if (!ordenados.length) return () => 3;
+  const corte = (proporcion) => ordenados[Math.floor(proporcion * (ordenados.length - 1))];
+  const cortes = [0.2, 0.4, 0.6, 0.8].map(corte);
+  return (precio) => {
+    for (let i = 0; i < cortes.length; i++) if (precio <= cortes[i]) return i + 1;
+    return 5;
+  };
+}
+
+/**
+ * Gasolinera recomendada. items: [{ estacion, precio, km }]
+ *  - Si sabemos dónde estás: la más barata a menos de 5 km (o de las 10 más cercanas).
+ *  - Si no: la más barata de la zona.
+ * Devuelve { item, motivo } o null.
+ */
+export function elegirRecomendada(items, conUbicacion) {
+  if (!items.length) return null;
+  const masBarata = (lista) => lista.reduce((mejor, item) => (
+    item.precio < mejor.precio - 1e-9 || (Math.abs(item.precio - mejor.precio) < 1e-9 && (item.km ?? 0) < (mejor.km ?? 0)) ? item : mejor
+  ));
+  if (conUbicacion) {
+    const cerca = items.filter((item) => item.km <= 5);
+    if (cerca.length) return { item: masBarata(cerca), motivo: 'la más barata a menos de 5 km' };
+    const cercanas = [...items].sort((a, b) => a.km - b.km).slice(0, 10);
+    return { item: masBarata(cercanas), motivo: 'la más barata de las 10 más cercanas' };
+  }
+  return { item: masBarata(items), motivo: 'la más barata de la zona' };
+}

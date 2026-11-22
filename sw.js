@@ -16,7 +16,7 @@
 
 // Cambia la versión si añades o quitas archivos de la lista.
 const PREFIJO = 'cuando-lavadora-';
-const CACHE = `${PREFIJO}v5`;
+const CACHE = `${PREFIJO}v6`;
 
 const ARCHIVOS = [
   // App de la luz
@@ -27,8 +27,10 @@ const ARCHIVOS = [
   './js/comun/ajustes.js',
   './js/comun/ayuda.js',
   './js/comun/calendario.js',
+  './js/comun/conmutador.js',
   './js/comun/guia.js',
   './js/comun/iconos.js',
+  './js/comun/linea-desplazamiento.js',
   './js/comun/ordenar.js',
   './js/luz/app.js',
   './js/luz/api.js',
@@ -61,7 +63,6 @@ const ARCHIVOS = [
   // (las gasolineras y su historial se guardan solos la primera vez que se usan)
   // Iconos y manifiesto
   './manifest.webmanifest',
-  './iconos/iconos.svg',
   './iconos/favicon.svg',
   './iconos/favicon-32.png',
   './iconos/icono-192.png',

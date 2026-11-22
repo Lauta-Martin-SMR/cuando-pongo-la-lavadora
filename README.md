@@ -1,11 +1,13 @@
-# ¿Cuándo pongo la lavadora?
+# ¿Cuándo es más barata la luz?
 
-Web app (PWA) con dos partes:
+Web app (PWA) con dos partes, y una barra a la derecha para pasar de una a otra:
 
-- **La luz:** el precio de la luz en España hora a hora (el **PVPC** o el de **tu tarifa**: precio fijo, tres tramos o indexada, con tu zona, impuestos, bono social y potencia), cuándo es más barato poner cada electrodoméstico y cuánto te costará.
+- **La luz** (*¿Cuándo es más barata la luz?*): el precio de la luz en España hora a hora (el **PVPC** o el de **tu tarifa**: precio fijo, tres tramos o indexada, con tu zona, impuestos, bono social y potencia), cuándo es más barato poner cada electrodoméstico y cuánto te costará.
 - **La gasolina** (*¿Cuándo echo gasolina?*): un **mapa con todas las gasolineras de España** y su precio, la más barata recomendada, la ficha y el historial de cada una, el precio medio de cada carburante y lo que cuesta repostar.
 
 Está hecha con **HTML, CSS y JavaScript sin frameworks ni compilación**: lo que ves en los archivos es exactamente lo que se ejecuta.
+
+(El repositorio y la dirección se siguen llamando `cuando-pongo-la-lavadora`, el primer nombre de la app.)
 
 ## Qué hace
 
@@ -32,8 +34,14 @@ Está hecha con **HTML, CSS y JavaScript sin frameworks ni compilación**: lo qu
   - **Tamaño de letra**, con una barra.
   - **Personalizar:** las tarjetas tiemblan como en el iPhone. Puedes **arrastrarlas** (por el asa ⋮⋮) o moverlas con las flechas. Con **−** y **＋** eliges qué aparatos van en la pantalla principal y cuáles en «Más». También se entra en este modo **manteniendo pulsado** un aparato.
   - **Restaurar todo:** lo deja todo como al principio. Aparece al lado de «Personalizar».
-  - **Acceso directo** a la app de la gasolina, con un borde de neón de un solo color (el de la app, que cambia con el tema claro u oscuro).
-- **Columna de la derecha** (en pantallas anchas): el botón de **ayuda** y otro acceso directo a la gasolina. En el móvil, el acceso a la gasolina está en la pantalla principal y la ayuda es el botón azul de arriba a la derecha.
+- **Columna de la derecha** (en pantallas anchas): el botón de **ayuda** y la **barra Luz/Gasolina**. En el móvil, la ayuda es el botón azul de arriba a la derecha.
+
+### Barra Luz/Gasolina (en las dos)
+
+- Una barra **vertical y redonda**, como un interruptor del iPhone: arriba la **luz** («¿Cuándo es más barata?») y abajo la **gasolina** («¿Dónde es más barata?»), cada una de un color y con un degradado corto donde se juntan. Lleva un **borde de neón rosa**, siempre el mismo.
+- La mitad de la página en la que estás va **subrayada con dos líneas negras** y algo más resaltada (la otra, un poco apagada).
+- Al tocar la otra mitad, una **lente de cristal** (estilo *liquid glass*) se estira como una gota hasta ella, el resto de la página se funde con un desenfoque y se abre la otra parte, que aparece desde ese desenfoque.
+- **No se mueve al bajar por la página:** en pantallas anchas está en la columna de la derecha, debajo de la ayuda; en tabletas, a la derecha y centrada; en el móvil, más pequeña, abajo a la derecha. Mientras mueves las tarjetas con «Personalizar» en el móvil, se esconde.
 
 ### La gasolina (`gasolina/index.html`)
 
@@ -44,17 +52,17 @@ Está hecha con **HTML, CSS y JavaScript sin frameworks ni compilación**: lo qu
   - Su **ficha**: precio por litro de cada carburante (con su nivel), horario y distancia.
   - Su **historial** de 1 o 3 meses, con **gráfico** y **calendario**.
 - **Filtros:** marca, «Abiertas 24 h» y orden por precio o por distancia. La lista de las más baratas tiene **Ver más / Ver menos**.
-- **Precio medio de España:** tarjetas por carburante (Gasolina 95 y 98, Diésel, Diésel Premium y GLP), si es buen momento para repostar, **calculadora** de litros con lo que cuesta hoy y lo esperado en 7 días, y gráfico y calendario de 6 meses.
+- **Precio medio de España:** tarjetas por carburante (Gasolina 95 y 98, Diésel, Diésel Premium y GLP), que miden lo justo para verse **enteras** (4 en pantallas anchas, 3 en el móvil). Como hay más de las que caben, debajo sale una **mini línea** que se arrastra para moverse entre ellas. Además: si es buen momento para repostar, **calculadora** de litros con lo que cuesta hoy y lo esperado en 7 días, y gráfico y calendario de 6 meses.
 - **Mis sitios:** guarda los sitios donde sueles repostar (un pueblo, un código postal, una marca o una gasolinera), escribiéndolos o con «Guardar lo que veo». Con un toque, el mapa los busca. En el móvil se abre con el botón «Mis sitios» de la esquina derecha del mapa; en pantallas anchas está en la columna de la derecha.
 
 ### Ayuda (en las dos)
 
 El botón azul de ayuda abre un desplegable con:
 
-- **Tengo un problema:** soluciones a lo que suele fallar, algunas con un botón que lo arregla (reintentar, poner tu tarifa, actualizar la app…).
+- **Tengo un problema:** soluciones a lo que suele fallar, algunas con un botón que lo arregla (reintentar, poner tu tarifa, actualizar la app…). Solo se abre una a la vez. En «Sigue sin funcionar», **Contarlo por Gmail** abre un correo ya empezado para p7379491@gmail.com (y también se puede escribir desde cualquier app de correo).
 - **Para qué sirve la app:** la página `ayuda/`, con un cuadro oscuro que explica la app de la luz y otro de color melocotón para la de la gasolina.
 - **Fuentes:** de dónde salen los datos, con un enlace para visitar cada una.
-- **Guía de uso:** oscurece la página e ilumina cada parte con un mensaje al lado. **Siguiente** pasa a la siguiente y **Saltar** sale. También con el teclado (→, ← y Escape). Se puede abrir directamente con `?guia=1` en la dirección.
+- **Guía de uso:** oscurece la página e ilumina cada parte. El mensaje (con su icono, una barra de progreso y textos cortos) sale **siempre en el mismo sitio**, abajo en el centro, así **Siguiente** no se mueve; solo sube arriba cuando taparía la barra del móvil. **Saltar** sale. También con el teclado (→, ← y Escape). Se puede abrir directamente con `?guia=1` en la dirección.
 
 ## Cómo probarla en tu ordenador
 
@@ -90,12 +98,14 @@ css/
 
 js/
 ├── comun/                  Piezas que usan las dos apps
-│   ├── ajustes.js          Panel de ajustes: tema, tamaño de letra y acceso directo
+│   ├── ajustes.js          Panel de ajustes: tema y tamaño de letra
+│   ├── conmutador.js       La barra Luz/Gasolina (lente de cristal y cambio de página)
 │   ├── ayuda.js            Botón de ayuda: desplegable, «Tengo un problema» y «Fuentes»
 │   ├── guia.js             La guía de uso (oscurece la página e ilumina cada parte)
 │   ├── calendario.js       Calendario mensual con colores
 │   ├── ordenar.js          Arrastrar para cambiar el orden (con el dedo o el ratón)
-│   └── iconos.js           Para usar los iconos de iconos/iconos.svg
+│   ├── linea-desplazamiento.js  Mini línea para mover una fila hacia los lados
+│   └── iconos.js           Para usar los iconos (icono('i-…'))
 ├── luz/
 │   ├── app.js              Punto de entrada: estado y coordinación
 │   ├── api.js              Descarga los precios de Red Eléctrica y guarda copia
@@ -124,8 +134,10 @@ datos/                      Lo genera la tarea diaria de GitHub:
 ├── precios-actuales.json   El precio de hoy de cada gasolinera
 └── historial/              Un archivo por día y provincia con el precio de cada gasolinera (90 días)
 herramientas/actualizar-gasolina.mjs   Script que genera los archivos de datos/
+herramientas/iconos-en-linea.mjs       Copia los iconos de iconos.svg dentro de cada página
 .github/workflows/gasolina.yml         Tarea diaria de GitHub que ejecuta el script
-iconos/                     Iconos de la app y iconos.svg (todos los dibujos de la interfaz)
+iconos/                     Logos de la app (favicon.svg: la luz; gasolina.svg) y sus PNG,
+                            e iconos.svg (todos los dibujos de la interfaz)
 ```
 
 ### Cómo encajan las piezas (luz)
@@ -194,6 +206,9 @@ El «precio esperado» es una recta ajustada a las últimas 4 semanas (regresió
 ## Personalizarla desde el código
 
 - **Aparatos:** añade o cambia líneas en `js/luz/electrodomesticos.js` (nombre, minutos, potencia en kW e icono). Los iconos son los `<symbol>` de `iconos/iconos.svg`.
+- **Iconos:** `iconos/iconos.svg` es el original, pero cada página lleva una copia dentro (al principio del `<body>`): así salen a la vez que todo y no hay que descargar otro archivo. Si cambias o añades un icono, ejecuta `node herramientas/iconos-en-linea.mjs` para copiarlo en las páginas.
+- **Logo:** `iconos/favicon.svg` (un contador con un rayo y el precio de cada hora). Los PNG de la app (`icono-192.png`, `icono-512.png`, `icono-maskable-512.png`, `apple-touch-icon.png` y `favicon-32.png`) salen de él.
+- **Barra Luz/Gasolina:** colores, neón y tamaños en la sección 6c de `css/comun.css` (variables `--cm-…`).
 - **Colores:** las variables del principio de `css/comun.css`. El tema oscuro está justo debajo.
 - **Horario del tema automático:** `HORA_OSCURO` y `HORA_CLARO`, en `js/comun/ajustes.js`. Hay que cambiarlo también en el pequeño `<script>` del `<head>` de las dos páginas.
 
@@ -205,7 +220,7 @@ El «precio esperado» es una recta ajustada a las últimas 4 semanas (regresió
 
 Con una cuenta gratuita, GitHub Pages solo funciona en repositorios **públicos**.
 
-**Al actualizar la app:** si añades o quitas archivos, añádelos a la lista `ARCHIVOS` de `sw.js` y sube la versión (`v5` → `v6`). El historial de las gasolineras no se guarda para usarlo sin conexión (son muchos archivos); todo lo demás sí.
+**Al actualizar la app:** si añades o quitas archivos, añádelos a la lista `ARCHIVOS` de `sw.js` y sube la versión (`v6` → `v7`). El historial de las gasolineras no se guarda para usarlo sin conexión (son muchos archivos); todo lo demás sí.
 
 ## Ideas para más adelante
 

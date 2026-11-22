@@ -27,39 +27,6 @@
   box-shadow: 0 6px 14px -6px rgb(214 120 60 / 0.5);
 }
 
-/* Botón «Luz» para volver a la otra app (con los colores de la luz) */
-.cabecera__volver {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-left: auto;
-  padding: 9px 13px 9px 10px;
-  border-radius: 999px;
-  background: #ecebfb;
-  color: #4b4fc4;
-  font-size: 0.875rem;
-  font-weight: 700;
-  text-decoration: none;
-  box-shadow: var(--sombra);
-  transition: transform 140ms var(--salida);
-}
-
-.cabecera__volver:active {
-  transform: scale(0.94);
-}
-
-.cabecera__volver .icono {
-  width: 18px;
-  height: 18px;
-  stroke-width: 2;
-}
-
-:root[data-tema="oscuro"] .cabecera__volver {
-  background: #2a2c4a;
-  color: #a5a8f5;
-}
-
 main > section + section {
   margin-top: 22px;
 }
@@ -67,9 +34,15 @@ main > section + section {
 
 /* 1. Carburantes: fila que se desliza en horizontal ------------------------- */
 
+/* Las tarjetas miden lo justo para que quepan enteras (sin ninguna cortada):
+   4 en pantallas anchas, 3 en el móvil y 2 en los muy estrechos. Si hay más
+   carburantes de los que caben, debajo sale una mini línea para moverse
+   (js/comun/linea-desplazamiento.js). */
 .carburantes {
+  --por-vista: 3;
+  --hueco: 10px;
   display: flex;
-  gap: 10px;
+  gap: var(--hueco);
   margin: 0 -16px;
   padding: 4px 16px 14px;
   overflow-x: auto;
@@ -79,18 +52,31 @@ main > section + section {
   scrollbar-width: none;
 }
 
+@media (max-width: 359px) {
+  .carburantes { --por-vista: 2; }
+}
+
+@media (min-width: 560px) {
+  .carburantes { --por-vista: 4; }
+}
+
+/* Mientras se arrastra la mini línea, sin «imán» (si no, la fila iría a saltos) */
+.carburantes.arrastrando {
+  scroll-snap-type: none;
+}
+
 .carburantes::-webkit-scrollbar {
   display: none;
 }
 
 .carburante {
-  flex: 0 0 auto;
-  width: 148px;
+  flex: 0 0 calc((100% - (var(--por-vista) - 1) * var(--hueco)) / var(--por-vista));
+  min-width: 0;
   min-height: 132px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 14px 14px 10px;
+  padding: 14px clamp(10px, 3vw, 14px) 10px;
   border: 1.5px solid transparent;
   border-radius: var(--radio);
   background: var(--superficie);
@@ -117,7 +103,8 @@ main > section + section {
 
 .carburante__precio {
   margin-top: 2px;
-  font-size: 1.5rem;
+  font-size: clamp(1.1875rem, 4.2vw + 0.25rem, 1.5rem);
+  white-space: nowrap;
   font-weight: 750;
   letter-spacing: -0.02em;
 }
@@ -1817,12 +1804,5 @@ main > section + section {
   .sitio__quitar:hover {
     color: var(--cara-texto);
     background: var(--cara-suave);
-  }
-}
-
-/* En móviles estrechos, con los botones «Luz» y «Ayuda», el logo no cabe: fuera */
-@media (max-width: 430px) {
-  .cabecera__logo--gasolina {
-    display: none;
   }
 }

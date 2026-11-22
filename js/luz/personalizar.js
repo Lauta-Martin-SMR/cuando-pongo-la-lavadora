@@ -13,7 +13,7 @@ import { hacerOrdenable } from '../comun/ordenar.js';
 import { ELECTRODOMESTICOS, PRINCIPALES_INICIALES } from './electrodomesticos.js';
 
 const CLAVE = 'cuando-lavadora:diseno';
-const SECCIONES = ['ahora', 'tarifa', 'gasolina', 'baratas', 'electros', 'grafico', 'claves'];
+const SECCIONES = ['ahora', 'tarifa', 'baratas', 'electros', 'grafico', 'claves'];
 const SUAVE = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
 /** Cómo está todo al principio */
@@ -71,7 +71,7 @@ export function ordenarSecciones(secciones) {
   actualizarFlechas();
 }
 
-/** Solo cuentan las tarjetas que se ven (en pantallas anchas, la de la gasolina no está) */
+/** Solo cuentan las tarjetas que se ven */
 const seVe = (elemento) => elemento.getClientRects().length > 0;
 
 /** La primera tarjeta no puede subir y la última no puede bajar */

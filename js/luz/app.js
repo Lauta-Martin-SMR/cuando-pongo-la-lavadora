@@ -44,6 +44,7 @@ import {
 import { iniciarEditor } from './editor-tarifa.js';
 import { datosAyudaLuz } from './ayuda-luz.js';
 import { iniciarAyuda } from '../comun/ayuda.js';
+import { iniciarConmutador } from '../comun/conmutador.js';
 import {
   ELECTRODOMESTICOS,
   buscarElectro,
@@ -509,12 +510,6 @@ const panel = iniciarPanel({
     alPulsar: () => personalizar.alternar(),
     alRestaurar: () => pedirRestaurar(),
   },
-  atajo: {
-    href: 'gasolina/',
-    icono: 'i-surtidor',
-    titulo: '¿Cuándo echo gasolina?',
-    texto: 'Precio de la gasolina y el diésel hoy',
-  },
 });
 
 const personalizar = iniciarPersonalizar({
@@ -589,27 +584,6 @@ function leerPreferencias() {
     }
   } catch {
     // Nada guardado todavía
-  }
-}
-
-
-/* ---------- El precio de la gasolina en el acceso directo del panel ---------- */
-
-async function precioGasolinaEnAtajo() {
-  try {
-    const respuesta = await fetch('datos/gasolina.json');
-    const datos = await respuesta.json();
-    const fechas = Object.keys(datos.dias).sort();
-    const ultimo = datos.dias[fechas[fechas.length - 1]];
-    const g95 = ultimo[datos.carburantes.findIndex((c) => c.id === 'g95')];
-    if (g95) {
-      const texto = `Gasolina 95: ${g95.toLocaleString('es-ES', { minimumFractionDigits: 3 })} €/l de media`;
-      panel.ponerTextoAtajo(texto);
-      document.querySelector('#atajo-principal-texto').textContent = `${texto} · mira el mapa`;
-      document.querySelector('#atajo-lateral-texto').textContent = `${texto} · mira el mapa`;
-    }
-  } catch {
-    // Sin conexión: se queda el texto de siempre
   }
 }
 
@@ -697,6 +671,9 @@ interfaz.pintarFecha(new Date());
 pintarTarifa(null);
 
 // Botón de ayuda: problemas, para qué sirve, fuentes y guía de uso
+// La barra de la derecha para cambiar entre la luz y la gasolina
+iniciarConmutador();
+
 iniciarAyuda(datosAyudaLuz({
   reintentar: () => cargar(),
   abrirTarifa: (campo) => acciones.alAbrirTarifa(campo),
@@ -719,4 +696,3 @@ window.addEventListener('online', () => {
 
 registrarServiceWorker();
 prepararInstalacion();
-precioGasolinaEnAtajo();

@@ -6,13 +6,14 @@
  * El botón y las ventanas los hace js/comun/ayuda.js.
  */
 
-import { actualizarApp, ENLACE_AVISO } from '../comun/ayuda.js';
+import { actualizarApp } from '../comun/ayuda.js';
 
 const escritorio = () => window.matchMedia('(min-width: 1280px)').matches;
 
 /** acciones: { reintentar, abrirTarifa(campo), restaurar, cerrarPanel } (las pone app.js) */
 export function datosAyudaLuz(acciones) {
   return {
+    app: 'luz',
     paraQueSirve: 'ayuda/',
     antesDeLaGuia: acciones.cerrarPanel,
 
@@ -59,7 +60,7 @@ export function datosAyudaLuz(acciones) {
       {
         titulo: 'Sigue sin funcionar',
         texto: `<p>Cuéntanos qué te pasa y en qué móvil u ordenador. Lo leeremos para arreglarlo.</p>`,
-        enlace: { texto: 'Contarlo en GitHub', href: ENLACE_AVISO },
+        contacto: true,
       },
     ],
 
@@ -104,63 +105,69 @@ export function datosAyudaLuz(acciones) {
     pasos: [
       {
         elemento: '.cabecera',
+        icono: 'i-guia',
         titulo: 'Bienvenido a la app de la luz',
-        texto: 'Te enseño para qué sirve cada parte. Pulsa «Siguiente» para seguir, o «Saltar» para salir cuando quieras.',
+        texto: 'Te enseño cada parte en un momento. «Siguiente» para seguir; «Saltar» para salir.',
       },
       {
         elemento: '#ahora',
+        icono: 'i-rayo',
         titulo: 'El precio de ahora',
-        texto: 'Lo que cuesta la luz en esta hora con tu tarifa, y si es barata, media o cara comparada con el resto del día. Con «Ver las próximas horas» ves cómo va a cambiar.',
+        texto: 'Lo que cuesta la luz en esta hora con tu tarifa, y si es barata o cara comparada con el resto del día.',
       },
       {
         elemento: '#tarifa',
+        icono: 'i-tarifa',
         titulo: 'Tu tarifa',
-        texto: 'Pon aquí tu tarifa (PVPC, precio fijo, tres tramos o indexada), dónde vives, el bono social, los impuestos y tu potencia. Así todos los precios y costes son los tuyos de verdad.',
-      },
-      {
-        elemento: '[data-seccion="gasolina"] .atajo',
-        titulo: '¿Cuándo echo gasolina?',
-        texto: 'Te lleva a la otra parte de la app: los precios de todas las gasolineras de España en un mapa.',
+        texto: 'Pon tu tarifa, tu zona, el bono social, los impuestos y tu potencia: así los precios son los tuyos.',
       },
       {
         elemento: '[data-seccion="baratas"] .bloque',
+        icono: 'i-reloj',
         titulo: 'Las horas más baratas',
-        texto: 'Las tres horas más baratas que quedan hoy. Toca una para verla en el gráfico. Si con tu tarifa todas cuestan lo mismo, te lo decimos.',
+        texto: 'Las tres más baratas que quedan hoy. Toca una para verla en el gráfico.',
       },
       {
         elemento: '#electros',
+        icono: 'i-lavadora',
         titulo: '¿Qué quieres poner?',
-        texto: 'Elige un aparato. Con «Ver más» salen todos los demás, y con «Ver menos» se vuelven a esconder.',
+        texto: 'Elige un aparato. «Ver más» enseña todos los demás.',
       },
       {
         elemento: '#tarjeta-resultado',
-        titulo: 'El mejor momento y lo que cuesta',
-        texto: 'Cuándo empezar para que salga más barato y lo que te costará con impuestos, comparado con empezar ya. Cambia la duración y la potencia con − y +.',
+        icono: 'i-euro',
+        titulo: 'El mejor momento',
+        texto: 'Cuándo empezar para pagar menos y lo que te costará. Cambia la duración y la potencia con − y +.',
       },
       {
         elemento: '#bloque-grafico',
+        icono: 'i-sube',
         titulo: 'El precio de cada hora',
-        texto: 'Toca o desliza el dedo por las barras para ver cada hora. Arriba eliges hoy, mañana (desde las 20:30) o cualquier día de los dos últimos meses en el calendario.',
+        texto: 'Toca o desliza por las barras. Arriba eliges hoy, mañana (desde las 20:30) o un día del calendario.',
       },
       {
         elemento: '#claves',
+        icono: 'i-info',
         titulo: 'Cosas a tener en cuenta',
-        texto: 'Todo lo que cambia tu precio: tarifa fija o variable, fines de semana y festivos (todo el día valle), horas punta, potencia, impuestos, bono social y placas solares.',
+        texto: 'Lo que cambia tu precio: tarifa fija o variable, fines de semana, horas punta, potencia, impuestos…',
       },
       {
         elemento: () => (escritorio() ? '#panel' : '#abrir-panel'),
+        icono: 'i-ajustes',
         titulo: 'Ajustes',
-        texto: 'Tema claro u oscuro, tamaño de letra y «Personalizar» para mover las tarjetas y elegir qué aparatos salen en la pantalla principal.',
+        texto: 'Tema claro u oscuro, tamaño de letra y «Personalizar» para mover las tarjetas.',
       },
       {
         elemento: () => (escritorio() ? '#ayuda-lateral' : '#ayuda-cabecera'),
+        icono: 'i-ayuda',
         titulo: 'Ayuda',
-        texto: 'Aquí vuelves a esta guía, y encuentras soluciones si algo falla, para qué sirve la app y de dónde salen los datos.',
+        texto: 'Vuelve a esta guía, soluciona problemas y mira de dónde salen los datos.',
       },
       {
-        elemento: '.lateral .atajo',
-        titulo: '¿Cuándo echo gasolina?',
-        texto: 'Te lleva a la app de la gasolina: los precios de todas las gasolineras de España en un mapa, con la más barata recomendada.',
+        elemento: '#conmutador',
+        icono: 'i-surtidor',
+        titulo: 'Luz y gasolina',
+        texto: 'Toca «Gasolina» para ver dónde es más barata. La barra no se mueve: siempre está a mano.',
       },
     ],
   };

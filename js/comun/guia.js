@@ -2,23 +2,25 @@
  * guia.js
  * ------------------------------------------------------------------
  * La «Guía de uso»: oscurece la página y deja iluminada solo la parte que
- * se explica, con un mensaje al lado. «Siguiente» pasa a la siguiente parte
- * y «Saltar» sale de la guía. También funciona con el teclado:
- * → o Intro (siguiente), ← (anterior) y Escape (salir).
+ * se explica. El mensaje sale siempre en el mismo sitio (abajo, en el centro),
+ * así el botón «Siguiente» no se mueve y no hay que ir detrás de él con el
+ * ratón. Solo si taparía lo que se explica (algo fijo abajo), sube arriba.
+ * «Saltar» sale de la guía. También funciona con el teclado:
+ * → (siguiente), ← (anterior) y Escape (salir).
  *
  *   const guia = crearGuia(pasos, { antesDeEmpezar });
  *   guia.empezar();
  *
- * Cada paso: { elemento: '#selector' | () => elemento | selector, titulo, texto }
+ * Cada paso: { elemento: '#selector' | () => elemento | selector, titulo, texto, icono? }
  * Si un paso no se ve en ese momento (por ejemplo, algo que solo sale en el
  * móvil), se salta solo.
  */
 
 import { icono } from './iconos.js';
 
-const MARGEN = 8;      // aire alrededor de lo iluminado
-const SEPARACION = 14; // entre lo iluminado y el mensaje
-const BORDE = 12;      // distancia mínima al borde de la pantalla
+const MARGEN = 8;       // aire alrededor de lo iluminado
+const SEPARACION = 16;  // entre lo iluminado y el mensaje
+const BORDE = 12;       // distancia mínima al borde de la pantalla
 
 const seVe = (elemento) => Boolean(elemento) && elemento.getClientRects().length > 0
   && getComputedStyle(elemento).visibility !== 'hidden';
@@ -27,6 +29,14 @@ function elementoDe(paso) {
   const valor = typeof paso.elemento === 'function' ? paso.elemento() : paso.elemento;
   const elemento = typeof valor === 'string' ? document.querySelector(valor) : valor;
   return seVe(elemento) ? elemento : null;
+}
+
+/** ¿Está fijo en la pantalla (no se mueve al bajar por la página)? Él o algo que lo contiene */
+function esFijo(elemento) {
+  for (let e = elemento; e && e !== document.body; e = e.parentElement) {
+    if (getComputedStyle(e).position === 'fixed') return true;
+  }
+  return false;
 }
 
 export function crearGuia(pasos, { antesDeEmpezar = () => {} } = {}) {
@@ -46,12 +56,17 @@ export function crearGuia(pasos, { antesDeEmpezar = () => {} } = {}) {
     raiz.innerHTML = `
       <div class="guia__bloqueo"></div>
       <div class="guia__foco" aria-hidden="true"></div>
-      <div class="guia__bocadillo">
-        <p class="guia__paso" id="guia-paso"></p>
+      <div class="guia__bocadillo" data-lado="abajo">
+        <span class="guia__adorno" aria-hidden="true"></span>
+        <div class="guia__cabecera">
+          <span class="guia__icono" aria-hidden="true"></span>
+          <p class="guia__paso" id="guia-paso"></p>
+        </div>
         <h2 class="guia__titulo" id="guia-titulo"></h2>
         <p class="guia__texto" id="guia-texto"></p>
+        <div class="guia__progreso" aria-hidden="true"><span class="guia__hecho"></span></div>
         <div class="guia__botones">
-          <button type="button" class="boton boton--suave guia__saltar">Saltar</button>
+          <button type="button" class="boton guia__saltar">Saltar</button>
           <button type="button" class="boton guia__siguiente"><span>Siguiente</span>${icono('i-flecha')}</button>
         </div>
       </div>`;
@@ -146,30 +161,34 @@ export function crearGuia(pasos, { antesDeEmpezar = () => {} } = {}) {
     const numero = pasos.slice(0, i + 1).filter((p) => elementoDe(p)).length;
     const ultimo = !buscar(i + 1, 1);
 
+    const bocadillo = raiz.querySelector('.guia__bocadillo');
     raiz.querySelector('#guia-paso').textContent = `Paso ${numero} de ${visibles}`;
     raiz.querySelector('#guia-titulo').textContent = paso.titulo;
     raiz.querySelector('#guia-texto').textContent = paso.texto;
+    raiz.querySelector('.guia__icono').innerHTML = icono(paso.icono ?? 'i-guia');
+    raiz.querySelector('.guia__hecho').style.width = `${(numero / visibles) * 100}%`;
     raiz.querySelector('.guia__siguiente span').textContent = ultimo ? 'Terminar' : 'Siguiente';
 
-    // Que se vea entero y que quepa el mensaje: si no, movemos la página
-    colocar();
-    const bocadillo = raiz.querySelector('.guia__bocadillo');
-    const caja = elemento.getBoundingClientRect();
-    const alto = window.innerHeight;
-    const fuera = caja.top < BORDE || caja.bottom > alto - BORDE;
-    if ((fuera || bocadillo.dataset.lado === 'encima') && getComputedStyle(elemento).position !== 'fixed' && !elemento.closest('.panel, .lateral')) {
-      const cabeDebajo = caja.height + 2 * MARGEN + SEPARACION + bocadillo.offsetHeight + 2 * BORDE <= alto;
-      const destino = cabeDebajo ? BORDE + MARGEN : Math.max(BORDE + MARGEN, (alto - caja.height) / 2);
-      window.scrollBy({ top: caja.top - destino, behavior: 'auto' });
-      colocar();
+    // Que se vea entero por encima del mensaje: si no, movemos la página
+    if (!esFijo(elemento)) {
+      const caja = elemento.getBoundingClientRect();
+      const arriba = BORDE + MARGEN;
+      const abajo = window.innerHeight - bocadillo.offsetHeight - BORDE - SEPARACION - MARGEN;
+      if (caja.top < arriba || caja.bottom > abajo) {
+        const hueco = abajo - arriba;
+        const destino = caja.height <= hueco ? arriba + (hueco - caja.height) / 2 : arriba;
+        window.scrollBy({ top: caja.top - destino, behavior: 'auto' });
+      }
     }
-    raiz.querySelector('.guia__bocadillo').classList.remove('guia__bocadillo--nuevo');
-    void raiz.offsetWidth; // reinicia la animación
-    raiz.querySelector('.guia__bocadillo').classList.add('guia__bocadillo--nuevo');
+    colocar();
+
+    bocadillo.classList.remove('guia__bocadillo--nuevo');
+    void bocadillo.offsetWidth; // reinicia la animación del texto
+    bocadillo.classList.add('guia__bocadillo--nuevo');
     raiz.querySelector('.guia__siguiente').focus({ preventScroll: true });
   }
 
-  /** Pone el foco de luz encima del elemento y el mensaje donde quepa */
+  /** Pone el foco de luz encima del elemento; el mensaje, abajo (o arriba si tapara algo fijo) */
   function colocar() {
     if (!raiz || !elemento) return;
     const ancho = window.innerWidth;
@@ -187,24 +206,18 @@ export function crearGuia(pasos, { antesDeEmpezar = () => {} } = {}) {
     luz.style.width = `${Math.max(0, foco.right - foco.left)}px`;
     luz.style.height = `${Math.max(0, foco.bottom - foco.top)}px`;
 
+    // ¿El mensaje de abajo taparía lo iluminado? Solo pasa con cosas fijas abajo
+    // (la barra Luz/Gasolina del móvil): entonces el mensaje va arriba.
     const bocadillo = raiz.querySelector('.guia__bocadillo');
     const b = bocadillo.getBoundingClientRect();
-    const centrarX = () => Math.min(Math.max(BORDE, (foco.left + foco.right) / 2 - b.width / 2), ancho - b.width - BORDE);
-    const centrarY = () => Math.min(Math.max(BORDE, foco.top), alto - b.height - BORDE);
-    const huecos = [
-      // En pantallas anchas, al lado; en el móvil, debajo o encima
-      ...(ancho >= 900 ? [
-        { cabe: foco.right + SEPARACION + b.width <= ancho - BORDE, x: foco.right + SEPARACION, y: centrarY(), lado: 'derecha' },
-        { cabe: foco.left - SEPARACION - b.width >= BORDE, x: foco.left - SEPARACION - b.width, y: centrarY(), lado: 'izquierda' },
-      ] : []),
-      { cabe: foco.bottom + SEPARACION + b.height <= alto - BORDE, x: centrarX(), y: foco.bottom + SEPARACION, lado: 'abajo' },
-      { cabe: foco.top - SEPARACION - b.height >= BORDE, x: centrarX(), y: foco.top - SEPARACION - b.height, lado: 'arriba' },
-    ];
-    // Si no cabe en ningún lado (algo muy grande), abajo del todo, por encima
-    const hueco = huecos.find((h) => h.cabe) ?? { x: centrarX(), y: alto - b.height - BORDE, lado: 'encima' };
-    bocadillo.style.left = `${hueco.x}px`;
-    bocadillo.style.top = `${hueco.y}px`;
-    bocadillo.dataset.lado = hueco.lado;
+    const anchoB = b.width;
+    const altoB = b.height;
+    const izquierda = (ancho - anchoB) / 2;
+    const arribaAbajo = alto - altoB - BORDE;
+    const tapa = foco.bottom > arribaAbajo - 4 && foco.top < alto
+      && foco.right > izquierda && foco.left < izquierda + anchoB
+      && esFijo(elemento);
+    bocadillo.dataset.lado = tapa ? 'arriba' : 'abajo';
   }
 
   return { empezar, terminar, activa: () => Boolean(raiz) };

@@ -15,8 +15,32 @@
 import { icono } from './iconos.js';
 import { crearGuia } from './guia.js';
 
-/** Para contar un problema que no se arregla con lo de la ayuda */
-export const ENLACE_AVISO = 'https://github.com/Lauta-Martin-SMR/cuando-pongo-la-lavadora/issues/new';
+/** Para contar un problema que no se arregla con lo de la ayuda: por correo */
+export const CORREO = 'p7379491@gmail.com';
+const NOMBRE_APP = { luz: 'la luz', gasolina: 'la gasolina' };
+
+/**
+ * Enlaces para escribir el correo ya empezado (asunto y datos del navegador):
+ * gmail → abre Gmail con el correo listo; correo → la app de correo del móvil u ordenador.
+ */
+export function enlacesCorreo(app) {
+  const asunto = `Problema en la app (${NOMBRE_APP[app] ?? app})`;
+  const cuerpo = [
+    'Hola, te cuento qué me pasa:',
+    '',
+    '',
+    '',
+    '—',
+    `Parte de la app: ${NOMBRE_APP[app] ?? app}`,
+    'Móvil u ordenador: ',
+    `Navegador: ${navigator.userAgent}`,
+  ].join('\n');
+  const c = encodeURIComponent;
+  return {
+    gmail: `https://mail.google.com/mail/?view=cm&fs=1&to=${c(CORREO)}&su=${c(asunto)}&body=${c(cuerpo)}`,
+    correo: `mailto:${CORREO}?subject=${c(asunto)}&body=${c(cuerpo)}`,
+  };
+}
 
 /** Borra la copia guardada de la app y vuelve a cargarla (si hay conexión, baja la última versión) */
 export async function actualizarApp() {
@@ -35,12 +59,13 @@ export async function actualizarApp() {
 const dominio = (url) => new URL(url).hostname.replace(/^www\./, '');
 
 /**
- * paraQueSirve: enlace a la página que explica la app
- * problemas: [{ titulo, texto (HTML), boton?: { texto, accion }, enlace?: { texto, href } }]
+ * app: 'luz' o 'gasolina' · paraQueSirve: enlace a la página que explica la app
+ * problemas: [{ titulo, texto (HTML), boton?: { texto, accion }, enlace?: { texto, href }, contacto?: true }]
+ *   (contacto: botón para contarlo por Gmail y la dirección de correo)
  * fuentes: [{ nombre, texto, url }]
  * pasos: los de la guía (ver guia.js) · antesDeLaGuia: por ejemplo, cerrar el panel del móvil
  */
-export function iniciarAyuda({ paraQueSirve, problemas, fuentes, pasos, antesDeLaGuia = () => {} }) {
+export function iniciarAyuda({ app, paraQueSirve, problemas, fuentes, pasos, antesDeLaGuia = () => {} }) {
   const botones = [...document.querySelectorAll('[aria-controls="menu-ayuda"]')];
   const guia = crearGuia(pasos, { antesDeEmpezar: antesDeLaGuia });
 
@@ -143,11 +168,13 @@ export function iniciarAyuda({ paraQueSirve, problemas, fuentes, pasos, antesDeL
 
   /* ---------- Ventanas: «Tengo un problema» y «Fuentes» ---------- */
 
+  const correo = enlacesCorreo(app);
+  // name="problemas": al abrir uno se cierra el que estaba abierto (y abajo, lo mismo con JavaScript)
   const problemasHTML = `
     <p class="ayuda__intro">Toca lo que te pasa para ver cómo arreglarlo.</p>
     <div class="problemas">
       ${problemas.map((p, i) => `
-        <details class="problema">
+        <details class="problema" name="problemas">
           <summary class="problema__resumen">
             <span>${p.titulo}</span>
             <span class="problema__flecha" aria-hidden="true">${icono('i-abajo')}</span>
@@ -156,6 +183,9 @@ export function iniciarAyuda({ paraQueSirve, problemas, fuentes, pasos, antesDeL
             ${p.texto}
             ${p.boton ? `<button type="button" class="boton boton--suave" data-problema="${i}">${p.boton.texto}</button>` : ''}
             ${p.enlace ? `<a class="boton boton--suave" href="${p.enlace.href}" target="_blank" rel="noopener">${p.enlace.texto}${icono('i-enlace')}</a>` : ''}
+            ${p.contacto ? `
+              <a class="boton boton--gmail" href="${correo.gmail}" target="_blank" rel="noopener">${icono('i-correo')}Contarlo por Gmail</a>
+              <p class="problema__correo">¿No usas Gmail? Escribe a <a href="${correo.correo}">${CORREO}</a> desde tu app de correo.</p>` : ''}
           </div>
         </details>`).join('')}
     </div>`;
@@ -173,6 +203,17 @@ export function iniciarAyuda({ paraQueSirve, problemas, fuentes, pasos, antesDeL
 
   const dialogoProblemas = crearDialogo('dialogo-problemas', 'Tengo un problema', problemasHTML);
   const dialogoFuentes = crearDialogo('dialogo-fuentes', 'Fuentes de los datos', fuentesHTML);
+
+  // Solo un problema abierto a la vez: al abrir uno, se cierra el anterior
+  // (los navegadores nuevos ya lo hacen con name="problemas"; esto es para los demás)
+  dialogoProblemas.addEventListener('toggle', (evento) => {
+    const abierto = evento.target;
+    if (!abierto.matches?.('details.problema') || !abierto.open) return;
+    for (const otro of dialogoProblemas.querySelectorAll('details.problema[open]')) {
+      if (otro !== abierto) otro.open = false;
+    }
+    abierto.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }, true);
 
   dialogoProblemas.addEventListener('click', (evento) => {
     const boton = evento.target.closest('[data-problema]');

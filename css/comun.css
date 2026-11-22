@@ -743,178 +743,6 @@ input[type="range"]::-moz-range-thumb {
   font-size: 0.9375rem;
 }
 
-/* Acceso directo a la otra app: tarjeta grande con borde de neón */
-
-.atajo {
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 22px 20px 20px;
-  border-radius: var(--radio-grande);
-  color: #3b2a12;
-  text-decoration: none;
-  transition: transform 180ms var(--salida);
-}
-
-.atajo:active {
-  transform: scale(0.97);
-}
-
-/* Fondo pastel (con dos burbujas) */
-.atajo__fondo {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  overflow: hidden;
-  border-radius: inherit;
-  background:
-    radial-gradient(140px 140px at 100% 0%, rgb(255 255 255 / 0.55), transparent 70%),
-    linear-gradient(140deg, #ffe2b3 0%, #ffc9a8 55%, #f7b4c4 100%);
-}
-
-.atajo__fondo::before,
-.atajo__fondo::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  background: rgb(255 255 255 / 0.35);
-}
-
-.atajo__fondo::before { width: 96px; height: 96px; right: -26px; bottom: -38px; }
-.atajo__fondo::after { width: 48px; height: 48px; right: 64px; bottom: -24px; }
-
-.atajo--luz {
-  color: #1f2a4a;
-}
-
-.atajo--luz .atajo__fondo {
-  background:
-    radial-gradient(140px 140px at 100% 0%, rgb(255 255 255 / 0.55), transparent 70%),
-    linear-gradient(140deg, #d6f3e5 0%, #d9e4fb 55%, #dcd8fb 100%);
-}
-
-/* En el tema oscuro, la tarjeta también se oscurece (con el mismo tono) */
-:root[data-tema="oscuro"] .atajo {
-  color: #ffe7d1;
-}
-
-:root[data-tema="oscuro"] .atajo__fondo {
-  background:
-    radial-gradient(140px 140px at 100% 0%, rgb(255 255 255 / 0.07), transparent 70%),
-    linear-gradient(140deg, #3a2a1c 0%, #3c2426 55%, #35203a 100%);
-}
-
-:root[data-tema="oscuro"] .atajo--luz {
-  color: #e2e4ff;
-}
-
-:root[data-tema="oscuro"] .atajo--luz .atajo__fondo {
-  background:
-    radial-gradient(140px 140px at 100% 0%, rgb(255 255 255 / 0.07), transparent 70%),
-    linear-gradient(140deg, #17322a 0%, #1d2944 55%, #262348 100%);
-}
-
-:root[data-tema="oscuro"] .atajo__fondo::before,
-:root[data-tema="oscuro"] .atajo__fondo::after {
-  background: rgb(255 255 255 / 0.05);
-}
-
-/* Neón de un solo color, el de la app (lavanda en la luz y naranja en la gasolina).
-   Usa los colores del tema, así que cambia solo al pasar de claro a oscuro. */
-.atajo--neon {
-  --neon-brillo: 0.45;
-}
-
-:root[data-tema="oscuro"] .atajo--neon {
-  --neon-brillo: 0.6;
-}
-
-.atajo--neon::before,
-.atajo--neon::after {
-  content: "";
-  position: absolute;
-  z-index: -2;
-  inset: -2px;
-  border-radius: calc(var(--radio-grande) + 2px);
-  background: var(--neon, var(--acento));
-}
-
-.atajo--neon::after {
-  z-index: -3;
-  inset: -4px;
-  filter: blur(14px);
-  opacity: var(--neon-brillo);
-  animation: latir-neon 3.2s ease-in-out infinite;
-}
-
-@keyframes latir-neon {
-  50% { opacity: calc(var(--neon-brillo) + 0.25); }
-}
-
-.atajo__icono {
-  width: 52px;
-  height: 52px;
-  display: grid;
-  place-items: center;
-  margin-bottom: 10px;
-  border-radius: 16px;
-  background: rgb(255 255 255 / 0.72);
-  box-shadow: 0 4px 12px -4px rgb(0 0 0 / 0.18);
-}
-
-:root[data-tema="oscuro"] .atajo__icono,
-:root[data-tema="oscuro"] .atajo__flecha {
-  background: rgb(255 255 255 / 0.1);
-  box-shadow: none;
-}
-
-.atajo__icono .icono {
-  width: 28px;
-  height: 28px;
-  stroke-width: 1.9;
-}
-
-.atajo__titulo {
-  font-size: 1.25rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  line-height: 1.2;
-}
-
-.atajo__texto {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  opacity: 0.85;
-}
-
-.atajo__flecha {
-  position: absolute;
-  top: 20px;
-  right: 18px;
-  width: 38px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: rgb(255 255 255 / 0.7);
-  transition: transform 200ms var(--salida);
-}
-
-.atajo__flecha .icono {
-  width: 20px;
-  height: 20px;
-  stroke-width: 2.4;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .atajo--neon::before,
-  .atajo--neon::after {
-    animation: none;
-  }
-}
-
 /* En pantallas anchas: lo principal, centrado; el panel, fijo a la izquierda del
    todo (y la columna de ayuda, a la derecha del todo), lejos del contenido. */
 @media (min-width: 1280px) {
@@ -923,8 +751,7 @@ input[type="range"]::-moz-range-thumb {
     z-index: 1;
     top: 0;
     bottom: 0;
-    /* 50vw − media app (280) − separación (172) − ancho del panel (326); lo de dentro empieza a 18 px del borde.
-       (Los 18 px de los lados dejan sitio al brillo del neón, que si no se cortaría.) */
+    /* 50vw − media app (280) − separación (172) − ancho del panel (326); lo de dentro empieza a 18 px del borde */
     left: max(0px, calc(50vw - 778px));
     width: 326px;
     padding: 24px 18px;
@@ -945,9 +772,17 @@ input[type="range"]::-moz-range-thumb {
 
 /* 6b. Columna de la derecha y ayuda ------------------------------------------- */
 
-/* Solo en pantallas anchas: a la derecha del todo, como el panel a la izquierda */
+/* En pantallas anchas: a la derecha del todo, como el panel a la izquierda.
+   En las demás, la columna «desaparece» y de ella solo se ve la barra Luz/Gasolina,
+   que va fija abajo a la derecha (ver 6c). */
 .lateral {
-  display: none;
+  display: contents;
+}
+
+@media (max-width: 1279px) {
+  .lateral > :not(.conmutador) {
+    display: none !important;
+  }
 }
 
 @media (min-width: 1280px) {
@@ -968,6 +803,329 @@ input[type="range"]::-moz-range-thumb {
   .boton-ayuda--cabecera {
     display: none !important;
   }
+}
+
+/* 6c. Barra para cambiar entre la luz y la gasolina ----------------------------- */
+
+/* Una barra vertical y redonda, como un interruptor del iPhone: arriba la luz y
+   abajo la gasolina, con un degradado corto donde se juntan. La mitad elegida va
+   subrayada con dos líneas negras y encima tiene una «lente» de cristal (liquid
+   glass) que al cambiar de app se estira como una gota (js/comun/conmutador.js).
+   Los colores y el borde de neón son fijos: iguales en los dos temas y en las dos apps.
+   - Pantallas anchas: en la columna de la derecha, debajo de la ayuda.
+   - Tabletas: fija a la derecha, centrada, en el hueco junto al contenido.
+   - Móvil: más pequeña, fija abajo a la derecha. */
+.conmutador {
+  --cm-ancho: 168px;
+  --cm-alto: clamp(320px, 46vh, 420px);
+  --cm-hueco: 7px;                      /* separación entre la lente y el borde */
+  --cm-tinta: #17172c;
+  --cm-neon: #ff3fc4;                   /* el neón: rosa eléctrico, siempre el mismo */
+  --cm-brillo: rgb(255 63 196 / 0.5);
+  position: relative;
+  isolation: isolate;
+  flex: none;
+  align-self: center;
+  width: var(--cm-ancho);
+  height: var(--cm-alto);
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  border-radius: 999px;
+  background:
+    radial-gradient(110% 30% at 50% 0%, rgb(255 255 255 / 0.5), transparent 70%),
+    linear-gradient(180deg, #c9cbff 0%, #adb0ff 44%, #ffc79f 56%, #ffa974 100%);
+  box-shadow:
+    0 0 0 2px var(--cm-neon),
+    0 0 10px 1px var(--cm-brillo),
+    0 0 28px 4px rgb(255 63 196 / 0.24),
+    inset 0 2px 1px rgb(255 255 255 / 0.7),
+    inset 0 -3px 8px rgb(140 50 0 / 0.12),
+    0 18px 40px -16px rgb(31 35 51 / 0.5);
+}
+
+.conmutador__lado {
+  position: relative;
+  z-index: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 12px;
+  border-radius: 999px;
+  color: var(--cm-tinta);
+  text-align: center;
+  text-decoration: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  transition: opacity 280ms ease, filter 280ms ease;
+}
+
+/* La mitad que no está elegida, algo apagada: así la elegida resalta más */
+.conmutador__lado:not([aria-current]) {
+  opacity: 0.7;
+  filter: saturate(0.7);
+}
+
+.conmutador__lado:focus-visible {
+  outline: 3px solid var(--cm-tinta);
+  outline-offset: -8px;
+}
+
+.conmutador__icono {
+  width: 50px;
+  height: 50px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.5);
+  box-shadow: inset 0 0 0 1.5px rgb(23 23 44 / 0.16);
+  transition: background-color 280ms ease, color 280ms ease, transform 380ms var(--muelle), box-shadow 280ms ease;
+}
+
+.conmutador__icono .icono {
+  width: 26px;
+  height: 26px;
+  stroke-width: 2.1;
+}
+
+.conmutador__lado[aria-current] .conmutador__icono {
+  background: var(--cm-tinta);
+  color: #ffffff;
+  box-shadow: 0 6px 14px -6px rgb(23 23 44 / 0.7);
+  transform: scale(1.06);
+}
+
+.conmutador__nombre {
+  position: relative;
+  padding-bottom: 12px;
+  font-size: 1.3125rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+/* Subrayado con dos líneas negras, solo en la mitad elegida */
+.conmutador__nombre::after {
+  content: "";
+  position: absolute;
+  left: -5px;
+  right: -5px;
+  bottom: 3px;
+  height: 3px;
+  border-radius: 3px;
+  background: #0b0b14;
+  box-shadow: 0 5px 0 -0.5px #0b0b14;
+  transform: scaleX(0);
+  transition: transform 420ms var(--muelle);
+}
+
+.conmutador__lado[aria-current] .conmutador__nombre::after {
+  transform: scaleX(1);
+}
+
+.conmutador__frase {
+  max-width: 12ch;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+/* La lente de cristal: clara, con reflejos y un borde que capta la luz */
+.conmutador__lente {
+  position: absolute;
+  z-index: 0;
+  top: var(--cm-hueco);
+  left: var(--cm-hueco);
+  right: var(--cm-hueco);
+  height: calc(50% - var(--cm-hueco) - 3px);
+  border-radius: 999px;
+  pointer-events: none;
+  background:
+    radial-gradient(90% 34% at 50% 5%, rgb(255 255 255 / 0.6), transparent 70%),
+    linear-gradient(180deg, rgb(255 255 255 / 0.3), rgb(255 255 255 / 0.05) 55%, rgb(255 255 255 / 0.2));
+  -webkit-backdrop-filter: blur(4px) saturate(1.6) brightness(1.06);
+  backdrop-filter: blur(4px) saturate(1.6) brightness(1.06);
+  box-shadow:
+    inset 0 2px 1px rgb(255 255 255 / 0.95),
+    inset 0 -2px 2px rgb(255 255 255 / 0.6),
+    inset 0 0 0 1px rgb(255 255 255 / 0.5),
+    inset 0 -18px 26px -18px rgb(255 255 255 / 0.95),
+    0 12px 24px -12px rgb(40 20 70 / 0.5),
+    0 2px 6px rgb(40 20 70 / 0.12);
+  transition: translate 280ms var(--salida);
+}
+
+.conmutador[data-actual="gasolina"] .conmutador__lente {
+  top: calc(50% + 3px);
+}
+
+/* Reflejo de arriba */
+.conmutador__lente::before {
+  content: "";
+  position: absolute;
+  top: 5%;
+  left: 20%;
+  right: 20%;
+  height: 20%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.9), rgb(255 255 255 / 0));
+  filter: blur(1.5px);
+}
+
+/* Borde que brilla más en unos sitios que en otros, como el cristal */
+.conmutador__lente::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(from 200deg, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.12) 25%, rgb(255 255 255 / 0.75) 50%, rgb(255 255 255 / 0.12) 75%, rgb(255 255 255 / 0.95));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Con ratón: la lente se asoma hacia la otra mitad al pasar por encima */
+@media (hover: hover) and (pointer: fine) {
+  .conmutador__lado:not([aria-current]):hover {
+    opacity: 0.88;
+    filter: none;
+  }
+
+  .conmutador:has(.conmutador__lado--gasolina:not([aria-current]):hover) .conmutador__lente {
+    translate: 0 10px;
+  }
+
+  .conmutador:has(.conmutador__lado--luz:not([aria-current]):hover) .conmutador__lente {
+    translate: 0 -10px;
+  }
+}
+
+/* Tabletas: fija a la derecha, centrada en vertical, en el hueco que deja el contenido */
+@media (min-width: 900px) and (max-width: 1279px) and (min-height: 561px) {
+  .conmutador {
+    --cm-ancho: 136px;
+    --cm-alto: clamp(300px, 56vh, 400px);
+    position: fixed;
+    z-index: 30;
+    top: calc(50% - var(--cm-alto) / 2);
+    right: max(18px, calc((100vw - 560px) / 4 - var(--cm-ancho) / 2));
+  }
+}
+
+/* Móvil (y pantallas bajitas): más pequeña, fija abajo a la derecha */
+@media (max-width: 899px), (max-width: 1279px) and (max-height: 560px) {
+  .conmutador {
+    --cm-ancho: 64px;
+    --cm-alto: 176px;
+    --cm-hueco: 5px;
+    position: fixed;
+    z-index: 30;
+    right: calc(env(safe-area-inset-right, 0px) + 10px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+    box-shadow:
+      0 0 0 2px var(--cm-neon),
+      0 0 9px 1px var(--cm-brillo),
+      inset 0 2px 1px rgb(255 255 255 / 0.7),
+      0 12px 26px -10px rgb(31 35 51 / 0.55);
+  }
+
+  .conmutador__lado {
+    gap: 4px;
+    padding: 8px 2px;
+  }
+
+  .conmutador__frase {
+    display: none;
+  }
+
+  .conmutador__icono {
+    width: 34px;
+    height: 34px;
+  }
+
+  .conmutador__icono .icono {
+    width: 20px;
+    height: 20px;
+  }
+
+  .conmutador__nombre {
+    padding-bottom: 8px;
+    font-size: 0.6875rem;
+    letter-spacing: 0;
+  }
+
+  .conmutador__nombre::after {
+    left: -2px;
+    right: -2px;
+    bottom: 2px;
+    height: 2px;
+    box-shadow: 0 3.5px 0 -0.25px #0b0b14;
+  }
+
+  /* El texto del pie no se esconde detrás de la barra */
+  .pie {
+    padding-right: 78px;
+  }
+}
+
+/* Móviles bajitos: la barra, un poco más pequeña para que tape menos */
+@media (max-width: 899px) and (max-height: 700px) {
+  .conmutador {
+    --cm-ancho: 58px;
+    --cm-alto: 152px;
+  }
+
+  .conmutador__icono {
+    width: 30px;
+    height: 30px;
+  }
+
+  .conmutador__icono .icono {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Transición entre páginas: al cambiar con la barra, todo menos la barra se funde
+   con un desenfoque suave; en la página nueva, aparece desde ese desenfoque.
+   (conmutador.js pone «saliendo» y el script del <head> de cada página, «llegando».)
+   No usamos las View Transitions del navegador: en Chrome obligan a esperar a todo
+   el JavaScript antes de enseñar la página, y la primera carga tardaba el doble. */
+.saliendo .app,
+.saliendo .lateral > :not(.conmutador) {
+  animation: pagina-se-va 240ms ease-in both;
+  pointer-events: none;
+}
+
+.llegando .app,
+.llegando .lateral > :not(.conmutador) {
+  animation: pagina-llega 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* El panel de ajustes solo cuando está a la vista (en el móvil es un cajón escondido) */
+@media (min-width: 1280px) {
+  .saliendo .panel {
+    animation: pagina-se-va 240ms ease-in both;
+    pointer-events: none;
+  }
+
+  .llegando .panel {
+    animation: pagina-llega 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@keyframes pagina-se-va {
+  to { opacity: 0; filter: blur(8px); transform: scale(0.985); }
+}
+
+@keyframes pagina-llega {
+  from { opacity: 0; filter: blur(8px); transform: scale(1.012); }
 }
 
 /* Botón de ayuda: azul vivo, para que se vea enseguida */
@@ -995,10 +1153,6 @@ input[type="range"]::-moz-range-thumb {
   place-items: center;
   margin-left: auto;
   border-radius: 50%;
-}
-
-.cabecera__volver + .boton-ayuda--cabecera {
-  margin-left: 0;
 }
 
 .boton-ayuda--cabecera .icono {
@@ -1288,6 +1442,22 @@ input[type="range"]::-moz-range-thumb {
   font-size: 0.875rem;
 }
 
+/* «Sigue sin funcionar»: escribir por Gmail (con su rojo) o con la app de correo */
+.boton.boton--gmail {
+  background: #ea4335;
+  color: #ffffff;
+  box-shadow: 0 8px 18px -8px rgb(234 67 53 / 0.7);
+}
+
+.problema__correo {
+  font-size: 0.875rem;
+}
+
+.problema__correo a {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
 .fuente {
   padding: 14px 16px;
   border-radius: 16px;
@@ -1327,7 +1497,10 @@ input[type="range"]::-moz-range-thumb {
   stroke-width: 2.2;
 }
 
-/* La guía de uso: todo oscuro menos lo que se explica, y un mensaje al lado */
+/* La guía de uso: todo oscuro menos lo que se explica. El mensaje sale siempre en
+   el mismo sitio (abajo, en el centro), así «Siguiente» no se mueve; solo sube
+   arriba si taparía algo fijo de abajo. Es algo más oscuro que las tarjetas, con
+   una franja de color, burbujas de luz, un icono y una barra de progreso. */
 .guia {
   position: fixed;
   z-index: 2000;
@@ -1357,21 +1530,109 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .guia__bocadillo {
+  --guia-fondo: linear-gradient(160deg, #f0eefb 0%, #e2dff4 100%);
+  --guia-tinta: #1d2035;
+  --guia-suave: #4d5270;
   position: fixed;
-  top: 0;
-  left: 0;
-  width: min(340px, calc(100vw - 24px));
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  translate: -50% 0;
+  isolation: isolate;
+  overflow: hidden;
+  width: min(440px, calc(100vw - 24px));
   padding: 18px 18px 16px;
-  border-radius: 20px;
-  background: var(--superficie);
-  color: var(--tinta);
-  box-shadow: var(--sombra-alta);
-  transition: top 320ms var(--salida), left 320ms var(--salida);
+  border-radius: 24px;
+  background: var(--guia-fondo);
+  color: var(--guia-tinta);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.75),
+    0 0 0 1.5px rgb(91 95 214 / 0.35),
+    0 0 40px -6px var(--ayuda-brillo),
+    0 26px 50px -18px rgb(0 0 0 / 0.6);
+  animation: guia-entra 280ms var(--salida);
+}
+
+.guia__bocadillo[data-lado="arriba"] {
+  top: calc(env(safe-area-inset-top, 0px) + 16px);
+  bottom: auto;
+}
+
+:root[data-tema="oscuro"] .guia__bocadillo {
+  --guia-fondo: linear-gradient(160deg, #1b1c2d 0%, #121320 100%);
+  --guia-tinta: #ecebf7;
+  --guia-suave: #b2b4ca;
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.08),
+    0 0 0 1.5px rgb(139 143 240 / 0.45),
+    0 0 44px -6px var(--ayuda-brillo),
+    0 26px 50px -18px rgb(0 0 0 / 0.85);
+}
+
+@keyframes guia-entra {
+  from { opacity: 0; translate: -50% 14px; }
+}
+
+/* Franja de color arriba */
+.guia__bocadillo::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: linear-gradient(90deg, var(--acento), #3b8cf6 55%, #ff3fc4);
+}
+
+/* Dos burbujas de luz en las esquinas */
+.guia__adorno {
+  position: absolute;
+  z-index: -1;
+  top: -70px;
+  right: -50px;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--acento) 28%, transparent), transparent);
+  pointer-events: none;
+}
+
+.guia__adorno::after {
+  content: "";
+  position: absolute;
+  top: 150px;
+  left: -300px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(59 140 246 / 0.2), transparent);
 }
 
 .guia__bocadillo--nuevo .guia__titulo,
-.guia__bocadillo--nuevo .guia__texto {
+.guia__bocadillo--nuevo .guia__texto,
+.guia__bocadillo--nuevo .guia__icono {
   animation: subir 260ms var(--salida);
+}
+
+.guia__cabecera {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.guia__icono {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--ayuda-fondo);
+  color: var(--ayuda-tinta);
+  box-shadow: 0 6px 14px -6px var(--ayuda-brillo);
+}
+
+.guia__icono .icono {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2;
 }
 
 .guia__paso {
@@ -1383,27 +1644,104 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .guia__titulo {
-  margin-top: 4px;
+  margin-top: 10px;
   font-size: 1.125rem;
   font-weight: 800;
   line-height: 1.25;
 }
 
 .guia__texto {
-  margin-top: 6px;
-  color: var(--tinta-suave);
+  margin-top: 4px;
+  color: var(--guia-suave);
   font-size: 0.9375rem;
+}
+
+.guia__progreso {
+  height: 4px;
+  margin-top: 14px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgb(91 95 214 / 0.15);
+}
+
+:root[data-tema="oscuro"] .guia__progreso {
+  background: rgb(255 255 255 / 0.1);
+}
+
+.guia__hecho {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--acento), #3b8cf6);
+  transition: width 320ms var(--salida);
 }
 
 .guia__botones {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 16px;
+  margin-top: 14px;
 }
 
 .guia__botones .boton {
-  padding: 10px 16px;
+  padding: 10px 18px;
+}
+
+.guia__saltar {
+  background: rgb(91 95 214 / 0.12);
+  color: var(--guia-tinta);
+  box-shadow: none;
+}
+
+:root[data-tema="oscuro"] .guia__saltar {
+  background: rgb(255 255 255 / 0.09);
+}
+
+
+/* Mini línea para mover una fila hacia los lados (js/comun/linea-desplazamiento.js) */
+.linea-desplazamiento {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 128px;
+  height: 22px;
+  margin: -8px auto 0;
+  cursor: grab;
+  touch-action: none;
+}
+
+.linea-desplazamiento--activa {
+  cursor: grabbing;
+}
+
+.linea-desplazamiento__pista {
+  position: relative;
+  width: 88px;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--linea-base);
+  transition: height 160ms ease;
+}
+
+.linea-desplazamiento__mango {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: inherit;
+  background: var(--acento);
+}
+
+.linea-desplazamiento--activa .linea-desplazamiento__pista {
+  height: 7px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .linea-desplazamiento:hover .linea-desplazamiento__pista {
+    height: 7px;
+  }
 }
 
 
@@ -1602,13 +1940,8 @@ input[type="range"]::-moz-range-thumb {
 
 /* Efectos «hover» solo con ratón: en el móvil se quedarían pegados */
 @media (hover: hover) and (pointer: fine) {
-  .tocable:hover,
-  .atajo:hover {
+  .tocable:hover {
     box-shadow: var(--sombra-alta);
-  }
-
-  .atajo:hover .atajo__flecha {
-    transform: translateX(3px);
   }
 
   .boton-icono:hover,
@@ -1656,27 +1989,3 @@ input[type="range"]::-moz-range-thumb {
   }
 }
 
-/* Versión horizontal del acceso directo (en la pantalla principal de la luz) */
-.atajo--horizontal {
-  flex-direction: row;
-  align-items: center;
-  gap: 14px;
-  padding: 18px 66px 18px 18px;
-}
-
-.atajo--horizontal .atajo__icono {
-  flex: none;
-  margin: 0;
-}
-
-.atajo__textos {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.atajo--horizontal .atajo__flecha {
-  top: 50%;
-  translate: 0 -50%;
-}

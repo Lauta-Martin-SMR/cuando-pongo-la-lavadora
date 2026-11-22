@@ -1,7 +1,7 @@
 {
-  "name": "¿Cuándo pongo la lavadora?",
-  "short_name": "Lavadora",
-  "description": "Precio de la luz PVPC por horas, cuánto cuesta cada electrodoméstico y el precio de la gasolina.",
+  "name": "¿Cuándo es más barata la luz?",
+  "short_name": "Luz barata",
+  "description": "Precio de la luz por horas con tu tarifa, cuánto cuesta cada electrodoméstico y dónde es más barata la gasolina.",
   "lang": "es",
   "dir": "ltr",
   "start_url": "./",

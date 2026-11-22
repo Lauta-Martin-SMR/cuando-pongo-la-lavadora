@@ -5,7 +5,7 @@
  *   - Tema: claro, oscuro o automático (oscuro de 20:00 a 8:00).
  *   - Tamaño de letra, con una barra deslizante.
  *   - Botones «Personalizar» y «Restaurar todo» (solo en la app de la luz).
- *   - Acceso directo a la otra app.
+ * (Para ir a la otra app está la barra Luz/Gasolina de la derecha: conmutador.js.)
  *
  * En el móvil el panel es un cajón que sale desde la izquierda; en
  * pantallas anchas se queda fijo (eso lo decide el CSS).
@@ -72,10 +72,9 @@ const escritorio = window.matchMedia('(min-width: 1280px)');
 /**
  * Crea el panel dentro de <aside id="panel">.
  * opciones.personalizar: { alPulsar, alRestaurar } o null (la app de la gasolina no lo tiene)
- * opciones.atajo: { href, clase, icono, titulo, texto } → tarjeta para ir a la otra app
  * Devuelve funciones para que la app pueda cambiar cosas del panel.
  */
-export function iniciarPanel({ personalizar = null, atajo }) {
+export function iniciarPanel({ personalizar = null } = {}) {
   panel = document.querySelector('#panel');
   velo = document.querySelector('#velo');
   botonAbrir = document.querySelector('#abrir-panel');
@@ -120,15 +119,7 @@ export function iniciarPanel({ personalizar = null, atajo }) {
         </button>
       </div>
       <p class="panel__nota">Mueve las tarjetas y elige qué aparatos están en la pantalla principal y cuáles en «Más».</p>
-    </section>` : ''}
-
-    <a class="atajo atajo--neon ${atajo.clase ?? ''}" href="${atajo.href}">
-      <span class="atajo__fondo" aria-hidden="true"></span>
-      <span class="atajo__icono">${icono(atajo.icono)}</span>
-      <span class="atajo__titulo">${atajo.titulo}</span>
-      <span class="atajo__texto" id="atajo-texto">${atajo.texto}</span>
-      <span class="atajo__flecha">${icono('i-flecha')}</span>
-    </a>`;
+    </section>` : ''}`;
 
   // Tema
   for (const boton of panel.querySelectorAll('[data-tema]')) {
@@ -179,9 +170,6 @@ export function iniciarPanel({ personalizar = null, atajo }) {
       boton.querySelector('span').textContent = editando ? 'Listo' : 'Personalizar';
       boton.setAttribute('aria-pressed', String(editando));
       panel.querySelector('#boton-restaurar').hidden = !editando;
-    },
-    ponerTextoAtajo(texto) {
-      panel.querySelector('#atajo-texto').textContent = texto;
     },
     cerrar,
   };

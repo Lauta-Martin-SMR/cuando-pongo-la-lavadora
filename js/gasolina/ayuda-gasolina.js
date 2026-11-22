@@ -6,13 +6,14 @@
  * El botón y las ventanas los hace js/comun/ayuda.js.
  */
 
-import { actualizarApp, ENLACE_AVISO } from '../comun/ayuda.js';
+import { actualizarApp } from '../comun/ayuda.js';
 
 const escritorio = () => window.matchMedia('(min-width: 1280px)').matches;
 
 /** acciones: { buscar, cercaDeMi, recargar, abrirSitios, cerrarPanel } (las pone app.js) */
 export function datosAyudaGasolina(acciones) {
   return {
+    app: 'gasolina',
     paraQueSirve: '../ayuda/?desde=gasolina',
     antesDeLaGuia: acciones.cerrarPanel,
 
@@ -57,7 +58,7 @@ export function datosAyudaGasolina(acciones) {
       {
         titulo: 'Sigue sin funcionar',
         texto: `<p>Cuéntanos qué te pasa y en qué móvil u ordenador. Lo leeremos para arreglarlo.</p>`,
-        enlace: { texto: 'Contarlo en GitHub', href: ENLACE_AVISO },
+        contacto: true,
       },
     ],
 
@@ -87,68 +88,87 @@ export function datosAyudaGasolina(acciones) {
     pasos: [
       {
         elemento: '.cabecera',
+        icono: 'i-guia',
         titulo: 'Bienvenido a la app de la gasolina',
-        texto: 'Te enseño para qué sirve cada parte. Pulsa «Siguiente» para seguir, o «Saltar» para salir cuando quieras.',
+        texto: 'Te enseño cada parte en un momento. «Siguiente» para seguir; «Saltar» para salir.',
       },
       {
         elemento: '.buscador',
+        icono: 'i-lupa',
         titulo: 'Buscador',
-        texto: 'Escribe un pueblo, un código postal, una provincia, una marca (Repsol, Plenoil…) o una calle, o pulsa «Cerca de mí» para ver las que tienes alrededor.',
+        texto: 'Escribe un pueblo, un código postal, una marca o una calle, o usa «Cerca de mí».',
       },
       {
         elemento: '#carburantes',
-        titulo: 'Elige el carburante',
-        texto: 'Gasolina 95, 98, diésel… El que elijas cambia el mapa, la lista y todos los precios de la página.',
+        icono: 'i-gota',
+        titulo: 'Carburantes',
+        texto: 'El precio medio de cada uno en España. El que elijas cambia el mapa y la lista.',
       },
       {
         elemento: () => (escritorio() ? '#sitios' : '#abrir-sitios'),
+        icono: 'i-marcador',
         titulo: 'Mis sitios',
-        texto: 'Guarda los sitios donde sueles repostar (tu pueblo, el trabajo, una marca…). Con un toque, el mapa los busca solo.',
+        texto: 'Guarda donde sueles repostar y el mapa lo busca con un toque.',
       },
       {
         elemento: '.mapa-caja',
+        icono: 'i-lugar',
         titulo: 'El mapa',
-        texto: 'Cada punto es una gasolinera, del color de su precio: de verde (muy bajo) a rojo (muy alto). La estrella es la recomendada. Toca una para ver sus precios, abrirla en Apple Maps o Google Maps, o ver solo las de su marca.',
+        texto: 'Cada punto es una gasolinera, del color de su precio; la ★ es la recomendada. Toca una para ver sus precios.',
       },
       {
         elemento: '.leyenda-mapa',
-        titulo: 'Qué significan los colores',
-        texto: 'Comparan cada gasolinera con las demás de la zona que estás viendo: el 20 % más barato es «muy bajo» y el 20 % más caro, «muy alto».',
+        icono: 'i-info',
+        titulo: 'Los colores',
+        texto: 'Comparan con las demás de la zona: verde, de las más baratas; rojo, de las más caras.',
       },
       {
         elemento: '#bloque-lista',
+        icono: 'i-estrella',
         titulo: 'Las más baratas',
-        texto: 'La lista de la zona, de más barata a más cara (o por distancia, si usas tu ubicación). «Ver más» enseña todas y «Ver menos» las vuelve a esconder.',
+        texto: 'La lista de la zona, por precio o por distancia. «Ver más» enseña todas.',
       },
       {
         elemento: '#destacado',
-        titulo: 'El precio medio de España',
-        texto: 'Lo que cuesta hoy de media en toda España, si ha subido o bajado en la última semana y en el último mes, y lo que se espera.',
+        icono: 'i-euro',
+        titulo: 'Precio medio de España',
+        texto: 'Lo que cuesta hoy, cómo ha cambiado esta semana y este mes, y lo que se espera.',
       },
       {
         elemento: '.calculadora',
+        icono: 'i-surtidor',
         titulo: '¿Cuánto me cuesta repostar?',
-        texto: 'Elige cuántos litros vas a echar y verás lo que cuesta hoy, comparado con hace un mes y con lo que se espera.',
+        texto: 'Elige los litros y verás lo que pagas hoy y hace un mes.',
       },
       {
         elemento: '#grafico-gas',
+        icono: 'i-sube',
         titulo: 'Cómo ha cambiado',
-        texto: 'El precio medio de los últimos meses. Toca o desliza el dedo por la línea para ver cada día.',
+        texto: 'El precio medio de los últimos meses. Desliza por la línea para ver cada día.',
       },
       {
         elemento: '#calendario-gas',
+        icono: 'i-calendario',
         titulo: 'Calendario',
-        texto: 'Cada día con el color de su precio medio. Toca un día para ver lo que costaba repostar.',
+        texto: 'Cada día con el color de su precio. Toca uno para ver lo que costaba.',
       },
       {
         elemento: () => (escritorio() ? '#panel' : '#abrir-panel'),
+        icono: 'i-ajustes',
         titulo: 'Ajustes',
-        texto: 'Tema claro u oscuro, tamaño de letra y el acceso a la app de la luz.',
+        texto: 'Tema claro u oscuro y tamaño de letra.',
       },
       {
         elemento: () => (escritorio() ? '#ayuda-lateral' : '#ayuda-cabecera'),
+        icono: 'i-ayuda',
         titulo: 'Ayuda',
-        texto: 'Aquí vuelves a esta guía, y encuentras soluciones si algo falla, para qué sirve la app y de dónde salen los datos.',
+        texto: 'Vuelve a esta guía, soluciona problemas y mira de dónde salen los datos.',
+      },
+      {
+        elemento: '#conmutador',
+        icono: 'i-rayo',
+        titulo: 'Luz y gasolina',
+        texto: 'Toca «Luz» para ver cuándo es más barata. La barra no se mueve: siempre está a mano.',
       },
     ],
   };

@@ -1210,9 +1210,11 @@ button.resumen__dato:active {
   .editando .app {
     padding-bottom: 28px;
   }
+}
 
-  /* En pantallas anchas, el acceso a la gasolina está en el panel y en la columna de la derecha */
-  .movible--solo-movil {
+/* Mientras se mueven las tarjetas en el móvil, la barra de abajo es la de «Personalizar» */
+@media (max-width: 1279px) {
+  .editando .conmutador {
     display: none;
   }
 }

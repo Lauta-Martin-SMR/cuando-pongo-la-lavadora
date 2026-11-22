@@ -19,6 +19,8 @@ import { datosAyudaGasolina } from './ayuda-gasolina.js';
 import { aplicarAjustes, iniciarPanel } from '../comun/ajustes.js';
 import { crearCalendario, nivelesPorTercios } from '../comun/calendario.js';
 import { iniciarAyuda } from '../comun/ayuda.js';
+import { iniciarConmutador } from '../comun/conmutador.js';
+import { crearLineaDesplazamiento } from '../comun/linea-desplazamiento.js';
 
 const ARCHIVO = new URL('../../datos/gasolina.json', import.meta.url);
 const CLAVE = 'cuando-lavadora:gasolina';
@@ -688,15 +690,13 @@ $('#destacado').addEventListener('click', (evento) => {
 /* ---------- ¡Arrancamos! ---------- */
 
 aplicarAjustes();
-const panel = iniciarPanel({
-  atajo: {
-    href: '../',
-    clase: 'atajo--luz',
-    icono: 'i-rayo',
-    titulo: '¿Cuándo pongo la lavadora?',
-    texto: 'Precio de la luz por horas',
-  },
-});
+const panel = iniciarPanel();
+
+// La barra de la derecha para cambiar entre la luz y la gasolina
+iniciarConmutador();
+
+// Debajo de los carburantes, una mini línea para moverse si no caben todos
+crearLineaDesplazamiento($('#carburantes'));
 
 // Botón de ayuda: problemas, para qué sirve, fuentes y guía de uso
 iniciarAyuda(datosAyudaGasolina({

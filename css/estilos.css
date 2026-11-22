@@ -1,0 +1,1161 @@
+/* ==========================================================================
+   ¿Cuándo pongo la lavadora? · Estilos
+   Pensado primero para el móvil. Los colores y las medidas están en :root,
+   así puedes cambiar el aspecto de toda la app desde un solo sitio.
+
+   1. Colores y medidas      6. Horas más baratas
+   2. Base                   7. Electrodomésticos y resultado
+   3. Cabecera y bloques     8. Gráfico
+   4. Etiquetas y puntos     9. Instalar, pie y estados
+   5. Precio de ahora
+   ========================================================================== */
+
+
+/* 1. Colores y medidas ---------------------------------------------------- */
+
+:root {
+  /* Fondo y texto */
+  --fondo: #f5f4fa;          /* blanco con un toque lavanda */
+  --superficie: #ffffff;     /* tarjetas */
+  --tinta: #1f2333;          /* texto principal */
+  --tinta-suave: #5b6275;    /* texto secundario */
+  --tinta-tenue: #6b7185;    /* notas, ejes del gráfico */
+  --linea: #ebe9f3;          /* líneas finas */
+  --linea-base: #d8d5e6;     /* línea de abajo del gráfico */
+
+  /* Color de la marca: lavanda */
+  --acento: #5b5fd6;
+  --acento-texto: #4b4fc4;
+  --acento-suave: #ecebfb;
+
+  /* Niveles de precio: color de la barra, fondo suave y texto legible */
+  --barata: #66cf9a;
+  --barata-suave: #e3f6ec;
+  --barata-texto: #1f6b45;
+  --media: #f1be44;
+  --media-suave: #fdf3d6;
+  --media-texto: #7a5300;
+  --cara: #d95c5f;
+  --cara-suave: #fde4e3;
+  --cara-texto: #9b2c2c;
+
+  /* Formas y sombras */
+  --radio-grande: 24px;
+  --radio: 18px;
+  --sombra: 0 1px 2px rgb(31 35 51 / 0.05), 0 10px 28px -14px rgb(31 35 51 / 0.16);
+
+  /* Movimiento: arranca rápido y frena suave */
+  --salida: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Letra del sistema: San Francisco en iPhone, Roboto en Android… */
+  --fuente: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+
+/* 2. Base ------------------------------------------------------------------ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;          /* el móvil no agranda el texto al girarlo */
+  -webkit-tap-highlight-color: transparent; /* sin destello gris al tocar */
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: var(--fuente);
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--tinta);
+  /* Dos manchas pastel (menta y lavanda) arriba del todo */
+  background:
+    radial-gradient(90% 340px at 0% 0%, #dff4e9 0%, transparent 72%),
+    radial-gradient(85% 320px at 100% 0%, #e8e5fc 0%, transparent 72%),
+    var(--fondo);
+  background-repeat: no-repeat;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, p, ol, ul, dl, dd {
+  margin: 0;
+  padding: 0;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+a {
+  color: var(--acento-texto);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  touch-action: manipulation;   /* responde al toque sin esperar al doble toque */
+  -webkit-user-select: none;    /* mantener pulsado no selecciona el texto del botón */
+  user-select: none;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+:focus-visible {
+  outline: 2.5px solid var(--acento);
+  outline-offset: 2px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* Iconos SVG del sprite de index.html */
+.sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.icono {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: none;
+}
+
+/* Texto que solo leen los lectores de pantalla */
+.solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.app {
+  max-width: 560px;
+  margin: 0 auto;
+  /* env(safe-area-inset-…) deja sitio a la muesca y a la barra de inicio del móvil */
+  padding:
+    calc(env(safe-area-inset-top, 0px) + 20px)
+    calc(env(safe-area-inset-right, 0px) + 16px)
+    calc(env(safe-area-inset-bottom, 0px) + 28px)
+    calc(env(safe-area-inset-left, 0px) + 16px);
+}
+
+
+/* 3. Cabecera, tarjetas y bloques ----------------------------------------- */
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 2px 18px;
+}
+
+.cabecera__logo {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 13px;
+  box-shadow: 0 6px 14px -6px rgb(91 95 214 / 0.45);
+}
+
+.cabecera__titulo {
+  font-size: 1.1875rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.cabecera__fecha {
+  font-size: 0.875rem;
+  color: var(--tinta-suave);
+}
+
+.tarjeta {
+  background: var(--superficie);
+  border-radius: var(--radio-grande);
+  box-shadow: var(--sombra);
+  padding: 18px;
+}
+
+.bloque {
+  margin-top: 28px;
+}
+
+.bloque__titulo {
+  margin: 0 4px 12px;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+.bloque__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px 4px;
+}
+
+.bloque__cabecera .bloque__titulo {
+  margin: 0;
+}
+
+
+/* 4. Etiquetas y puntos de color ------------------------------------------ */
+
+/* Cada nivel define su color en --punto; los demás estilos lo reutilizan */
+.nivel--barata { --punto: var(--barata); --suave: var(--barata-suave); --texto: var(--barata-texto); }
+.nivel--media  { --punto: var(--media);  --suave: var(--media-suave);  --texto: var(--media-texto); }
+.nivel--cara   { --punto: var(--cara);   --suave: var(--cara-suave);   --texto: var(--cara-texto); }
+
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px 4px 9px;
+  border-radius: 999px;
+  background: var(--suave);
+  color: var(--texto);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.etiqueta::before,
+.punto {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--punto);
+  flex: none;
+}
+
+.punto {
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: 1px;
+}
+
+
+/* 5. Precio de ahora -------------------------------------------------------- */
+
+.ahora {
+  position: relative;
+  overflow: hidden;
+  padding: 20px 20px 22px;
+  min-height: 168px;
+}
+
+/* El fondo cambia de color según lo cara que esté la luz */
+.ahora.nivel--barata { background: linear-gradient(145deg, var(--barata-suave) 0%, #f7fcf9 78%); }
+.ahora.nivel--media  { background: linear-gradient(145deg, var(--media-suave) 0%, #fffcf3 78%); }
+.ahora.nivel--cara   { background: linear-gradient(145deg, var(--cara-suave) 0%, #fff8f8 78%); }
+
+/* Un brillo suave en la esquina */
+.ahora::after {
+  content: "";
+  position: absolute;
+  top: -70px;
+  right: -60px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.75), transparent);
+  pointer-events: none;
+}
+
+.ahora__arriba {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ahora__titulo {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--tinta-suave);
+}
+
+.ahora__titulo strong {
+  color: var(--tinta);
+}
+
+.ahora .etiqueta {
+  background: rgb(255 255 255 / 0.8);
+}
+
+.ahora__precio {
+  margin-top: 12px;
+  font-size: 3.25rem;
+  font-weight: 750;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.ahora__unidad {
+  margin-left: 6px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--tinta-suave);
+}
+
+.ahora__comparacion {
+  margin-top: 12px;
+  font-size: 0.9375rem;
+  color: var(--tinta-suave);
+}
+
+.ahora__comparacion strong {
+  color: var(--texto);
+}
+
+/* Si no se pueden cargar los precios */
+.ahora--error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  padding: 28px 20px;
+}
+
+.ahora--error .vacio__icono {
+  margin-bottom: 6px;
+}
+
+.ahora--error .boton {
+  margin-top: 12px;
+}
+
+
+/* 6. Horas más baratas ---------------------------------------------------- */
+
+.baratas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.barata {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 112px;
+  padding: 14px 12px 13px;
+  background: var(--superficie);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+
+/* El puesto (1, 2, 3) va en la esquina, como una medalla, para no quitar sitio a la hora */
+.barata__puesto {
+  position: absolute;
+  top: -7px;
+  right: -5px;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--fondo);
+  border-radius: 50%;
+  background: var(--acento-suave);
+  color: var(--acento-texto);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.barata:first-child .barata__puesto {
+  background: var(--barata-suave);
+  color: var(--barata-texto);
+}
+
+.barata__hora {
+  font-size: 1.375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+.barata__hasta {
+  font-size: 0.75rem;
+  color: var(--tinta-suave);
+  white-space: nowrap;
+}
+
+.barata__ahora {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--tinta);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 650;
+}
+
+.barata__precio {
+  margin-top: auto;
+  padding-top: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.barata__unidad {
+  padding-left: 14px; /* alineado con el número, después del punto */
+  font-size: 0.75rem;
+  color: var(--tinta-tenue);
+}
+
+.barata--esqueleto .esqueleto {
+  height: 100%;
+  min-height: 84px;
+}
+
+.aviso {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 10px 10px 10px 16px;
+  border-radius: var(--radio);
+  background: var(--acento-suave);
+  color: var(--acento-texto);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.aviso__boton {
+  flex: none;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--superficie);
+  color: var(--acento-texto);
+  font-size: 0.875rem;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgb(31 35 51 / 0.12);
+  transition: transform 120ms var(--salida);
+}
+
+.aviso__boton:active {
+  transform: scale(0.96);
+}
+
+
+/* 7. Electrodomésticos y resultado ---------------------------------------- */
+
+.electros {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.electro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 96px;
+  padding: 12px 6px 11px;
+  background: var(--superficie);
+  border: 1.5px solid transparent;
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  text-align: center;
+  transition:
+    transform 140ms var(--salida),
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.electro:active {
+  transform: scale(0.97);
+}
+
+.electro[aria-pressed="true"] {
+  background: var(--acento-suave);
+  border-color: var(--acento);
+}
+
+.electro__icono {
+  width: 30px;
+  height: 30px;
+  margin-bottom: 3px;
+  color: var(--tinta-suave);
+  stroke-width: 1.6;
+  transition: color 160ms ease;
+}
+
+.electro[aria-pressed="true"] .electro__icono {
+  color: var(--acento);
+}
+
+.electro__nombre {
+  font-size: 0.8125rem;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.electro__duracion {
+  font-size: 0.75rem;
+  color: var(--tinta-tenue);
+}
+
+.resultado {
+  margin-top: 12px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.duracion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px 10px 18px;
+  border-bottom: 1px solid var(--linea);
+}
+
+.duracion__texto {
+  font-size: 0.9375rem;
+  color: var(--tinta-suave);
+}
+
+.duracion__control {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.duracion__valor {
+  min-width: 66px;
+  text-align: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.boton-redondo {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--acento-suave);
+  color: var(--acento-texto);
+  transition: transform 120ms var(--salida), opacity 160ms ease;
+}
+
+.boton-redondo:active {
+  transform: scale(0.92);
+}
+
+.boton-redondo:disabled {
+  opacity: 0.4;
+  transform: none;
+}
+
+.boton-redondo .icono {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+.resultado__cuerpo {
+  padding: 16px 18px 18px;
+  background: linear-gradient(180deg, #f8f7ff 0%, var(--superficie) 85%);
+}
+
+.resultado__etiqueta {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--acento-texto);
+}
+
+.resultado__titulo {
+  margin-top: 4px;
+  font-size: 1.5rem;
+  font-weight: 750;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+
+.resultado__detalle {
+  margin-top: 6px;
+  font-size: 0.9375rem;
+  color: var(--tinta-suave);
+}
+
+.pastilla {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 14px;
+  padding: 7px 13px;
+  border-radius: 16px; /* redondeada también si ocupa dos líneas */
+  background: var(--fondo);
+  color: var(--tinta-suave);
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.pastilla--buena {
+  background: var(--barata-suave);
+  color: var(--barata-texto);
+}
+
+
+/* 8. Gráfico ---------------------------------------------------------------- */
+
+.pestanas {
+  display: inline-flex;
+  flex: none;
+  padding: 3px;
+  border-radius: 999px;
+  background: #e9e7f3;
+}
+
+.pestana {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 650;
+  color: var(--tinta-suave);
+  transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+.pestana[aria-pressed="true"] {
+  background: var(--superficie);
+  color: var(--tinta);
+  box-shadow: 0 1px 3px rgb(31 35 51 / 0.14);
+}
+
+.tarjeta--grafico {
+  padding: 16px 16px 14px;
+}
+
+/* La lectura de arriba: precio de la barra elegida */
+.lectura {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  min-height: 50px;
+  margin: 0 2px 4px;
+}
+
+.lectura__valor {
+  font-size: 1.375rem;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+}
+
+.lectura__unidad {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--tinta-suave);
+}
+
+.lectura__detalle {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: var(--tinta-suave);
+}
+
+.lectura__pista {
+  align-self: center;
+  font-size: 0.875rem;
+  color: var(--tinta-tenue);
+}
+
+.grafico {
+  --eje-y: 30px;              /* ancho de la columna de números de la izquierda */
+  position: relative;
+  padding-left: var(--eje-y);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Fila de arriba: etiqueta con el electrodoméstico sobre su franja */
+.grafico__marcas {
+  position: relative;
+  height: 28px;
+}
+
+.grafico__etiqueta-franja {
+  position: absolute;
+  z-index: 3;
+  bottom: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px 3px 6px;
+  border-radius: 999px;
+  background: var(--acento-suave);
+  color: var(--acento-texto);
+  font-size: 0.75rem;
+  font-weight: 650;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.grafico__etiqueta-franja--izquierda { transform: none; }
+.grafico__etiqueta-franja--derecha { transform: translateX(-100%); }
+
+.grafico__etiqueta-franja .icono {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
+}
+
+/* La zona de las barras */
+.grafico__area {
+  position: relative;
+  height: 172px;
+  border-bottom: 1px solid var(--linea-base);
+  touch-action: pan-y; /* deslizar en horizontal recorre las horas; en vertical, la página */
+}
+
+.grafico__linea {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--linea);
+}
+
+.grafico__linea span {
+  position: absolute;
+  top: -0.5em;
+  left: calc(var(--eje-y) * -1);
+  width: calc(var(--eje-y) - 6px);
+  text-align: right;
+  font-size: 0.6875rem;
+  line-height: 1;
+  color: var(--tinta-tenue);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Banda lavanda: la mejor franja para el electrodoméstico elegido.
+   Sube hasta la etiqueta de arriba para que se vea aunque las barras sean altas. */
+.grafico__franja {
+  position: absolute;
+  top: -16px;
+  bottom: 0;
+  border-radius: 12px 12px 0 0;
+  background: rgb(91 95 214 / 0.1);
+  box-shadow: inset 0 0 0 1px rgb(91 95 214 / 0.2);
+}
+
+/* Línea vertical de «ahora» */
+.grafico__ahora {
+  position: absolute;
+  top: -6px;
+  bottom: 0;
+  z-index: 2;
+  width: 0;
+  border-left: 1.5px solid var(--tinta);
+  pointer-events: none;
+}
+
+.grafico__ahora::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -4.25px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tinta);
+}
+
+.grafico__barras {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+}
+
+/* Cada barra es un botón que ocupa toda la columna: más fácil de tocar */
+.barra {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 1px; /* 2 px de aire entre barras */
+}
+
+.barra__relleno {
+  width: 100%;
+  max-width: 24px;
+  height: var(--alto);
+  border-radius: 4px 4px 0 0;
+  background: var(--punto);
+  transform-origin: bottom;
+  transition: filter 120ms ease;
+}
+
+.barra--pasada .barra__relleno {
+  opacity: 0.35;
+}
+
+.barra--elegida .barra__relleno {
+  opacity: 1;
+  box-shadow: 0 0 0 2px var(--superficie), 0 0 0 3.5px var(--tinta);
+}
+
+.barra:focus-visible {
+  outline: none;
+}
+
+.barra:focus-visible .barra__relleno {
+  box-shadow: 0 0 0 2px var(--superficie), 0 0 0 4px var(--acento);
+}
+
+/* Al cambiar de día, las barras crecen desde abajo una tras otra */
+.grafico__area--entrando .barra__relleno {
+  animation: crecer 460ms var(--salida) backwards;
+  animation-delay: calc(var(--i) * 10ms);
+}
+
+@keyframes crecer {
+  from { transform: scaleY(0); }
+}
+
+/* Horas de debajo */
+.grafico__eje {
+  position: relative;
+  height: 26px;
+}
+
+.grafico__eje span {
+  position: absolute;
+  top: 6px;
+  transform: translateX(-50%);
+  font-size: 0.6875rem;
+  line-height: 1.2;
+  color: var(--tinta-tenue);
+  font-variant-numeric: tabular-nums;
+}
+
+.grafico__eje .grafico__pastilla-ahora {
+  top: 4px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--tinta);
+  color: #fff;
+  font-weight: 650;
+}
+
+/* Leyenda, resumen y tabla */
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 12px 2px 0;
+  font-size: 0.8125rem;
+  color: var(--tinta-suave);
+}
+
+.leyenda li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.leyenda li::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.leyenda__barata::before { background: var(--barata); }
+.leyenda__media::before  { background: var(--media); }
+.leyenda__cara::before   { background: var(--cara); }
+
+.resumen {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+  padding: 14px 2px 0;
+  border-top: 1px solid var(--linea);
+}
+
+.resumen dt {
+  font-size: 0.75rem;
+  color: var(--tinta-tenue);
+}
+
+.resumen dd {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.resumen .resumen__nota {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--tinta-tenue);
+}
+
+.tabla {
+  margin-top: 14px;
+  border-top: 1px solid var(--linea);
+}
+
+.tabla summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 2px 2px;
+  font-size: 0.9375rem;
+  font-weight: 650;
+  color: var(--acento-texto);
+  cursor: pointer;
+  list-style: none;
+}
+
+.tabla summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Flecha que gira al abrir */
+.tabla summary::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+  transition: transform 200ms var(--salida);
+}
+
+.tabla[open] summary::after {
+  transform: rotate(-135deg) translateY(-2px);
+}
+
+.tabla table {
+  width: 100%;
+  margin-top: 8px;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tabla th {
+  padding: 6px 2px;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--tinta-tenue);
+}
+
+.tabla td {
+  padding: 7px 2px;
+  border-top: 1px solid var(--linea);
+}
+
+.tabla tr.pasada td {
+  color: var(--tinta-tenue);
+}
+
+.tabla tr.actual td {
+  font-weight: 700;
+}
+
+/* Mañana sin publicar todavía */
+.vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 30px 12px 26px;
+}
+
+.vacio__icono {
+  width: 26px;
+  height: 26px;
+  padding: 13px;
+  box-sizing: content-box;
+  border-radius: 50%;
+  background: var(--acento-suave);
+  color: var(--acento);
+}
+
+.vacio__titulo,
+.ahora--error .ahora__titulo-error {
+  margin-top: 12px;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.vacio__texto {
+  max-width: 32ch;
+  margin-top: 4px;
+  font-size: 0.9375rem;
+  color: var(--tinta-suave);
+}
+
+
+/* 9. Instalar, pie y estados ---------------------------------------------- */
+
+.instalar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+  padding: 14px 14px 14px 16px;
+}
+
+.instalar__icono {
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border-radius: 14px;
+}
+
+.instalar__texto {
+  flex: 1;
+  font-size: 0.875rem;
+  color: var(--tinta-suave);
+}
+
+.instalar__texto strong {
+  display: block;
+  font-size: 0.9375rem;
+  color: var(--tinta);
+}
+
+.instalar__texto .icono {
+  width: 16px;
+  height: 16px;
+  vertical-align: -3px;
+}
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: none;
+  padding: 11px 18px;
+  border-radius: 999px;
+  background: var(--acento);
+  color: #fff;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  box-shadow: 0 8px 18px -8px rgb(91 95 214 / 0.7);
+  transition: transform 120ms var(--salida), filter 160ms ease;
+}
+
+.boton:active {
+  transform: scale(0.97);
+}
+
+.boton .icono {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+.pie {
+  display: grid;
+  gap: 8px;
+  margin-top: 28px;
+  padding: 0 4px;
+  font-size: 0.8125rem;
+  color: var(--tinta-tenue);
+}
+
+.pie__estado {
+  font-weight: 600;
+  color: var(--tinta-suave);
+}
+
+/* Formas grises mientras carga */
+.esqueleto {
+  border-radius: 8px;
+  background: linear-gradient(90deg, #eceaf4 25%, #f6f5fb 50%, #eceaf4 75%);
+  background-size: 200% 100%;
+  animation: brillo 1.4s ease-in-out infinite;
+}
+
+.esqueleto--linea   { height: 14px; width: 45%; }
+.esqueleto--larga   { width: 75%; }
+.esqueleto--corta   { width: 30%; }
+.esqueleto--grande  { height: 52px; width: 65%; margin: 16px 0; }
+.esqueleto--titulo  { height: 26px; width: 70%; margin: 12px 0; }
+.esqueleto--grafico { height: 226px; }
+
+@keyframes brillo {
+  from { background-position: 100% 0; }
+  to   { background-position: -100% 0; }
+}
+
+
+/* Efectos «hover» solo con ratón (en el móvil se quedarían pegados) ------- */
+
+@media (hover: hover) and (pointer: fine) {
+  .electro:hover { border-color: var(--linea-base); }
+  .electro[aria-pressed="true"]:hover { border-color: var(--acento); }
+  .pestana:hover { color: var(--tinta); }
+  .boton:hover,
+  .aviso__boton:hover { filter: brightness(1.06); }
+  .boton-redondo:not(:disabled):hover { filter: brightness(0.97); }
+  .barra:hover .barra__relleno { filter: brightness(0.94); }
+}
+
+
+/* Pantallas un poco más anchas ---------------------------------------------- */
+
+@media (min-width: 480px) {
+  .ahora__precio { font-size: 3.75rem; }
+  .baratas, .electros { gap: 12px; }
+  .grafico__area { height: 200px; }
+}
+
+
+/* Si el sistema pide menos movimiento, quitamos animaciones y transiciones */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

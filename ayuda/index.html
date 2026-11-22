@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>¿Para qué sirve la app?</title>
+  <meta name="description" content="Para qué sirve «¿Cuándo pongo la lavadora?»: el precio de la luz por horas con tu tarifa y el precio de la gasolina en todas las gasolineras de España.">
+  <meta name="theme-color" content="#f5f4fa">
+
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../iconos/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../iconos/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="../iconos/apple-touch-icon.png">
+
+  <!-- Tema y tamaño de letra guardados, antes de pintar nada -->
+  <script>
+    (function () {
+      try {
+        var a = JSON.parse(localStorage.getItem('cuando-lavadora:ajustes')) || {};
+        var tema = a.tema || 'claro';
+        if (tema === 'auto') { var h = new Date().getHours(); tema = h >= 20 || h < 8 ? 'oscuro' : 'claro'; }
+        document.documentElement.dataset.tema = tema;
+        if (a.letra && a.letra !== 100) document.documentElement.style.fontSize = a.letra + '%';
+        if (tema === 'oscuro') document.querySelector('meta[name="theme-color"]').setAttribute('content', '#14151d');
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="stylesheet" href="../css/comun.css">
+  <link rel="stylesheet" href="../css/ayuda.css">
+</head>
+<body>
+  <div class="app pagina-ayuda">
+    <header class="cabecera">
+      <a class="boton-icono" id="volver" href="../" aria-label="Volver a la app">
+        <svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-atras"></use></svg>
+      </a>
+      <img class="cabecera__logo" src="../iconos/favicon.svg" alt="" width="44" height="44">
+      <div class="cabecera__textos">
+        <h1 class="cabecera__titulo">¿Para qué sirve la app?</h1>
+        <p class="cabecera__fecha">Luz y gasolina, en una sola app</p>
+      </div>
+    </header>
+
+    <main>
+      <p class="intro">Es una app para <strong>gastar menos en casa y en el coche</strong>: te dice cuándo es más barata la luz y dónde es más barata la gasolina, con los datos oficiales de cada día.</p>
+
+      <!-- La luz: cuadro oscuro -->
+      <section class="explica explica--luz" id="luz" aria-labelledby="titulo-luz">
+        <div class="explica__cabecera">
+          <span class="explica__icono"><svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-rayo"></use></svg></span>
+          <div>
+            <p class="explica__etiqueta">La app de la luz</p>
+            <h2 class="explica__titulo" id="titulo-luz">¿Cuándo pongo la lavadora?</h2>
+          </div>
+        </div>
+        <p class="explica__resumen">La luz no cuesta lo mismo a todas horas. Esta parte de la app te dice <strong>cuándo es más barata</strong>, para que pongas la lavadora, el lavavajillas o cargues el coche y pagues menos.</p>
+        <ul class="explica__lista">
+          <li><span><strong>El precio de ahora</strong> y si es barato, medio o caro comparado con el resto del día.</span></li>
+          <li><span><strong>Las horas más baratas</strong> que quedan hoy, y las de mañana desde las 20:30.</span></li>
+          <li><span><strong>El mejor momento para cada aparato</strong> y lo que te va a costar, en euros y con impuestos.</span></li>
+          <li><span><strong>Tu tarifa:</strong> PVPC, precio fijo, tres tramos o indexada, con tu zona, tus impuestos, el bono social y tu potencia. Así ves tu precio real y lo que pagas fijo cada mes.</span></li>
+          <li><span><strong>Gráfico y calendario</strong> con el precio de cada hora de los dos últimos meses.</span></li>
+          <li><span><strong>Cosas a tener en cuenta:</strong> por ejemplo, que los fines de semana y los festivos todo el día es valle.</span></li>
+        </ul>
+        <p class="explica__como"><strong>Cómo funciona:</strong> cada tarde Red Eléctrica publica el precio oficial de cada hora del día siguiente (el PVPC). La app lo descarga, lo pasa al precio de tu tarifa y busca las horas más baratas. Los precios se guardan en tu móvil, así que funciona aunque te quedes sin conexión.</p>
+        <div class="explica__botones">
+          <a class="boton boton--explica" href="../">Abrir la app de la luz</a>
+          <a class="boton boton--claro" href="../?guia=1">Ver la guía de uso</a>
+        </div>
+      </section>
+
+      <!-- La gasolina: cuadro de otro color -->
+      <section class="explica explica--gasolina" id="gasolina" aria-labelledby="titulo-gasolina">
+        <div class="explica__cabecera">
+          <span class="explica__icono"><svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-surtidor"></use></svg></span>
+          <div>
+            <p class="explica__etiqueta">La app de la gasolina</p>
+            <h2 class="explica__titulo" id="titulo-gasolina">¿Cuándo echo gasolina?</h2>
+          </div>
+        </div>
+        <p class="explica__resumen">El precio de la gasolina y el diésel cambia mucho de una gasolinera a otra, a veces más de 20 céntimos por litro en el mismo pueblo. Esta parte te enseña <strong>dónde repostar más barato</strong>.</p>
+        <ul class="explica__lista">
+          <li><span><strong>Todas las gasolineras de España en un mapa</strong>, del color de su precio: muy bajo, bajo, medio, alto o muy alto.</span></li>
+          <li><span><strong>La recomendada (★):</strong> la más barata de la zona, o la que mejor sale contando la distancia si usas tu ubicación.</span></li>
+          <li><span><strong>Busca</strong> por pueblo, código postal, provincia, marca o calle, o usa «Cerca de mí». Guarda los sitios donde sueles repostar en «Mis sitios».</span></li>
+          <li><span><strong>La ficha de cada gasolinera:</strong> el precio de cada carburante, su historial con gráfico y calendario, y botones para ir con Apple Maps o Google Maps.</span></li>
+          <li><span><strong>El precio medio de España</strong>, lo que te cuesta repostar y cómo ha cambiado en los últimos meses.</span></li>
+        </ul>
+        <p class="explica__como"><strong>Cómo funciona:</strong> las gasolineras comunican sus precios al Ministerio para la Transición Ecológica. La app los descarga cada mañana y cada tarde, y guarda el historial de los últimos 90 días.</p>
+        <div class="explica__botones">
+          <a class="boton boton--explica" href="../gasolina/">Abrir la app de la gasolina</a>
+          <a class="boton boton--claro" href="../gasolina/?guia=1">Ver la guía de uso</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="pie">
+      <p>Los datos son oficiales y públicos (mira «Ayuda → Fuentes» en la app). Tus ajustes, tu tarifa y tus sitios se guardan solo en tu móvil.</p>
+    </footer>
+  </div>
+
+  <script>
+    // «Volver» lleva a la app desde la que se vino (la de la gasolina pone ?desde=gasolina)
+    (function () {
+      var desde = new URLSearchParams(location.search).get('desde');
+      if (desde === 'gasolina') {
+        var volver = document.getElementById('volver');
+        volver.href = '../gasolina/';
+        volver.setAttribute('aria-label', 'Volver a la app de la gasolina');
+      }
+    })();
+  </script>
+</body>
+</html>

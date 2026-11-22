@@ -13,7 +13,7 @@ import { hacerOrdenable } from '../comun/ordenar.js';
 import { ELECTRODOMESTICOS, PRINCIPALES_INICIALES } from './electrodomesticos.js';
 
 const CLAVE = 'cuando-lavadora:diseno';
-const SECCIONES = ['ahora', 'gasolina', 'baratas', 'electros', 'grafico'];
+const SECCIONES = ['ahora', 'tarifa', 'gasolina', 'baratas', 'electros', 'grafico', 'claves'];
 const SUAVE = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
 /** Cómo está todo al principio */
@@ -33,7 +33,12 @@ export function leerDiseno() {
     if (!guardado) return inicial;
     const existen = new Set(ELECTRODOMESTICOS.map((e) => e.id));
     const secciones = (guardado.secciones ?? []).filter((s) => SECCIONES.includes(s));
-    for (const s of SECCIONES) if (!secciones.includes(s)) secciones.push(s);
+    // Las tarjetas nuevas de una versión nueva entran en su sitio (detrás de la que tienen delante)
+    SECCIONES.forEach((s, i) => {
+      if (secciones.includes(s)) return;
+      const anterior = SECCIONES.slice(0, i).reverse().find((x) => secciones.includes(x));
+      secciones.splice(anterior ? secciones.indexOf(anterior) + 1 : 0, 0, s);
+    });
     const principales = (guardado.principales ?? []).filter((id) => existen.has(id));
     const mas = (guardado.mas ?? []).filter((id) => existen.has(id) && !principales.includes(id));
     for (const id of existen) if (!principales.includes(id) && !mas.includes(id)) mas.push(id);
@@ -66,13 +71,23 @@ export function ordenarSecciones(secciones) {
   actualizarFlechas();
 }
 
+/** Solo cuentan las tarjetas que se ven (en pantallas anchas, la de la gasolina no está) */
+const seVe = (elemento) => elemento.getClientRects().length > 0;
+
 /** La primera tarjeta no puede subir y la última no puede bajar */
 function actualizarFlechas() {
-  const movibles = [...document.querySelectorAll('#secciones > .movible')];
+  const movibles = [...document.querySelectorAll('#secciones > .movible')].filter(seVe);
   movibles.forEach((movible, i) => {
     movible.querySelector('[data-mover="-1"]').disabled = i === 0;
     movible.querySelector('[data-mover="1"]').disabled = i === movibles.length - 1;
   });
+}
+
+/** La tarjeta de al lado que se ve (hacia arriba o hacia abajo) */
+function vecinaVisible(movible, sube) {
+  let vecina = sube ? movible.previousElementSibling : movible.nextElementSibling;
+  while (vecina && !seVe(vecina)) vecina = sube ? vecina.previousElementSibling : vecina.nextElementSibling;
+  return vecina;
 }
 
 /**
@@ -131,7 +146,7 @@ export function iniciarPersonalizar({ obtenerDiseno, alCambiarDiseno, alCambiarM
     if (!boton || !activo) return;
     const movible = boton.closest('.movible');
     const sube = Number(boton.dataset.mover) < 0;
-    const vecino = sube ? movible.previousElementSibling : movible.nextElementSibling;
+    const vecino = vecinaVisible(movible, sube);
     if (!vecino) return;
 
     // Movemos y animamos las dos tarjetas desde donde estaban (técnica FLIP)

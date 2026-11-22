@@ -55,6 +55,12 @@
   --muelle: cubic-bezier(0.34, 1.56, 0.64, 1); /* con un pequeño rebote */
 
   --fuente: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Botón de ayuda: un azul vivo que destaca en las dos apps */
+  --ayuda-fondo: linear-gradient(135deg, #16b8e8 0%, #3b6cf6 100%);
+  --ayuda-tinta: #ffffff;
+  --ayuda-brillo: rgb(59 108 246 / 0.45);
+  --ayuda-borde: #3b8cf6;
 }
 
 /* Tema oscuro: mismos nombres, otros valores (colores comprobados para daltonismo y contraste) */
@@ -90,6 +96,11 @@
 
   --sombra: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 30px -14px rgb(0 0 0 / 0.6);
   --sombra-alta: 0 2px 8px rgb(0 0 0 / 0.4), 0 20px 44px -16px rgb(0 0 0 / 0.75);
+
+  --ayuda-fondo: linear-gradient(135deg, #3dd3f5 0%, #6f9bff 100%);
+  --ayuda-tinta: #0b1222;
+  --ayuda-brillo: rgb(111 155 255 / 0.5);
+  --ayuda-borde: #6fb7ff;
 }
 
 
@@ -413,6 +424,35 @@ button:disabled {
   stroke-width: 2;
 }
 
+/* «Chips»: botones pequeños y redondos (ciudades, litros, potencias…) */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--superficie-2);
+  font-size: 0.875rem;
+  font-weight: 650;
+  color: var(--tinta-suave);
+  transition: transform 140ms var(--salida), background-color 160ms ease, color 160ms ease;
+}
+
+.chip:active {
+  transform: scale(0.93);
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--acento);
+  color: var(--sobre-acento);
+}
+
+.chip .icono {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+}
+
 /* Cada nivel define sus colores en variables; los demás estilos los reutilizan */
 .nivel--barata { --punto: var(--barata); --suave: var(--barata-suave); --texto: var(--barata-texto); }
 .nivel--media  { --punto: var(--media);  --suave: var(--media-suave);  --texto: var(--media-texto); }
@@ -703,12 +743,7 @@ input[type="range"]::-moz-range-thumb {
   font-size: 0.9375rem;
 }
 
-/* Acceso directo a la otra app: tarjeta grande con borde de neón animado */
-@property --giro {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
+/* Acceso directo a la otra app: tarjeta grande con borde de neón */
 
 .atajo {
   position: relative;
@@ -760,36 +795,62 @@ input[type="range"]::-moz-range-thumb {
     linear-gradient(140deg, #d6f3e5 0%, #d9e4fb 55%, #dcd8fb 100%);
 }
 
-/* Neón: un borde de colores que gira y un brillo difuminado detrás */
+/* En el tema oscuro, la tarjeta también se oscurece (con el mismo tono) */
+:root[data-tema="oscuro"] .atajo {
+  color: #ffe7d1;
+}
+
+:root[data-tema="oscuro"] .atajo__fondo {
+  background:
+    radial-gradient(140px 140px at 100% 0%, rgb(255 255 255 / 0.07), transparent 70%),
+    linear-gradient(140deg, #3a2a1c 0%, #3c2426 55%, #35203a 100%);
+}
+
+:root[data-tema="oscuro"] .atajo--luz {
+  color: #e2e4ff;
+}
+
+:root[data-tema="oscuro"] .atajo--luz .atajo__fondo {
+  background:
+    radial-gradient(140px 140px at 100% 0%, rgb(255 255 255 / 0.07), transparent 70%),
+    linear-gradient(140deg, #17322a 0%, #1d2944 55%, #262348 100%);
+}
+
+:root[data-tema="oscuro"] .atajo__fondo::before,
+:root[data-tema="oscuro"] .atajo__fondo::after {
+  background: rgb(255 255 255 / 0.05);
+}
+
+/* Neón de un solo color, el de la app (lavanda en la luz y naranja en la gasolina).
+   Usa los colores del tema, así que cambia solo al pasar de claro a oscuro. */
+.atajo--neon {
+  --neon-brillo: 0.45;
+}
+
+:root[data-tema="oscuro"] .atajo--neon {
+  --neon-brillo: 0.6;
+}
+
 .atajo--neon::before,
 .atajo--neon::after {
   content: "";
   position: absolute;
   z-index: -2;
-  inset: -2.5px;
-  border-radius: calc(var(--radio-grande) + 2.5px);
-  background: conic-gradient(from var(--giro), #ffb36b, #ff7eb3, #b48cff, #7fd1ff, #8be3b5, #ffb36b);
-  animation: girar-neon 6s linear infinite;
+  inset: -2px;
+  border-radius: calc(var(--radio-grande) + 2px);
+  background: var(--neon, var(--acento));
 }
 
 .atajo--neon::after {
   z-index: -3;
-  inset: -6px;
-  filter: blur(16px);
-  opacity: 0.55;
-  animation: girar-neon 6s linear infinite, latir-neon 3s ease-in-out infinite;
-}
-
-:root[data-tema="oscuro"] .atajo--neon::after {
-  opacity: 0.8;
-}
-
-@keyframes girar-neon {
-  to { --giro: 360deg; }
+  inset: -4px;
+  filter: blur(14px);
+  opacity: var(--neon-brillo);
+  animation: latir-neon 3.2s ease-in-out infinite;
 }
 
 @keyframes latir-neon {
-  50% { opacity: 0.85; }
+  50% { opacity: calc(var(--neon-brillo) + 0.25); }
 }
 
 .atajo__icono {
@@ -801,6 +862,12 @@ input[type="range"]::-moz-range-thumb {
   border-radius: 16px;
   background: rgb(255 255 255 / 0.72);
   box-shadow: 0 4px 12px -4px rgb(0 0 0 / 0.18);
+}
+
+:root[data-tema="oscuro"] .atajo__icono,
+:root[data-tema="oscuro"] .atajo__flecha {
+  background: rgb(255 255 255 / 0.1);
+  box-shadow: none;
 }
 
 .atajo__icono .icono {
@@ -848,19 +915,19 @@ input[type="range"]::-moz-range-thumb {
   }
 }
 
-/* En pantallas anchas el panel se queda fijo a la izquierda */
-/* En pantallas anchas: lo principal, centrado; el panel, fijo a la izquierda
-   y separado (hasta 80 px) para que no se pegue al contenido. */
+/* En pantallas anchas: lo principal, centrado; el panel, fijo a la izquierda del
+   todo (y la columna de ayuda, a la derecha del todo), lejos del contenido. */
 @media (min-width: 1280px) {
   .panel {
     position: fixed;
     z-index: 1;
     top: 0;
     bottom: 0;
-    /* 50vw − media app (280) − separación (80) − ancho del panel (290), y nunca a menos de 24 px del borde */
-    left: max(24px, calc(50vw - 650px));
-    width: 290px;
-    padding: 24px 6px 24px 2px;
+    /* 50vw − media app (280) − separación (172) − ancho del panel (326); lo de dentro empieza a 18 px del borde.
+       (Los 18 px de los lados dejan sitio al brillo del neón, que si no se cortaría.) */
+    left: max(0px, calc(50vw - 778px));
+    width: 326px;
+    padding: 24px 18px;
     background: transparent;
     box-shadow: none;
     transform: none;
@@ -873,6 +940,470 @@ input[type="range"]::-moz-range-thumb {
   .velo {
     display: none !important;
   }
+}
+
+
+/* 6b. Columna de la derecha y ayuda ------------------------------------------- */
+
+/* Solo en pantallas anchas: a la derecha del todo, como el panel a la izquierda */
+.lateral {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .lateral {
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    right: max(0px, calc(50vw - 778px));
+    width: 326px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: 24px 18px;
+    overflow-y: auto;
+  }
+
+  .boton-ayuda--cabecera {
+    display: none !important;
+  }
+}
+
+/* Botón de ayuda: azul vivo, para que se vea enseguida */
+.boton-ayuda {
+  background: var(--ayuda-fondo);
+  color: var(--ayuda-tinta);
+  box-shadow: 0 10px 24px -10px var(--ayuda-brillo);
+  transition: transform 140ms var(--salida), box-shadow 200ms ease, filter 160ms ease;
+}
+
+.boton-ayuda:active {
+  transform: scale(0.95);
+}
+
+.boton-ayuda[aria-expanded="true"] {
+  box-shadow: 0 0 0 3px var(--fondo), 0 0 0 5px var(--ayuda-borde), 0 10px 24px -10px var(--ayuda-brillo);
+}
+
+/* En la cabecera del móvil: redondo, a la derecha */
+.boton-ayuda--cabecera {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  margin-left: auto;
+  border-radius: 50%;
+}
+
+.cabecera__volver + .boton-ayuda--cabecera {
+  margin-left: 0;
+}
+
+.boton-ayuda--cabecera .icono {
+  width: 26px;
+  height: 26px;
+  stroke-width: 2.1;
+}
+
+/* En la columna de la derecha: grande, con texto */
+.boton-ayuda--grande {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 14px 14px 16px;
+  border-radius: var(--radio-grande);
+  text-align: left;
+}
+
+.boton-ayuda__icono {
+  width: 46px;
+  height: 46px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: rgb(255 255 255 / 0.22);
+}
+
+.boton-ayuda__icono .icono {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2;
+}
+
+.boton-ayuda__textos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.boton-ayuda__textos strong {
+  font-size: 1rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.boton-ayuda__textos small {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.boton-ayuda__flecha {
+  margin-left: auto;
+  transition: rotate 220ms var(--salida);
+}
+
+.boton-ayuda[aria-expanded="true"] .boton-ayuda__flecha {
+  rotate: 180deg;
+}
+
+/* El desplegable de la ayuda */
+.menu-ayuda {
+  position: fixed;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  box-shadow: var(--sombra-alta);
+  animation: menu-entra 200ms var(--salida);
+  transform-origin: top center;
+}
+
+@keyframes menu-entra {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+}
+
+.menu-ayuda__titulo {
+  padding: 6px 10px 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tinta-tenue);
+}
+
+.menu-ayuda__opcion {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 14px;
+  color: var(--tinta);
+  text-align: left;
+  text-decoration: none;
+  transition: background-color 140ms ease;
+}
+
+.menu-ayuda__opcion:focus-visible {
+  outline-offset: -2px;
+  background: var(--superficie-2);
+}
+
+.menu-ayuda__icono {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+}
+
+.menu-ayuda__icono .icono {
+  width: 22px;
+  height: 22px;
+}
+
+.menu-ayuda__icono--problema { background: var(--cara-suave); color: var(--cara-texto); }
+.menu-ayuda__icono--info { background: var(--acento-suave); color: var(--acento-texto); }
+.menu-ayuda__icono--fuentes { background: var(--media-suave); color: var(--media-texto); }
+.menu-ayuda__icono--guia { background: var(--barata-suave); color: var(--barata-texto); }
+
+.menu-ayuda__textos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.menu-ayuda__textos strong {
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.menu-ayuda__textos small {
+  font-size: 0.8125rem;
+  color: var(--tinta-tenue);
+}
+
+/* Ventanas grandes (hojas): «Tu tarifa», «Tengo un problema» y «Fuentes».
+   En el móvil suben desde abajo; en pantallas anchas salen en el centro. */
+.dialogo.dialogo--hoja {
+  width: min(560px, calc(100vw - 32px));
+  max-width: 100vw;
+  max-height: min(90dvh, 880px);
+  padding: 0;
+  overflow: hidden;
+}
+
+.hoja {
+  display: flex;
+  flex-direction: column;
+  max-height: min(90dvh, 880px);
+}
+
+.hoja__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 16px 12px 22px;
+  border-bottom: 1px solid var(--linea);
+}
+
+.hoja__titulo {
+  font-size: 1.1875rem;
+  font-weight: 800;
+}
+
+.hoja__cerrar {
+  width: 40px;
+  height: 40px;
+  background: var(--superficie-2);
+  box-shadow: none;
+}
+
+.hoja__cuerpo {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 16px 22px 22px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.hoja__botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 16px calc(env(safe-area-inset-bottom, 0px) + 14px);
+  border-top: 1px solid var(--linea);
+}
+
+@media (max-width: 599px) {
+  .dialogo.dialogo--hoja {
+    width: 100vw;
+    margin: auto 0 0;
+    border-radius: 24px 24px 0 0;
+  }
+
+  .dialogo.dialogo--hoja[open] {
+    animation: hoja-sube 300ms var(--salida);
+  }
+
+  .dialogo.dialogo--hoja,
+  .hoja {
+    max-height: 92dvh;
+  }
+}
+
+@keyframes hoja-sube {
+  from { transform: translateY(40px); opacity: 0; }
+}
+
+/* Contenido de «Tengo un problema» y «Fuentes» */
+.ayuda__intro {
+  color: var(--tinta-suave);
+  font-size: 0.9375rem;
+}
+
+.problemas,
+.fuentes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.problema {
+  border-radius: 16px;
+  background: var(--superficie-2);
+}
+
+.problema__resumen {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 14px 14px 16px;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+  border-radius: 16px;
+}
+
+.problema__resumen::-webkit-details-marker {
+  display: none;
+}
+
+.problema__flecha {
+  display: grid;
+  transition: rotate 220ms var(--salida);
+}
+
+.problema__flecha .icono {
+  width: 20px;
+  height: 20px;
+  color: var(--tinta-suave);
+}
+
+.problema[open] .problema__flecha {
+  rotate: 180deg;
+}
+
+.problema__cuerpo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 0 16px 16px;
+  color: var(--tinta-suave);
+  font-size: 0.9375rem;
+}
+
+.problema__cuerpo strong {
+  color: var(--tinta);
+}
+
+.problema__cuerpo .boton {
+  padding: 9px 16px;
+  font-size: 0.875rem;
+}
+
+.fuente {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--superficie-2);
+}
+
+.fuente__nombre {
+  font-weight: 750;
+}
+
+.fuente__texto {
+  margin-top: 4px;
+  color: var(--tinta-suave);
+  font-size: 0.9375rem;
+}
+
+.fuente__enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 8px 13px 8px 11px;
+  border-radius: 999px;
+  background: var(--superficie);
+  color: var(--acento-texto);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: var(--sombra);
+  overflow-wrap: anywhere;
+}
+
+.fuente__enlace .icono,
+.problema__cuerpo .icono {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.2;
+}
+
+/* La guía de uso: todo oscuro menos lo que se explica, y un mensaje al lado */
+.guia {
+  position: fixed;
+  z-index: 2000;
+  inset: 0;
+  animation: aparecer 220ms ease;
+}
+
+.guia--saliendo {
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.guia__bloqueo {
+  position: absolute;
+  inset: 0;
+}
+
+.guia__foco {
+  position: fixed;
+  border-radius: 20px;
+  box-shadow:
+    0 0 0 200vmax rgb(8 9 18 / 0.7),
+    0 0 0 3px var(--ayuda-borde),
+    0 0 26px 6px var(--ayuda-brillo);
+  pointer-events: none;
+  transition: top 320ms var(--salida), left 320ms var(--salida), width 320ms var(--salida), height 320ms var(--salida);
+}
+
+.guia__bocadillo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: min(340px, calc(100vw - 24px));
+  padding: 18px 18px 16px;
+  border-radius: 20px;
+  background: var(--superficie);
+  color: var(--tinta);
+  box-shadow: var(--sombra-alta);
+  transition: top 320ms var(--salida), left 320ms var(--salida);
+}
+
+.guia__bocadillo--nuevo .guia__titulo,
+.guia__bocadillo--nuevo .guia__texto {
+  animation: subir 260ms var(--salida);
+}
+
+.guia__paso {
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--acento-texto);
+}
+
+.guia__titulo {
+  margin-top: 4px;
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.guia__texto {
+  margin-top: 6px;
+  color: var(--tinta-suave);
+  font-size: 0.9375rem;
+}
+
+.guia__botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.guia__botones .boton {
+  padding: 10px 16px;
 }
 
 
@@ -1095,6 +1626,23 @@ input[type="range"]::-moz-range-thumb {
 
   .calendario__dia:not(:disabled):hover {
     box-shadow: 0 0 0 2px var(--linea-base);
+  }
+
+  .boton-ayuda:hover {
+    filter: brightness(1.07);
+  }
+
+  .menu-ayuda__opcion:hover,
+  .problema__resumen:hover {
+    background: color-mix(in srgb, var(--tinta) 6%, transparent);
+  }
+
+  .fuente__enlace:hover {
+    text-decoration: underline;
+  }
+
+  .chip:hover {
+    color: var(--tinta);
   }
 }
 

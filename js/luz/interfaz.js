@@ -11,6 +11,7 @@
  */
 
 import { ZONA_HORARIA, fechaEnEspana } from './calculos.js';
+import { NOMBRE_PERIODO, NOMBRE_TIPO, ZONAS, OFICIAL } from './tarifas.js';
 import { icono } from '../comun/iconos.js';
 
 
@@ -19,12 +20,20 @@ import { icono } from '../comun/iconos.js';
 const formatoPrecio = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
 const formatoEje = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const formatoEuros = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
-const formatoHora = new Intl.DateTimeFormat('es-ES', {
-  timeZone: ZONA_HORARIA, hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
-});
-const formatoFecha = new Intl.DateTimeFormat('es-ES', {
-  timeZone: ZONA_HORARIA, weekday: 'long', day: 'numeric', month: 'long',
-});
+let formatoHora;
+let formatoFecha;
+let zonaHoraria = ZONA_HORARIA;
+
+/**
+ * Las horas se enseñan en la hora de la persona: la de la península o, en
+ * Canarias, la canaria (una hora menos). Los días de precios siguen siendo los de REE.
+ */
+export function usarZonaHoraria(zona = ZONA_HORARIA) {
+  zonaHoraria = zona;
+  formatoHora = new Intl.DateTimeFormat('es-ES', { timeZone: zona, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+  formatoFecha = new Intl.DateTimeFormat('es-ES', { timeZone: zona, weekday: 'long', day: 'numeric', month: 'long' });
+  ultimoHTML.clear(); // hay que volver a escribir todas las horas
+}
 
 const NOMBRE_NIVEL = { barata: 'Barata', media: 'Media', cara: 'Cara' };
 
@@ -70,6 +79,14 @@ function ponerHTML(elemento, html) {
   elemento.innerHTML = html;
   return true;
 }
+
+usarZonaHoraria();
+
+/** 0.0844 → "0,0844" (con los decimales que haga falta) */
+const cifra = (valor, decimales) => valor.toLocaleString('es-ES', { minimumFractionDigits: decimales, maximumFractionDigits: decimales });
+const formatoDiaCorto = new Intl.DateTimeFormat('es-ES', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+/** 'AAAA-MM-DD' → «sábado 28 de noviembre» */
+const diaCorto = (fecha) => formatoDiaCorto.format(new Date(`${fecha}T12:00:00Z`)).replace(',', '');
 
 const prefiereMenosMovimiento = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const editando = () => document.body.classList.contains('editando');
@@ -131,6 +148,19 @@ export function iniciar(acciones) {
 
   $('#boton-instalar').addEventListener('click', () => acciones.alInstalar());
 
+  // Tu tarifa: «Cambiar», el interruptor de impuestos y los botones que llevan a una parte del formulario
+  $('#cambiar-tarifa').addEventListener('click', () => acciones.alAbrirTarifa());
+  $('#interruptor-impuestos').addEventListener('click', () => acciones.alCambiarImpuestos());
+  $('#ir-claves').addEventListener('click', () => {
+    $('#claves').scrollIntoView({ behavior: prefiereMenosMovimiento() ? 'auto' : 'smooth', block: 'start' });
+  });
+  document.addEventListener('click', (evento) => {
+    const boton = evento.target.closest('[data-abrir-tarifa]');
+    if (!boton || editando()) return;
+    if (boton.dataset.abrirTarifa === 'impuestos') acciones.alCambiarImpuestos();
+    else acciones.alAbrirTarifa(boton.dataset.abrirTarifa);
+  });
+
   iniciarGestosDelGrafico();
 
   // Si cambia el ancho (girar el móvil), repintamos el gráfico para recolocar las horas
@@ -191,25 +221,51 @@ export function anunciar(texto) {
 let proximasAbiertas = false;
 let ultimoAhora = null;
 
+const DESCRIPCION_TRAMO = {
+  1: 'el precio más caro de tu tarifa',
+  2: 'el precio intermedio de tu tarifa',
+  3: 'el precio más barato de tu tarifa',
+};
+
 /**
  * hora: la hora actual · nivel: 'barata' | 'media' | 'cara' · media: media del día
- * proximas: las próximas horas (para el desplegable) · nivelDe: precio → nivel
+ * proximas: las próximas horas (para el desplegable) · nivelDe: hora → nivel
+ * tarifa: la de la persona · plano: hoy cuesta lo mismo todo el día
+ * valle: motivo si hoy es valle todo el día ('domingo', 'festivo (Navidad)'…) o null
  */
 export function pintarAhora(datos) {
   ultimoAhora = datos;
-  const { hora: actual, nivel, media, proximas, nivelDe } = datos;
+  const { hora: actual, nivel, media, proximas, nivelDe, tarifa, plano, valle } = datos;
   const caja = $('#ahora');
   caja.className = `tarjeta ahora nivel--${nivel}`;
   document.body.classList.remove('sin-datos');
 
-  const diferencia = (actual.precio - media) / media;
   let comparacion;
-  if (Math.abs(diferencia) < 0.03) {
-    comparacion = `Justo en la media de hoy (${precio(media)} €/kWh).`;
+  if (tarifa.tipo === 'fija') {
+    comparacion = 'Con tu <strong>precio fijo</strong> cuesta lo mismo a cualquier hora.';
+  } else if (plano) {
+    comparacion = valle
+      ? `Hoy es ${valle}: <strong>todo el día es valle</strong> y con tu tarifa cuesta lo mismo a cualquier hora.`
+      : 'Hoy cuesta lo mismo a cualquier hora.';
+  } else if (tarifa.tipo === 'tramos') {
+    comparacion = `Ahora es hora <strong>${NOMBRE_PERIODO[actual.periodo]}</strong>: ${DESCRIPCION_TRAMO[actual.periodo]}.`;
+  } else if (actual.precio <= 0) {
+    // Pasa de verdad: con mucho sol y viento, el PVPC baja de cero algunas horas
+    comparacion = '<strong>Precio negativo:</strong> ahora la energía te sale gratis (incluso te descuentan un poco). Es el mejor momento para poner aparatos.';
   } else {
-    const sentido = diferencia < 0 ? 'más barata' : 'más cara';
-    comparacion = `<strong>Un ${porcentaje(Math.abs(diferencia))} ${sentido}</strong> que la media de hoy (${precio(media)} €/kWh).`;
+    const diferencia = Math.abs(media) < 0.005 ? 0 : (actual.precio - media) / Math.abs(media);
+    if (Math.abs(diferencia) < 0.03) {
+      comparacion = `Justo en la media de hoy (${precio(media)} €/kWh).`;
+    } else {
+      const sentido = diferencia < 0 ? 'más barata' : 'más cara';
+      comparacion = `<strong>Un ${porcentaje(Math.abs(diferencia))} ${sentido}</strong> que la media de hoy (${precio(media)} €/kWh).`;
+    }
   }
+
+  // Con PVPC o indexada, un día valle se avisa aparte: el precio sigue cambiando
+  const avisoValle = valle && !plano && tarifa.tipo !== 'fija'
+    ? `<p class="pastilla pastilla--valle">${icono('i-calendario')}Hoy es ${valle}: todo el día es valle, sin el recargo de punta</p>`
+    : '';
 
   // Desplegable con las próximas horas (mini gráfico)
   let proximasHTML = '';
@@ -218,8 +274,8 @@ export function pintarAhora(datos) {
     proximasHTML = `
       <div class="proximas" id="proximas">
         ${proximas.map((h, i) => `
-          <div class="proxima nivel--${nivelDe(h.precio)}">
-            <span class="proxima__barra"><span style="--alto:${Math.max(8, (h.precio / maximo) * 100).toFixed(1)}%;--i:${i}"></span></span>
+          <div class="proxima nivel--${nivelDe(h)}">
+            <span class="proxima__barra"><span style="--alto:${Math.max(8, maximo > 0 ? (Math.max(0, h.precio) / maximo) * 100 : 8).toFixed(1)}%;--i:${i}"></span></span>
             <span class="proxima__hora">${hora(h.inicio).slice(0, 2)} h</span>
             <span class="proxima__precio">${precio(h.precio)}</span>
           </div>`).join('')}
@@ -229,10 +285,12 @@ export function pintarAhora(datos) {
   ponerHTML(caja, `
     <div class="ahora__arriba">
       <p class="ahora__titulo">Ahora · <strong>${hora(actual.inicio)} – ${hora(actual.fin)}</strong></p>
-      <span class="etiqueta nivel--${nivel}">${NOMBRE_NIVEL[nivel]}</span>
+      <span class="etiqueta nivel--${nivel}">${tarifa.tipo === 'tramos' ? mayuscula(NOMBRE_PERIODO[actual.periodo]) : NOMBRE_NIVEL[nivel]}</span>
     </div>
     <p class="ahora__precio">${precio(actual.precio)}<span class="ahora__unidad">€/kWh</span></p>
+    <p class="ahora__impuestos">${tarifa.impuestos ? 'Con impuestos' : 'Sin impuestos'} · ${NOMBRE_TIPO[tarifa.tipo]}</p>
     <p class="ahora__comparacion">${comparacion}</p>
+    ${avisoValle}
     <button type="button" class="ahora__mas" aria-expanded="${proximasAbiertas}" aria-controls="proximas">
       ${proximasAbiertas ? 'Ver menos' : 'Ver las próximas horas'} ${icono('i-abajo')}
     </button>
@@ -242,7 +300,23 @@ export function pintarAhora(datos) {
 
 /* ---------- 2. Las horas más baratas que quedan ---------- */
 
-export function pintarBaratas({ horas, ahora, nivelDe, hayManana }) {
+/** iguales: todas las horas que quedan cuestan lo mismo (precio fijo, o tres tramos en día valle) */
+export function pintarBaratas({ horas, ahora, nivelDe, hayManana, iguales = false }) {
+  $('#aviso-manana').hidden = !hayManana;
+
+  if (iguales && horas.length) {
+    $('#titulo-baratas').textContent = 'Hoy da igual la hora';
+    ponerHTML($('#baratas'), `
+      <li class="barata-igual">
+        <span class="barata-igual__icono">${icono('i-check')}</span>
+        <span class="barata-igual__texto">
+          <strong>Todas las horas que quedan hoy cuestan lo mismo: ${precio(horas[0].precio)} €/kWh.</strong>
+          Con tu tarifa no hace falta esperar: pon los aparatos cuando te venga mejor.
+        </span>
+      </li>`);
+    return;
+  }
+
   const titulos = ['La última hora de hoy', 'Las 2 horas que quedan hoy', 'Las 3 horas más baratas que quedan hoy'];
   $('#titulo-baratas').textContent = titulos[Math.min(horas.length, 3) - 1];
 
@@ -256,13 +330,11 @@ export function pintarBaratas({ horas, ahora, nivelDe, hayManana }) {
           <span class="barata__hora">${hora(h.inicio)}</span>
           <span class="barata__hasta">hasta ${hora(h.fin)}</span>
           ${esAhora ? '<span class="barata__ahora">Ahora</span>' : ''}
-          <span class="barata__precio"><span class="punto nivel--${nivelDe(h.precio)}"></span>${precio(h.precio)}</span>
+          <span class="barata__precio"><span class="punto nivel--${nivelDe(h)}"></span>${precio(h.precio)}</span>
           <span class="barata__unidad">€/kWh</span>
         </button>
       </li>`;
   }).join(''));
-
-  $('#aviso-manana').hidden = !hayManana;
 }
 
 
@@ -315,14 +387,19 @@ export function verResultado() {
   }
 }
 
+/** Consejo para quien tiene placas solares */
+const notaPlacas = () => `
+  <p class="pastilla pastilla--sol">${icono('i-panel-solar')}Con tus placas: si hace sol, lo más barato es ponerlo en las horas de más sol (más o menos de 12:00 a 16:00)</p>`;
+
 /**
  * franja: lo que devuelve buscarMejorFranja() (o null si no cabe)
  * coste: { mejor, empezandoYa } con { euros, kWh } de cada una
  * limites: para desactivar los botones − y + cuando se llega al tope
  * animar: true si el cambio lo ha hecho la persona (aparece con un pequeño efecto)
+ * plano: con su tarifa cuesta lo mismo a cualquier hora · placas: tiene placas solares
  * Devuelve un texto corto por si hay que anunciarlo a los lectores de pantalla.
  */
-export function pintarResultado({ electro, minutos, kw, franja, coste, ahora, fechaHoy, limites, animar }) {
+export function pintarResultado({ electro, minutos, kw, franja, coste, ahora, fechaHoy, limites, animar, plano = false, placas = false }) {
   $('#duracion').textContent = textoDuracion(minutos);
   $('#potencia').textContent = textoPotencia(kw);
   $('#duracion-menos').disabled = minutos <= limites.duracion[0];
@@ -341,6 +418,22 @@ export function pintarResultado({ electro, minutos, kw, franja, coste, ahora, fe
       <p class="resultado__titulo">No quedan ${textoDuracion(minutos)} ${seguidas} con precio</p>
       <p class="resultado__detalle">Red Eléctrica publica los precios de mañana hacia las 20:30.</p>`;
     resumen = 'No quedan horas suficientes con precio publicado';
+  } else if (plano) {
+    // Precio fijo (o tres tramos en un día valle): da igual cuándo
+    html = `
+      <p class="resultado__etiqueta">Mejor momento · ${electro.nombre}</p>
+      <p class="resultado__titulo">Cuando quieras</p>
+      <p class="resultado__detalle">Con tu tarifa cuesta lo mismo a cualquier hora · ${precio(franja.mejor.precioMedio)} €/kWh</p>
+      <div class="coste coste--uno">
+        <div class="coste__dato coste__dato--mejor">
+          <span class="coste__valor">${euros(coste.mejor.euros)}</span>
+          <span class="coste__texto">te costará aproximadamente</span>
+        </div>
+      </div>
+      <p class="pastilla pastilla--buena">${icono('i-check')}No hace falta esperar</p>
+      ${placas ? notaPlacas() : ''}
+      <p class="coste__nota">Unos ${textoKWh(coste.mejor.kWh)} (${textoPotencia(kw)} durante ${textoDuracion(minutos)}) · con impuestos</p>`;
+    resumen = `${electro.nombre}. Cuesta lo mismo a cualquier hora: ${euros(coste.mejor.euros)}.`;
   } else {
     const { mejor, empezandoYa } = franja;
     const yaMismo = mejor.inicio <= ahora;
@@ -387,6 +480,7 @@ export function pintarResultado({ electro, minutos, kw, franja, coste, ahora, fe
       <p class="resultado__detalle">${detalle}</p>
       ${costeHTML}
       ${pastilla}
+      ${placas ? notaPlacas() : ''}
       <p class="coste__nota">Unos ${textoKWh(coste.mejor.kWh)} (${textoPotencia(kw)} durante ${textoDuracion(minutos)}) · con impuestos</p>`;
     resumen = `${electro.nombre}. Mejor momento: ${titulo}. Coste aproximado: ${euros(coste.mejor.euros)}.`;
   }
@@ -414,6 +508,9 @@ export function pintarPestanas(dia, textoCalendario = '') {
   $('#calendario-luz').hidden = dia !== 'calendario';
 }
 
+/** «Barata», «Media», «Cara»… o, con tres tramos, «Valle», «Llano», «Punta» */
+const nombreNivel = (h, nivel) => (datosGrafico?.porTramos ? mayuscula(NOMBRE_PERIODO[h.periodo]) : NOMBRE_NIVEL[nivel]);
+
 /** «Mañana» todavía sin publicar */
 export function pintarSinManana(texto) {
   datosGrafico = null;
@@ -428,10 +525,18 @@ export function pintarSinManana(texto) {
  *   ahora, esHoy (para marcar «ahora» y atenuar lo pasado)
  *   franja (mejor franja del electrodoméstico, o null) y electro (para su nombre)
  *   titulo: texto encima del gráfico (para los días del calendario) o null
+ *   aviso: frase destacada encima del gráfico (día valle, precio igual…) o null
+ *   nota: texto pequeño debajo de la leyenda (tarifa, impuestos, hora)
  *   animar: true para que las barras crezcan
  */
 export function pintarGrafico(datos) {
-  const { horas, resumen, nivelDe, ahora, esHoy, franja, electro, titulo, animar } = datos;
+  const { horas, resumen, nivelDe, ahora, esHoy, franja, electro, titulo, aviso = null, nota = '', porTramos = false, animar } = datos;
+  $('#aviso-grafico').hidden = !aviso;
+  $('#aviso-grafico').textContent = aviso ?? '';
+  $('#nota-grafico').textContent = nota;
+  // Con tres tramos, los colores son los tramos de la tarifa
+  const nombres = porTramos ? ['Valle', 'Llano', 'Punta'] : ['Barata', 'Media', 'Cara'];
+  document.querySelectorAll('.leyenda li').forEach((li, i) => { li.textContent = nombres[i]; });
 
   // Si cambiamos de día, olvidamos la barra elegida
   if (!datosGrafico || datosGrafico.horas[0].inicio.getTime() !== horas[0].inicio.getTime()) {
@@ -459,13 +564,13 @@ export function pintarGrafico(datos) {
   }
 
   const barrasHTML = horas.map((h, i) => {
-    const nivel = nivelDe(h.precio);
+    const nivel = nivelDe(h);
     const pasada = esHoy && h.fin <= ahora;
     const alto = Math.max(1.5, (Math.max(0, h.precio) / tope) * 100);
     return `
       <button type="button" class="barra nivel--${nivel}${pasada ? ' barra--pasada' : ''}"
         data-i="${i}" style="--alto:${alto.toFixed(2)}%;--i:${i}"
-        aria-label="De ${hora(h.inicio)} a ${hora(h.fin)}: ${precio(h.precio)} euros el kilovatio hora. ${NOMBRE_NIVEL[nivel]}.">
+        aria-label="De ${hora(h.inicio)} a ${hora(h.fin)}: ${precio(h.precio)} euros el kilovatio hora. ${nombreNivel(h, nivel)}.">
         <span class="barra__relleno"></span>
       </button>`;
   }).join('');
@@ -540,13 +645,13 @@ export function pintarGrafico(datos) {
 
   // La misma información en una tabla (cifras exactas y lectores de pantalla)
   ponerHTML($('#tabla'), horas.map((h) => {
-    const nivel = nivelDe(h.precio);
+    const nivel = nivelDe(h);
     const clase = esHoy && h.fin <= ahora ? 'pasada' : esHoy && h.inicio <= ahora ? 'actual' : '';
     return `
       <tr class="${clase}">
         <td>${hora(h.inicio)} – ${hora(h.fin)}</td>
         <td>${precio(h.precio)}</td>
-        <td><span class="punto nivel--${nivel}"></span>${NOMBRE_NIVEL[nivel]}</td>
+        <td><span class="punto nivel--${nivel}"></span>${nombreNivel(h, nivel)}</td>
       </tr>`;
   }).join(''));
 
@@ -598,10 +703,10 @@ function actualizarLectura() {
   }
 
   const h = horas[indice];
-  const nivel = nivelDe(h.precio);
+  const nivel = nivelDe(h);
   lectura.innerHTML = `
     <span class="lectura__valor">${precio(h.precio)} <span class="lectura__unidad">€/kWh</span></span>
-    <span class="lectura__detalle"><span class="punto nivel--${nivel}"></span>${hora(h.inicio)} – ${hora(h.fin)} · ${NOMBRE_NIVEL[nivel]}${extra}</span>`;
+    <span class="lectura__detalle"><span class="punto nivel--${nivel}"></span>${hora(h.inicio)} – ${hora(h.fin)} · ${nombreNivel(h, nivel)}${extra}</span>`;
 }
 
 /**
@@ -655,4 +760,112 @@ function iniciarGestosDelGrafico() {
       actualizarLectura();
     }
   });
+}
+
+
+/* ---------- 5. Tu tarifa, cosas a tener en cuenta y pie ---------- */
+
+/** 0.0511269632 → "5,11 %" · 0.425 → "42,5 %" */
+const tanto = (valor) => `${(valor * 100).toLocaleString('es-ES', { maximumFractionDigits: 2 })} %`;
+const ZONA_TEXTO = { peninsula: 'la península', baleares: 'Baleares', canarias: 'Canarias', ceuta: 'Ceuta', melilla: 'Melilla' };
+
+/** Texto corto de la tarifa: «Tres tramos · punta 0,200 · llano 0,130 · valle 0,090 €/kWh» */
+export function textoTarifa(tarifa) {
+  if (tarifa.tipo === 'fija') return `Precio fijo · ${precio(tarifa.precioFijo)} €/kWh a cualquier hora`;
+  if (tarifa.tipo === 'tramos') {
+    const { punta, llano, valle } = tarifa.tramos;
+    return `Tres tramos · punta ${precio(punta)} · llano ${precio(llano)} · valle ${precio(valle)} €/kWh`;
+  }
+  if (tarifa.tipo === 'indexada') return `Indexada · precio del mercado + ${cifra(tarifa.margen, 3)} €/kWh`;
+  return 'PVPC (precio regulado) · cambia cada hora';
+}
+
+/**
+ * La tarjeta «Tu tarifa».
+ *   mediaHoy: precio medio de hoy con su tarifa (o null) · cuentas: lo que devuelve factura()
+ *   valle: motivo si hoy es valle todo el día, o null · hoy: 'AAAA-MM-DD'
+ */
+export function pintarTarifa({ tarifa, mediaHoy, cuentas, valle, hoy, baseFactura = '' }) {
+  $('#tarifa-tipo').textContent = textoTarifa(tarifa);
+
+  const potencias = tarifa.potenciaValle !== null && tarifa.potenciaValle !== tarifa.potencia
+    ? `${textoPotencia(tarifa.potencia)} y ${textoPotencia(tarifa.potenciaValle)} en valle`
+    : textoPotencia(tarifa.potencia);
+  const etiquetas = [ZONAS[tarifa.zona].nombre, tarifa.impuestos ? 'Con impuestos' : 'Sin impuestos', potencias];
+  if (tarifa.bono !== 'no') etiquetas.push(`Bono social −${tanto(OFICIAL.bono[tarifa.bono])}`);
+  if (tarifa.rebaja) etiquetas.push('Rebaja de impuestos');
+  if (tarifa.placas) etiquetas.push('Placas solares');
+  ponerHTML($('#tarifa-etiquetas'), etiquetas.map((texto) => `<li>${texto}</li>`).join(''));
+
+  const dato = (nombre, valor, nota) => `
+    <div class="tarifa__dato">
+      <span class="tarifa__dato-nombre">${nombre}</span>
+      <span class="tarifa__dato-valor">${valor}</span>
+      <span class="tarifa__dato-nota">${nota}</span>
+    </div>`;
+  const datos = [];
+  if (mediaHoy !== null) datos.push(dato('Hoy, de media', `${precio(mediaHoy)} <small>€/kWh</small>`, tarifa.impuestos ? 'con impuestos' : 'sin impuestos'));
+  datos.push(dato('Lo fijo al mes', euros(cuentas.fijo), 'potencia, contador y bono social, con impuestos'));
+  if (cuentas.total !== null) {
+    datos.push(dato('Tu factura', `≈ ${euros(cuentas.total)}`, `al mes con ${cifra(tarifa.consumo, 0)} kWh, ${baseFactura}`));
+  } else {
+    datos.push(`
+      <button type="button" class="tarifa__dato tarifa__dato--boton" data-abrir-tarifa="consumo">
+        <span class="tarifa__dato-nombre">Tu factura</span>
+        <span class="tarifa__dato-valor">Calcular ${icono('i-flecha')}</span>
+        <span class="tarifa__dato-nota">pon lo que gastas al mes</span>
+      </button>`);
+  }
+  ponerHTML($('#tarifa-datos'), datos.join(''));
+
+  let aviso = '';
+  if (valle && tarifa.tipo === 'tramos') aviso = `Hoy es ${valle}: todo el día es valle y con tus tres tramos pagas lo mismo a cualquier hora.`;
+  else if (valle && tarifa.tipo !== 'fija') aviso = `Hoy es ${valle}: todo el día es valle. El precio sigue cambiando cada hora, pero sin el recargo de punta.`;
+  if (tarifa.bono !== 'no' && hoy > OFICIAL.bono.hasta) {
+    aviso += `${aviso ? ' ' : ''}Ojo: los descuentos del bono social de 2026 terminaban el 31 de diciembre. Mira si han cambiado.`;
+  }
+  $('#tarifa-aviso').hidden = !aviso;
+  $('#tarifa-aviso').textContent = aviso;
+
+  $('#interruptor-impuestos').setAttribute('aria-checked', String(tarifa.impuestos));
+}
+
+/**
+ * Las partes de «Cosas a tener en cuenta» que dependen de la persona y del día.
+ *   proximo: { fecha, motivo } del próximo día valle completo
+ */
+export function pintarClaves({ tarifa, hoy, valle, proximo, cuentas }) {
+  $('#estado-tipo').textContent = `En la app tienes: ${textoTarifa(tarifa)}.`;
+
+  $('#resumen-valle').textContent = valle ? `Hoy es ${valle}: todo el día valle` : 'Todo el día es valle';
+  $('#estado-valle').textContent = valle
+    ? `Hoy, ${diaCorto(hoy)}, es valle todo el día.`
+    : proximo ? `El próximo día valle completo es el ${diaCorto(proximo.fecha)}${proximo.motivo.startsWith('festivo') ? `, ${proximo.motivo}` : ''}.` : '';
+
+  const sinImpuestos = cuentas.potencia;
+  const deQuien = cuentas.precios.deLaCompania ? 'con el precio de tu compañía'
+    : tarifa.tipo === 'pvpc' ? 'con el precio del PVPC' : 'con el precio del PVPC (pon el de tu compañía en «Tu tarifa»)';
+  $('#estado-potencia').textContent = `Con ${textoPotencia(tarifa.potencia)} pagas unos ${euros(sinImpuestos)} al mes de potencia, sin impuestos, ${deQuien}.`;
+
+  const indirecto = cuentas.indirecto;
+  $('#estado-impuestos').textContent = `En ${ZONA_TEXTO[tarifa.zona]}${tarifa.rebaja ? ', con rebaja' : ''}: impuesto eléctrico ${tanto(tarifa.rebaja ? OFICIAL.rebaja.iee : OFICIAL.iee)} e ${indirecto.nombre} ${tanto(indirecto.luz)}. Ahora ves los precios ${tarifa.impuestos ? 'con' : 'sin'} impuestos.`;
+  const botonImpuestos = document.querySelector('[data-clave="impuestos"] [data-abrir-tarifa]');
+  botonImpuestos.textContent = tarifa.impuestos ? 'Ver precios sin impuestos' : 'Ver precios con impuestos';
+}
+
+/** El pie de la página explica qué precios se están viendo */
+export function pintarPie(tarifa, indirecto) {
+  const enHora = tarifa.zona === 'canarias' ? 'en hora canaria' : 'en hora peninsular';
+  const impuestos = tarifa.impuestos ? `con impuestos (impuesto eléctrico e ${indirecto.nombre})` : 'sin impuestos';
+  const textos = {
+    pvpc: `Precio PVPC (tarifa 2.0TD) en ${ZONA_TEXTO[tarifa.zona]}, en €/kWh y ${enHora}. Incluye peajes y cargos${tarifa.bono !== 'no' ? ' y el descuento del bono social' : ''}; se ve ${impuestos} y sin la potencia.`,
+    fija: `Precio de tu contrato, ${impuestos}. Las horas, ${enHora}.`,
+    tramos: `Precios de tu contrato (punta, llano y valle), ${impuestos}. Los tramos son los de ${ZONA_TEXTO[tarifa.zona]}, ${enHora}.`,
+    indexada: `Tarifa indexada: precio del mercado de cada hora (Red Eléctrica) + peajes y cargos de 2026 de su tramo + lo que suma tu compañía; ${impuestos}. Las horas, ${enHora}.`,
+  };
+  $('#pie-tarifa').textContent = textos[tarifa.tipo];
+  $('#pie-coste').textContent = `El coste de cada aparato es aproximado: usa su potencia media y suma los impuestos (impuesto eléctrico e ${indirecto.nombre}).`;
+  $('#pie-colores').textContent = tarifa.tipo === 'tramos'
+    ? 'Colores: verde las horas valle, amarillo las llano y rojo las punta.'
+    : 'Verde: al menos un 10 % más barata que la media del día. Rojo: al menos un 10 % más cara. Amarillo: entre medias.';
 }

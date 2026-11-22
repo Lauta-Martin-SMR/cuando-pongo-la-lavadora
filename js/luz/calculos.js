@@ -5,19 +5,17 @@
  * recibe datos y devuelve resultados. Así es fácil de leer y de probar.
  *
  * En toda la app, una «hora» de precio es un objeto así:
- *   { inicio: Date, fin: Date, precio: 0.1234 }   ← precio en €/kWh
+ *   { inicio: Date, fin: Date, precio: 0.1234, periodo: 1 | 2 | 3 }
+ * El precio (€/kWh) ya es el de la tarifa de la persona (lo calcula tarifas.js)
+ * y el periodo es su tramo: 1 punta, 2 llano, 3 valle.
  */
 
-// Las horas de la app son siempre las de la península (como el PVPC).
+// Los días de los precios son los de la península (como los publica Red Eléctrica).
 export const ZONA_HORARIA = 'Europe/Madrid';
 
 // Si una hora cuesta un 10 % menos que la media del día, es «barata»;
 // si cuesta un 10 % más, es «cara». Cambia este número si quieres.
 export const MARGEN = 0.10;
-
-// Impuestos que se suman al precio de la energía en la factura:
-// impuesto especial sobre la electricidad (5,11 %) y luego el IVA (21 %).
-export const IMPUESTOS = 1.0511269632 * 1.21;
 
 const MINUTO = 60 * 1000; // en milisegundos, que es como cuenta JavaScript
 const CUARTO_DE_HORA = 15 * MINUTO;
@@ -81,8 +79,10 @@ export function resumenDelDia(horas) {
 
 /** 'barata', 'media' o 'cara', comparando el precio con la media del día. */
 export function nivelDePrecio(precio, media) {
-  if (precio <= media * (1 - MARGEN)) return 'barata';
-  if (precio >= media * (1 + MARGEN)) return 'cara';
+  // Math.abs: así también funciona si el mercado tiene precios negativos (tarifa indexada)
+  const margen = Math.abs(media) * MARGEN;
+  if (precio <= media - margen) return 'barata';
+  if (precio >= media + margen) return 'cara';
   return 'media';
 }
 
@@ -165,16 +165,10 @@ export function buscarMejorFranja(horas, minutos, desde) {
 }
 
 
-/* ---------- Coste aproximado ---------- */
+/* ---------- Energía de un aparato ---------- */
 
-/**
- * Lo que cuesta usar un aparato de `kw` kilovatios durante `minutos`,
- * a un precio medio de `precio` €/kWh. Devuelve { kWh, euros } con impuestos.
- */
-export function costeAproximado(kw, minutos, precio) {
-  const kWh = kw * (minutos / 60);
-  return { kWh, euros: kWh * precio * IMPUESTOS };
-}
+/** kWh que gasta un aparato de `kw` kilovatios durante `minutos` (el precio lo pone tarifas.js) */
+export const kWhDe = (kw, minutos) => kw * (minutos / 60);
 
 /** Las próximas `cuantas` horas a partir de la actual (puede incluir las de mañana) */
 export function proximasHoras(horas, ahora, cuantas = 6) {

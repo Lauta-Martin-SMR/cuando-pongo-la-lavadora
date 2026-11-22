@@ -23,9 +23,27 @@ import {
   horaQueContiene,
   horasMasBaratas,
   buscarMejorFranja,
-  costeAproximado,
+  kWhDe,
   proximasHoras,
 } from './calculos.js';
+import {
+  leerTarifa,
+  guardarTarifa,
+  aplicarTarifa,
+  precioDeLaHora,
+  eurosConImpuestos,
+  todasIguales,
+  nivelesPorTramo,
+  factura,
+  impuestoIndirecto,
+  motivoValle,
+  proximoDiaValle,
+  ZONAS,
+  NOMBRE_TIPO,
+} from './tarifas.js';
+import { iniciarEditor } from './editor-tarifa.js';
+import { datosAyudaLuz } from './ayuda-luz.js';
+import { iniciarAyuda } from '../comun/ayuda.js';
 import {
   ELECTRODOMESTICOS,
   buscarElectro,
@@ -74,6 +92,7 @@ const estado = {
   cargandoHistorial: false,
   electroId: 'lavadora',   // aparato elegido
   personal: {},            // duración y potencia que ha cambiado la persona: { lavadora: { minutos, kw } }
+  tarifa: leerTarifa(),    // tipo de tarifa, zona, impuestos, bono social, potencia… (tarifas.js)
   diseno: leerDiseno(),    // orden de las tarjetas y qué aparatos van en «Más»
   masAntesDeEditar: false,
   ultimoIntento: 0,
@@ -145,103 +164,174 @@ async function buscarManana() {
  */
 function pintar({ animar = false, cambioDelUsuario = false } = {}) {
   const ahora = new Date();
+  const { tarifa } = estado;
   estado.cuartoPintado = Math.floor(ahora.getTime() / CUARTO_DE_HORA);
   interfaz.pintarFecha(ahora);
+  interfaz.pintarPie(tarifa, impuestoIndirecto(tarifa));
 
-  if (estado.cargando && !estado.hoy) return; // siguen las formas grises de carga
+  if (estado.cargando && !estado.hoy) {
+    pintarTarifa(null); // la tarjeta de la tarifa no necesita los precios
+    return; // siguen las formas grises de carga
+  }
   if (!estado.hoy) {
+    pintarTarifa(null);
     interfaz.pintarError(estado.error);
     interfaz.pintarEstado('');
     return;
   }
 
-  const horasHoy = estado.hoy.horas;
+  // Los precios de Red Eléctrica, convertidos al precio de la tarifa de la persona
+  const horasHoy = aplicarTarifa(estado.hoy.horas, tarifa);
+  const horasManana = estado.manana ? aplicarTarifa(estado.manana.horas, tarifa) : null;
   const resumenHoy = resumenDelDia(horasHoy);
-  const nivelHoy = (precio) => nivelDePrecio(precio, resumenHoy.media);
-  const horasConocidas = estado.manana ? horasHoy.concat(estado.manana.horas) : horasHoy;
+  const nivelHoy = nivelador(resumenHoy.media);
+  const horasConocidas = horasManana ? horasHoy.concat(horasManana) : horasHoy;
+  const valleHoy = motivoValle(estado.hoy.fecha);
+  const quedan = horasConocidas.filter((hora) => hora.fin.getTime() > ahora.getTime());
+
+  pintarTarifa(resumenHoy.media);
 
   // 1. Precio de ahora (y las próximas horas, por si se despliegan)
   const actual = horaQueContiene(horasHoy, ahora) ?? horasHoy[horasHoy.length - 1];
   interfaz.pintarAhora({
     hora: actual,
-    nivel: nivelHoy(actual.precio),
+    nivel: nivelHoy(actual),
     media: resumenHoy.media,
     proximas: proximasHoras(horasConocidas, ahora, 6),
     nivelDe: nivelHoy,
+    tarifa,
+    plano: todasIguales(horasHoy),
+    valle: valleHoy,
   });
 
-  // 2. Las 3 horas más baratas que quedan hoy
+  // 2. Las 3 horas más baratas que quedan hoy (o «da igual la hora»)
   interfaz.pintarBaratas({
     horas: horasMasBaratas(horasHoy, ahora, 3),
     ahora,
     nivelDe: nivelHoy,
     hayManana: Boolean(estado.manana),
+    iguales: todasIguales(horasHoy.filter((hora) => hora.fin.getTime() > ahora.getTime())),
   });
 
-  // 3. La franja más barata para el aparato y lo que costaría
+  // 3. La franja más barata para el aparato y lo que costaría (con impuestos)
   const electro = electroActual();
   const minutos = minutosDe(electro.id);
   const kw = kwDe(electro.id);
+  const kWh = kWhDe(kw, minutos);
   const franja = buscarMejorFranja(horasConocidas, minutos, ahora);
   const coste = franja && {
-    mejor: costeAproximado(kw, minutos, franja.mejor.precioMedio),
-    empezandoYa: costeAproximado(kw, minutos, franja.empezandoYa.precioMedio),
+    mejor: { kWh, euros: eurosConImpuestos(kWh, franja.mejor.precioMedio, tarifa) },
+    empezandoYa: { kWh, euros: eurosConImpuestos(kWh, franja.empezandoYa.precioMedio, tarifa) },
   };
   const resumenTexto = interfaz.pintarResultado({
     electro, minutos, kw, franja, coste, ahora,
     fechaHoy: estado.hoy.fecha,
     limites: LIMITES,
     animar: cambioDelUsuario,
+    plano: todasIguales(quedan),
+    placas: tarifa.placas,
   });
   if (cambioDelUsuario) interfaz.anunciar(resumenTexto);
 
   // 4. Gráfico del día elegido (hoy, mañana o un día del calendario)
-  pintarGrafico(ahora, resumenHoy, franja, animar);
+  pintarGrafico({ ahora, horasHoy, horasManana, resumenHoy, franja, animar });
 
   interfaz.pintarEstado(estado.sinConexion ? 'Sin conexión con Red Eléctrica: usando los precios guardados.' : '');
 }
 
+/** Cómo se colorea cada hora: por su tramo (tres tramos) o comparada con la media del día */
+function nivelador(media) {
+  if (estado.tarifa.tipo === 'tramos') return nivelesPorTramo(estado.tarifa);
+  return (hora) => nivelDePrecio(hora.precio, media);
+}
+
+/** La tarjeta «Tu tarifa» y las partes de «Cosas a tener en cuenta» que dependen de ella */
+function pintarTarifa(mediaHoy) {
+  const { tarifa } = estado;
+  const hoy = estado.hoy?.fecha ?? fechaEnEspana();
+  const medio = precioMedioDelMes(tarifa);
+  const cuentas = factura(tarifa, medio?.precio ?? null);
+  const valle = motivoValle(hoy);
+  interfaz.pintarTarifa({ tarifa, mediaHoy, cuentas, valle, hoy, baseFactura: medio?.base });
+  interfaz.pintarClaves({ tarifa, hoy, valle, proximo: proximoDiaValle(sumarDias(hoy, 1)), cuentas });
+}
+
+/**
+ * Precio medio de la energía para la factura aproximada (€/kWh, sin impuestos ni
+ * bono social), como si se gastara lo mismo a todas horas. Devuelve { precio, base }.
+ */
+function precioMedioDelMes(tarifa) {
+  if (tarifa.tipo === 'fija') return { precio: tarifa.precioFijo, base: 'con tu precio' };
+  if (tarifa.tipo === 'tramos') {
+    // En una semana hay 40 horas punta, 40 llano y 88 valle (con los fines de semana)
+    const { punta, llano, valle } = tarifa.tramos;
+    return { precio: (40 * punta + 40 * llano + 88 * valle) / 168, base: 'gastando igual todas las horas de la semana' };
+  }
+  const dias = [...(estado.historial?.values() ?? []), estado.hoy?.horas].filter(Boolean);
+  if (!dias.length) return null;
+  const precios = dias.flat().map((hora) => precioDeLaHora(hora, tarifa, { conBono: false }));
+  return {
+    precio: precios.reduce((suma, p) => suma + p, 0) / precios.length,
+    base: estado.historial ? 'con los precios de los dos últimos meses' : 'con los precios de hoy',
+  };
+}
+
 const formatoCorto = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'short', timeZone: 'UTC' });
 
-function pintarGrafico(ahora, resumenHoy, franja, animar) {
-  let dia = null;
+function pintarGrafico({ ahora, horasHoy, horasManana, resumenHoy, franja, animar }) {
+  let horas = null;
+  let fecha = null;
   let titulo = null;
   let textoPestana = '';
 
   if (estado.diaGrafico === 'manana') {
-    dia = estado.manana;
+    horas = horasManana;
+    fecha = estado.manana?.fecha;
   } else if (estado.diaGrafico === 'calendario') {
-    const fecha = estado.fechaCalendario ?? estado.hoy.fecha;
-    if (fecha === estado.hoy.fecha) dia = estado.hoy;
-    else if (fecha === estado.manana?.fecha) dia = estado.manana;
-    else if (estado.historial?.has(fecha)) dia = { fecha, horas: estado.historial.get(fecha) };
-    if (dia && dia !== estado.hoy) {
+    fecha = estado.fechaCalendario ?? estado.hoy.fecha;
+    if (fecha === estado.hoy.fecha) horas = horasHoy;
+    else if (fecha === estado.manana?.fecha) horas = horasManana;
+    else if (estado.historial?.has(fecha)) horas = aplicarTarifa(estado.historial.get(fecha), estado.tarifa);
+    if (horas && horas !== horasHoy) {
       titulo = interfaz.tituloDia(fecha);
       textoPestana = formatoCorto.format(new Date(`${fecha}T12:00:00Z`)).replace('.', ''); // «15 oct»
     }
     pintarCalendario();
   } else {
-    dia = estado.hoy;
+    horas = horasHoy;
+    fecha = estado.hoy.fecha;
   }
 
   interfaz.pintarPestanas(estado.diaGrafico, textoPestana);
 
-  if (!dia) {
+  if (!horas) {
     if (estado.diaGrafico === 'manana') interfaz.pintarSinManana(textoSinManana(ahora));
     return;
   }
 
-  const esHoy = dia === estado.hoy;
-  const resumen = esHoy ? resumenHoy : resumenDelDia(dia.horas);
+  const esHoy = horas === horasHoy;
+  const resumen = esHoy ? resumenHoy : resumenDelDia(horas);
+  const { tarifa } = estado;
+
+  // Encima del gráfico: si ese día cuesta lo mismo a todas horas o si es un día valle
+  const valle = motivoValle(fecha);
+  let aviso = null;
+  if (todasIguales(horas)) aviso = `Con tu tarifa, este día cuesta lo mismo a cualquier hora${valle ? ` (${valle}: todo el día valle)` : ''}.`;
+  else if (valle) aviso = `${valle.charAt(0).toUpperCase()}${valle.slice(1)}: todo el día es valle, sin el recargo de las horas punta.`;
+  const nota = `${NOMBRE_TIPO[tarifa.tipo]} · ${tarifa.impuestos ? 'con' : 'sin'} impuestos · ${tarifa.zona === 'canarias' ? 'hora canaria' : 'hora peninsular'}`;
+
   interfaz.pintarGrafico({
-    horas: dia.horas,
+    horas,
     resumen,
-    nivelDe: (precio) => nivelDePrecio(precio, resumen.media),
+    nivelDe: nivelador(resumen.media),
+    porTramos: tarifa.tipo === 'tramos',
     ahora,
     esHoy,
     franja: franja?.mejor ?? null,
     electro: electroActual(),
     titulo,
+    aviso,
+    nota,
     animar,
   });
 }
@@ -298,8 +388,8 @@ function pintarCalendario() {
   dias.set(estado.hoy.fecha, estado.hoy.horas);
   if (estado.manana) dias.set(estado.manana.fecha, estado.manana.horas);
 
-  // Media de cada día y su color comparado con los demás días (por tercios)
-  const medias = new Map([...dias].map(([fecha, horas]) => [fecha, resumenDelDia(horas).media]));
+  // Media de cada día con la tarifa de la persona, y su color comparado con los demás días (por tercios)
+  const medias = new Map([...dias].map(([fecha, horas]) => [fecha, resumenDelDia(aplicarTarifa(horas, estado.tarifa)).media]));
   const niveles = nivelesPorTercios(medias);
   const info = new Map([...medias].map(([fecha, media]) => [fecha, {
     nivel: niveles.get(fecha),
@@ -364,6 +454,17 @@ const acciones = {
     cargar();
   },
 
+  /** Abre «Tu tarifa» (campo: la parte del formulario a la que ir) */
+  alAbrirTarifa(campo = null) {
+    editor.abrir(estado.tarifa, { campo });
+  },
+
+  alCambiarImpuestos() {
+    cambiarTarifa({ ...estado.tarifa, impuestos: !estado.tarifa.impuestos });
+    interfaz.anunciar(estado.tarifa.impuestos ? 'Ahora ves los precios con impuestos' : 'Ahora ves los precios sin impuestos');
+    navigator.vibrate?.(8);
+  },
+
   async alInstalar() {
     if (!avisoInstalacion) return;
     avisoInstalacion.prompt();          // abre el diálogo de instalación del navegador
@@ -372,6 +473,23 @@ const acciones = {
     interfaz.mostrarInstalar(null);
   },
 };
+
+/* ---------- Tu tarifa ---------- */
+
+const editor = iniciarEditor({
+  alGuardar(tarifa) {
+    cambiarTarifa(tarifa);
+    interfaz.anunciar('Tarifa guardada: los precios y los costes ya son los de tu tarifa');
+  },
+});
+
+function cambiarTarifa(tarifa) {
+  const cambiaZona = tarifa.zona !== estado.tarifa.zona;
+  estado.tarifa = tarifa;
+  guardarTarifa(tarifa);
+  if (cambiaZona) interfaz.usarZonaHoraria(ZONAS[tarifa.zona].zonaHoraria);
+  pintar({ animar: true, cambioDelUsuario: true });
+}
 
 function pintarAparatos() {
   const conDuracion = (id) => ({ ...buscarElectro(id), minutos: minutosDe(id) });
@@ -488,6 +606,7 @@ async function precioGasolinaEnAtajo() {
       const texto = `Gasolina 95: ${g95.toLocaleString('es-ES', { minimumFractionDigits: 3 })} €/l de media`;
       panel.ponerTextoAtajo(texto);
       document.querySelector('#atajo-principal-texto').textContent = `${texto} · mira el mapa`;
+      document.querySelector('#atajo-lateral-texto').textContent = `${texto} · mira el mapa`;
     }
   } catch {
     // Sin conexión: se queda el texto de siempre
@@ -572,8 +691,18 @@ aplicarAjustes();
 leerPreferencias();
 ordenarSecciones(estado.diseno.secciones);
 pintarAparatos();
+interfaz.usarZonaHoraria(ZONAS[estado.tarifa.zona].zonaHoraria);
 interfaz.iniciar(acciones);
 interfaz.pintarFecha(new Date());
+pintarTarifa(null);
+
+// Botón de ayuda: problemas, para qué sirve, fuentes y guía de uso
+iniciarAyuda(datosAyudaLuz({
+  reintentar: () => cargar(),
+  abrirTarifa: (campo) => acciones.alAbrirTarifa(campo),
+  restaurar: () => pedirRestaurar(),
+  cerrarPanel: () => panel.cerrar(),
+}));
 
 cargar();
 setInterval(vigilar, 20 * 1000);

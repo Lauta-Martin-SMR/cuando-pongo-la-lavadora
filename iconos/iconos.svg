@@ -1,6 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg">
   <!--
-    Iconos de la app (24 × 24). Se usan así:  <svg class="icono"><use href="iconos/iconos.svg#i-lavadora"/></svg>
+    Iconos de la app (24 × 24). Se usan así:  <svg class="icono"><use href="iconos/iconos.svg#i-lavadora"/>  <symbol id="i-ayuda" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.85.85c0 1.7-2.45 2.2-2.45 3.75M12 17.2h.01"/></symbol>
+  <symbol id="i-problema" viewBox="0 0 24 24"><path d="M10.3 4.3 2.9 17.2A2 2 0 0 0 4.6 20.2h14.8a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4.2M12 16.8h.01"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8h.01"/></symbol>
+  <symbol id="i-libro" viewBox="0 0 24 24"><path d="M5 5.5A2 2 0 0 1 7 3.5h12v14H7a2 2 0 0 0-2 2z"/><path d="M5 19.5a2 2 0 0 0 2 2h12v-4M9 7.5h6M9 10.5h4"/></symbol>
+  <symbol id="i-guia" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.6 8.4-2.1 5.1-5.1 2.1 2.1-5.1z"/></symbol>
+  <symbol id="i-tarifa" viewBox="0 0 24 24"><path d="M6 2.5h12v19l-3-1.9-3 1.9-3-1.9-3 1.9z"/><path d="M9 7.5h6M9 11h6M9 14.5h3.5"/></symbol>
+  <symbol id="i-marcador" viewBox="0 0 24 24"><path d="M6.5 3.5h11v17l-5.5-3.9-5.5 3.9z"/></symbol>
+  <symbol id="i-estrella" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
+  <symbol id="i-enlace" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18.5 13.5V19a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 19V7A1.5 1.5 0 0 1 5 5.5h5.5"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-euro" viewBox="0 0 24 24"><path d="M17.5 6.6A7 7 0 1 0 17.5 17.4M4 10.3h9.5M4 13.7h9.5"/></symbol>
+  <symbol id="i-escudo" viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 8.2 7.5 9.5 4.4-1.3 7.5-4.9 7.5-9.5V6z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-panel-solar" viewBox="0 0 24 24"><path d="M5 10.5h14l2 7H3zM3.9 14h16.2M9.6 10.5l-1 7M14.4 10.5l1 7M12 17.5v3M8.5 20.5h7"/><path d="M12 2.5v2M7.4 4.4l1.1 1.4M16.6 4.4l-1.1 1.4M9.5 8a2.5 2.5 0 0 1 5 0"/></symbol>
+  <symbol id="i-recargar" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7L20 8.5"/><path d="M20 4v4.5h-4.5"/></symbol>
+</svg>
     Toman el color del texto (currentColor); el grosor de línea lo pone la clase .icono del CSS.
   -->
 
@@ -140,4 +154,18 @@
   <symbol id="i-lugar" viewBox="0 0 24 24"><path d="M12 21s-7-5.7-7-11.5a7 7 0 0 1 14 0C19 15.3 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
   <symbol id="i-correo" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="m4 7 8 6 8-6"/></symbol>
   <symbol id="i-navegar" viewBox="0 0 24 24"><path d="M20.5 3.5 3.5 10.5l7 3 3 7z"/></symbol>
+  <symbol id="i-ayuda" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.85.85c0 1.7-2.45 2.2-2.45 3.75M12 17.2h.01"/></symbol>
+  <symbol id="i-problema" viewBox="0 0 24 24"><path d="M10.3 4.3 2.9 17.2A2 2 0 0 0 4.6 20.2h14.8a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4.2M12 16.8h.01"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8h.01"/></symbol>
+  <symbol id="i-libro" viewBox="0 0 24 24"><path d="M5 5.5A2 2 0 0 1 7 3.5h12v14H7a2 2 0 0 0-2 2z"/><path d="M5 19.5a2 2 0 0 0 2 2h12v-4M9 7.5h6M9 10.5h4"/></symbol>
+  <symbol id="i-guia" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.6 8.4-2.1 5.1-5.1 2.1 2.1-5.1z"/></symbol>
+  <symbol id="i-tarifa" viewBox="0 0 24 24"><path d="M6 2.5h12v19l-3-1.9-3 1.9-3-1.9-3 1.9z"/><path d="M9 7.5h6M9 11h6M9 14.5h3.5"/></symbol>
+  <symbol id="i-marcador" viewBox="0 0 24 24"><path d="M6.5 3.5h11v17l-5.5-3.9-5.5 3.9z"/></symbol>
+  <symbol id="i-estrella" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
+  <symbol id="i-enlace" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18.5 13.5V19a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 19V7A1.5 1.5 0 0 1 5 5.5h5.5"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-euro" viewBox="0 0 24 24"><path d="M17.5 6.6A7 7 0 1 0 17.5 17.4M4 10.3h9.5M4 13.7h9.5"/></symbol>
+  <symbol id="i-escudo" viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 8.2 7.5 9.5 4.4-1.3 7.5-4.9 7.5-9.5V6z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-panel-solar" viewBox="0 0 24 24"><path d="M5 10.5h14l2 7H3zM3.9 14h16.2M9.6 10.5l-1 7M14.4 10.5l1 7M12 17.5v3M8.5 20.5h7"/><path d="M12 2.5v2M7.4 4.4l1.1 1.4M16.6 4.4l-1.1 1.4M9.5 8a2.5 2.5 0 0 1 5 0"/></symbol>
+  <symbol id="i-recargar" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7L20 8.5"/><path d="M20 4v4.5h-4.5"/></symbol>
 </svg>

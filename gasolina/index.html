@@ -54,6 +54,11 @@
           <svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-rayo"></use></svg>
           Luz
         </a>
+        <!-- Ayuda (en el móvil; en pantallas anchas está en la columna de la derecha) -->
+        <button type="button" class="boton-ayuda boton-ayuda--cabecera" id="ayuda-cabecera"
+          aria-haspopup="menu" aria-expanded="false" aria-controls="menu-ayuda" aria-label="Ayuda">
+          <svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-ayuda"></use></svg>
+        </button>
       </header>
 
       <main>
@@ -99,10 +104,20 @@
           <div class="mapa-caja">
             <div class="mapa" id="mapa" aria-label="Mapa de gasolineras"></div>
 
+            <!-- Mis sitios (en el móvil): botón a la derecha del mapa y su cuadro encima del mapa.
+                 En pantallas anchas el cuadro está en la columna de la derecha (js/gasolina/sitios.js). -->
+            <button type="button" class="sitios-abrir" id="abrir-sitios" aria-expanded="false" aria-controls="hueco-sitios-mapa">
+              <svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-marcador"></use></svg>
+              <span>Mis sitios</span>
+              <span class="sitios-abrir__numero" aria-hidden="true"></span>
+            </button>
+            <div class="sitios-hueco" id="hueco-sitios-mapa" hidden></div>
+
             <!-- Antes de elegir una zona -->
             <div class="mapa__vacio" id="mapa-vacio">
               <p class="mapa__vacio-titulo">¿Dónde quieres repostar?</p>
               <p class="mapa__vacio-texto">Busca un pueblo, un código postal o una marca, o usa tu ubicación.</p>
+              <div class="mapa__mis-sitios" id="mapa-vacio-sitios" hidden></div>
               <div class="mapa__vacio-botones">
                 <button type="button" class="boton" data-accion="cerca">
                   <svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-ubicacion"></use></svg>Cerca de mí
@@ -244,6 +259,20 @@
         <p><a href="../">← Volver al precio de la luz</a></p>
       </footer>
     </div>
+
+    <!-- Columna de la derecha (en pantallas anchas): ayuda y «Mis sitios» -->
+    <aside class="lateral" id="lateral" aria-label="Ayuda y mis sitios">
+      <button type="button" class="boton-ayuda boton-ayuda--grande" id="ayuda-lateral"
+        aria-haspopup="menu" aria-expanded="false" aria-controls="menu-ayuda">
+        <span class="boton-ayuda__icono"><svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-ayuda"></use></svg></span>
+        <span class="boton-ayuda__textos">
+          <strong>¿Necesitas ayuda?</strong>
+          <small>Guía de uso, problemas y fuentes</small>
+        </span>
+        <span class="boton-ayuda__flecha"><svg class="icono" aria-hidden="true"><use href="../iconos/iconos.svg#i-abajo"></use></svg></span>
+      </button>
+      <div class="lateral__sitios" id="lateral-sitios"></div>
+    </aside>
   </div>
 
   <div class="velo" id="velo" hidden></div>

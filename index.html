@@ -51,6 +51,11 @@
           <h1 class="cabecera__titulo">¿Cuándo pongo la lavadora?</h1>
           <p class="cabecera__fecha" id="fecha">Precio de la luz por horas</p>
         </div>
+        <!-- Ayuda (en el móvil; en pantallas anchas está en la columna de la derecha) -->
+        <button type="button" class="boton-ayuda boton-ayuda--cabecera" id="ayuda-cabecera"
+          aria-haspopup="menu" aria-expanded="false" aria-controls="menu-ayuda" aria-label="Ayuda">
+          <svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-ayuda"></use></svg>
+        </button>
       </header>
 
       <main>
@@ -72,8 +77,39 @@
             </section>
           </div>
 
-          <!-- ACCESO A LA APP DE LA GASOLINA (con borde de neón) -->
-          <div class="movible" data-seccion="gasolina">
+          <!-- TU TARIFA: el precio de cada persona (lo pinta interfaz.js) -->
+          <div class="movible" data-seccion="tarifa">
+            <div class="movible__controles">
+              <span class="movible__nombre">Tu tarifa</span>
+              <button type="button" class="movible__boton" data-mover="-1" aria-label="Subir «Tu tarifa»"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-arriba"></use></svg></button>
+              <button type="button" class="movible__boton" data-mover="1" aria-label="Bajar «Tu tarifa»"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-abajo"></use></svg></button>
+              <span class="movible__asa" title="Arrastra para mover"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-asa"></use></svg></span>
+            </div>
+            <section class="tarjeta tarifa" id="tarifa" aria-labelledby="titulo-tarifa">
+              <div class="tarifa__cabecera">
+                <span class="tarifa__icono"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-tarifa"></use></svg></span>
+                <div class="tarifa__textos">
+                  <h2 class="tarifa__titulo" id="titulo-tarifa">Tu tarifa</h2>
+                  <p class="tarifa__tipo" id="tarifa-tipo">PVPC (precio regulado)</p>
+                </div>
+                <button type="button" class="boton boton--suave tarifa__cambiar" id="cambiar-tarifa">Cambiar</button>
+              </div>
+              <ul class="tarifa__etiquetas" id="tarifa-etiquetas" aria-label="Lo que tiene en cuenta"></ul>
+              <div class="tarifa__datos" id="tarifa-datos"></div>
+              <p class="tarifa__aviso" id="tarifa-aviso" hidden></p>
+              <div class="tarifa__pie">
+                <button type="button" class="interruptor" id="interruptor-impuestos" role="switch" aria-checked="false">
+                  <span class="interruptor__pista" aria-hidden="true"></span>
+                  Ver los precios con impuestos
+                </button>
+                <button type="button" class="tarifa__enlace" id="ir-claves">Qué cambia tu precio</button>
+              </div>
+            </section>
+          </div>
+
+          <!-- ACCESO A LA APP DE LA GASOLINA (solo en el móvil: en pantallas anchas
+               están el del panel de la izquierda y el de la columna de la derecha) -->
+          <div class="movible movible--solo-movil" data-seccion="gasolina">
             <div class="movible__controles">
               <span class="movible__nombre">Gasolina</span>
               <button type="button" class="movible__boton" data-mover="-1" aria-label="Subir «Gasolina»"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-arriba"></use></svg></button>
@@ -192,6 +228,7 @@
               <div class="tarjeta tarjeta--grafico">
                 <div id="con-datos">
                   <p class="grafico__dia" id="dia-grafico" hidden></p>
+                  <p class="grafico__aviso" id="aviso-grafico" hidden></p>
                   <div class="lectura" id="lectura"></div>
                   <div class="grafico" id="grafico">
                     <div class="esqueleto" style="height:226px"></div>
@@ -201,6 +238,7 @@
                     <li class="nivel--media">Media</li>
                     <li class="nivel--cara">Cara</li>
                   </ul>
+                  <p class="grafico__nota" id="nota-grafico"></p>
                   <div class="resumen" id="resumen"></div>
                   <details class="tabla">
                     <summary>
@@ -225,6 +263,168 @@
               </div>
             </section>
           </div>
+
+          <!-- 5. COSAS A TENER EN CUENTA: lo que hace que el precio cambie de una persona a otra -->
+          <div class="movible" data-seccion="claves">
+            <div class="movible__controles">
+              <span class="movible__nombre">Cosas a tener en cuenta</span>
+              <button type="button" class="movible__boton" data-mover="-1" aria-label="Subir «Cosas a tener en cuenta»"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-arriba"></use></svg></button>
+              <button type="button" class="movible__boton" data-mover="1" aria-label="Bajar «Cosas a tener en cuenta»"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-abajo"></use></svg></button>
+              <span class="movible__asa" title="Arrastra para mover"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-asa"></use></svg></span>
+            </div>
+            <section class="bloque" id="claves" aria-labelledby="titulo-claves">
+              <h2 class="bloque__titulo" id="titulo-claves">Cosas a tener en cuenta</h2>
+              <p class="bloque__subtitulo">Lo que hace que la luz no cueste lo mismo a todo el mundo. Cámbialo en «Tu tarifa» y la app usará tu precio real.</p>
+
+              <div class="claves">
+                <details class="clave" data-clave="tipo">
+                  <summary class="clave__resumen">
+                    <span class="clave__icono"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-tarifa"></use></svg></span>
+                    <span class="clave__textos"><strong>¿Tarifa fija o variable?</strong><small>Es lo que más cambia tu precio</small></span>
+                    <span class="clave__flecha"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-abajo"></use></svg></span>
+                  </summary>
+                  <div class="clave__cuerpo">
+                    <p><strong>Variable (PVPC o indexada):</strong> el precio cambia cada hora, todos los días. Con estas tarifas sí compensa elegir bien cuándo pones los aparatos.</p>
+                    <p><strong>Precio fijo:</strong> pagas lo mismo por cada kWh a cualquier hora. Da igual cuándo pongas la lavadora: lo que cuenta es cuánto gastas.</p>
+                    <p><strong>Tres tramos:</strong> también es fija, pero con un precio para las horas punta, otro para las llano y otro para las valle.</p>
+                    <p class="clave__nota">¿Cuál tienes? Mira tu factura. Si pone «PVPC» o «precio voluntario para el pequeño consumidor», es la regulada. Si tu contrato dice un precio por kWh, es del mercado libre (fija o de tres tramos). Si habla del precio del mercado (OMIE) más un margen, es indexada.</p>
+                    <p class="clave__estado" id="estado-tipo"></p>
+                    <button type="button" class="boton boton--suave clave__boton" data-abrir-tarifa="tipo">Elegir mi tarifa</button>
+                  </div>
+                </details>
+
+                <details class="clave" data-clave="valle">
+                  <summary class="clave__resumen">
+                    <span class="clave__icono"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-calendario"></use></svg></span>
+                    <span class="clave__textos"><strong>Fines de semana y festivos</strong><small id="resumen-valle">Todo el día es valle</small></span>
+                    <span class="clave__flecha"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-abajo"></use></svg></span>
+                  </summary>
+                  <div class="clave__cuerpo">
+                    <p>Los <strong>sábados, los domingos y los festivos nacionales</strong>, las 24 horas son <strong>valle</strong>: la parte del precio que pone el Estado (peajes y cargos) es la más baja todo el día.</p>
+                    <ul class="clave__lista">
+                      <li><strong>Con tres tramos:</strong> ese día la luz cuesta lo mismo a cualquier hora (el precio valle). Puedes poner los aparatos cuando quieras.</li>
+                      <li><strong>Con PVPC o indexada:</strong> el precio <em>sigue cambiando cada hora</em>, porque la energía se compra hora a hora. Pero no lleva el recargo de las horas punta, así que suele ser más barato y más parejo.</li>
+                      <li><strong>Con precio fijo:</strong> no cambia nada; ya pagas lo mismo siempre.</li>
+                    </ul>
+                    <p>Festivos que cuentan (nacionales y de fecha fija): 1 y 6 de enero, 1 de mayo, 15 de agosto, 12 de octubre, 1 de noviembre y 6, 8 y 25 de diciembre. <strong>No cuentan</strong> los festivos de tu comunidad o de tu pueblo, ni el Viernes Santo (no tiene fecha fija).</p>
+                    <p class="clave__nota">Lo hemos comprobado con los precios reales: el lunes 12 de octubre de 2026, que era festivo, el PVPC no llevó el recargo de las horas punta.</p>
+                    <p class="clave__estado" id="estado-valle"></p>
+                  </div>
+                </details>
+
+                <details class="clave" data-clave="horas">
+                  <summary class="clave__resumen">
+                    <span class="clave__icono"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-reloj"></use></svg></span>
+                    <span class="clave__textos"><strong>Horas punta, llano y valle</strong><small>Los tramos de la tarifa 2.0TD</small></span>
+                    <span class="clave__flecha"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-abajo"></use></svg></span>
+                  </summary>
+                  <div class="clave__cuerpo">
+                    <table class="clave__tabla">
+                      <thead><tr><th scope="col">Tramo</th><th scope="col">De lunes a viernes</th><th scope="col">Peajes y cargos</th></tr></thead>
+                      <tbody>
+                        <tr><th scope="row"><span class="punto nivel--cara"></span>Punta</th><td>10 – 14 h y 18 – 22 h</td><td>0,098 €/kWh</td></tr>
+                        <tr><th scope="row"><span class="punto nivel--media"></span>Llano</th><td>8 – 10 h, 14 – 18 h y 22 – 24 h</td><td>0,029 €/kWh</td></tr>
+                        <tr><th scope="row"><span class="punto nivel--barata"></span>Valle</th><td>0 – 8 h, y sábados, domingos y festivos todo el día</td><td>0,003 €/kWh</td></tr>
+                      </tbody>
+                    </table>
+                    <p>En Baleares y Canarias son las mismas horas (en Canarias, en su hora). En <strong>Ceuta y Melilla</strong> van una hora más tarde: punta de 11 a 15 h y de 19 a 23 h; llano de 8 a 11 h, de 15 a 19 h y de 23 a 24 h; valle de 0 a 8 h.</p>
+                    <p class="clave__nota">Los peajes y cargos son la parte que el Estado suma a cada kWh (cifras de 2026, sin impuestos). Por eso las horas punta son mucho más caras con cualquier tarifa que no sea de precio fijo. Es la tarifa 2.0TD, la de casi todas las casas (hasta 15 kW).</p>
+                    <button type="button" class="boton boton--suave clave__boton" data-abrir-tarifa="zona">Elegir dónde vivo</button>
+                  </div>
+                </details>
+
+                <details class="clave" data-clave="potencia">
+                  <summary class="clave__resumen">
+                    <span class="clave__icono"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-enchufe"></use></svg></span>
+                    <span class="clave__textos"><strong>La potencia contratada</strong><small>Lo que pagas aunque no gastes</small></span>
+                    <span class="clave__flecha"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-abajo"></use></svg></span>
+                  </summary>
+                  <div class="clave__cuerpo">
+                    <p>Cada día pagas por los kW que tienes contratados, gastes o no. Con el PVPC, en 2026 son <strong>0,0844 €</strong> por kW al día en punta-llano y <strong>0,0020 €</strong> por kW al día en valle (sin impuestos).</p>
+                    <p>En el mercado libre, cada compañía pone su precio de la potencia: lo tienes en tu contrato.</p>
+                    <p>Si bajas la potencia pagas menos cada mes, pero si enciendes muchos aparatos a la vez, salta el limitador. Puedes tener una potencia en punta-llano y otra en valle.</p>
+                    <p class="clave__estado" id="estado-potencia"></p>
+                    <button type="button" class="boton boton--suave clave__boton" data-abrir-tarifa="potencia">Poner mi potencia</button>
+                  </div>
+                </details>
+
+                <details class="clave" data-clave="impuestos">
+                  <summary class="clave__resumen">
+                    <span class="clave__icono"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-euro"></use></svg></span>
+                    <span class="clave__textos"><strong>Impuestos</strong><small>Los precios de Red Eléctrica no los llevan</small></span>
+                    <span class="clave__flecha"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-abajo"></use></svg></span>
+                  </summary>
+                  <div class="clave__cuerpo">
+                    <ul class="clave__lista">
+                      <li><strong>Impuesto especial sobre la electricidad:</strong> 5,11 % de la potencia y de la energía (nunca menos de 1 € por cada 1.000 kWh).</li>
+                      <li><strong>IVA:</strong> 21 % en la península y Baleares.</li>
+                      <li><strong>Canarias:</strong> en lugar de IVA, IGIC: 0 % en las viviendas de hasta 10 kW (3 % si tienen más).</li>
+                      <li><strong>Ceuta y Melilla:</strong> en lugar de IVA, IPSI: 1 %.</li>
+                    </ul>
+                    <p>A veces el Gobierno los rebaja durante un tiempo. Del 22 de marzo al 30 de junio de 2026, el IVA bajó al 10 % y el impuesto eléctrico al 0,5 % (Real Decreto-ley 7/2026). Para noviembre y diciembre de 2026 había otra rebaja que solo se activaba si la luz subía más de un 15 % en un año, y no se ha activado.</p>
+                    <p class="clave__estado" id="estado-impuestos"></p>
+                    <button type="button" class="boton boton--suave clave__boton" data-abrir-tarifa="impuestos">Ver precios con impuestos</button>
+                  </div>
+                </details>
+
+                <details class="clave" data-clave="bono">
+                  <summary class="clave__resumen">
+                    <span class="clave__icono"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-escudo"></use></svg></span>
+                    <span class="clave__textos"><strong>Bono social</strong><small>Descuento para hogares vulnerables</small></span>
+                    <span class="clave__flecha"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-abajo"></use></svg></span>
+                  </summary>
+                  <div class="clave__cuerpo">
+                    <p>Es un descuento en la factura para los hogares que lo necesitan. Solo se puede tener con el PVPC y hasta 10 kW, y se pide a una comercializadora de referencia.</p>
+                    <ul class="clave__lista">
+                      <li>En 2026 es del <strong>42,5 %</strong> (vulnerable) o del <strong>57,5 %</strong> (vulnerable severo), hasta el 31 de diciembre de 2026.</li>
+                      <li>Se descuenta de la potencia y de la energía, pero la energía solo hasta un límite al año: 1.587 kWh si vivís una o dos personas (más si hay menores, pensionistas o sois familia numerosa).</li>
+                    </ul>
+                    <button type="button" class="boton boton--suave clave__boton" data-abrir-tarifa="bono">Tengo bono social</button>
+                  </div>
+                </details>
+
+                <details class="clave" data-clave="fijos">
+                  <summary class="clave__resumen">
+                    <span class="clave__icono"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-instalar"></use></svg></span>
+                    <span class="clave__textos"><strong>Contador y bono social</strong><small>Dos cosas fijas de cada factura</small></span>
+                    <span class="clave__flecha"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-abajo"></use></svg></span>
+                  </summary>
+                  <div class="clave__cuerpo">
+                    <ul class="clave__lista">
+                      <li><strong>Alquiler del contador:</strong> 0,81 € al mes si es monofásico (el de casi todas las casas) y 1,36 € si es trifásico. Si el contador es tuyo, no pagas alquiler.</li>
+                      <li><strong>Financiación del bono social:</strong> unos 9,01 € al año (0,025 € al día). La pagan todos los contratos, tengan bono o no.</li>
+                    </ul>
+                    <button type="button" class="boton boton--suave clave__boton" data-abrir-tarifa="contador">Elegir mi contador</button>
+                  </div>
+                </details>
+
+                <details class="clave" data-clave="pvpc">
+                  <summary class="clave__resumen">
+                    <span class="clave__icono"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-rayo"></use></svg></span>
+                    <span class="clave__textos"><strong>Cómo se calcula el PVPC</strong><small>Por qué cambia cada hora</small></span>
+                    <span class="clave__flecha"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-abajo"></use></svg></span>
+                  </summary>
+                  <div class="clave__cuerpo">
+                    <p>El PVPC suma el coste de la energía de cada hora, los peajes y cargos de su tramo y otros costes pequeños. Desde 2026, el <strong>55 %</strong> de la energía se compra con meses de antelación (mercados de futuros) y el <strong>45 %</strong> en el mercado del día anterior. Por eso cambia menos que antes de 2024, pero sigue siendo distinto cada hora.</p>
+                    <p>Red Eléctrica publica los precios de mañana cada tarde, hacia las 20:30. No llevan impuestos ni la potencia.</p>
+                  </div>
+                </details>
+
+                <details class="clave" data-clave="placas">
+                  <summary class="clave__resumen">
+                    <span class="clave__icono"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-panel-solar"></use></svg></span>
+                    <span class="clave__textos"><strong>Placas solares</strong><small>Si tienes autoconsumo</small></span>
+                    <span class="clave__flecha"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-abajo"></use></svg></span>
+                  </summary>
+                  <div class="clave__cuerpo">
+                    <p>Mientras tus placas producen, gastas tu propia luz, que te sale casi gratis. Lo mejor es poner los aparatos en las horas de más sol (más o menos de 12:00 a 16:00), aunque la luz de la red esté cara a esa hora.</p>
+                    <p>La luz que te sobra se descuenta en tu factura (compensación de excedentes), según tu contrato.</p>
+                    <button type="button" class="boton boton--suave clave__boton" data-abrir-tarifa="placas">Tengo placas</button>
+                  </div>
+                </details>
+              </div>
+            </section>
+          </div>
         </div>
 
         <!-- Invitación a instalar la app (solo aparece si el navegador lo permite) -->
@@ -243,15 +443,36 @@
 
       <footer class="pie">
         <p class="pie__estado" id="estado" hidden></p>
-        <p>Precio PVPC (tarifa 2.0TD) en la península, en €/kWh y en hora peninsular. Incluye peajes y cargos, pero no los impuestos ni el término de potencia.</p>
-        <p>El coste de cada aparato es aproximado: usa su potencia media y suma los impuestos (impuesto eléctrico e IVA).</p>
-        <p>Verde: al menos un 10&nbsp;% más barata que la media del día. Rojo: al menos un 10&nbsp;% más cara. Amarillo: entre medias.</p>
-        <p>Datos: <a href="https://www.ree.es/es/apidatos" rel="noopener">API de Red Eléctrica</a>.</p>
+        <p id="pie-tarifa">Precio PVPC (tarifa 2.0TD) en la península, en €/kWh y en hora peninsular. Incluye peajes y cargos, pero no los impuestos ni el término de potencia.</p>
+        <p id="pie-coste">El coste de cada aparato es aproximado: usa su potencia media y suma los impuestos (impuesto eléctrico e IVA).</p>
+        <p id="pie-colores">Verde: al menos un 10&nbsp;% más barata que la media del día. Rojo: al menos un 10&nbsp;% más cara. Amarillo: entre medias.</p>
+        <p>Datos: <a href="https://www.ree.es/es/apidatos" rel="noopener">API de Red Eléctrica</a>. Peajes, cargos e impuestos de 2026: CNMC, BOE y Agencia Tributaria (mira «Ayuda → Fuentes»).</p>
       </footer>
 
       <!-- Aquí se escriben avisos para lectores de pantalla (no se ve) -->
       <p class="solo-lectores" id="anuncio" aria-live="polite"></p>
     </div>
+
+    <!-- Columna de la derecha (en pantallas anchas): ayuda y acceso a la gasolina -->
+    <aside class="lateral" id="lateral" aria-label="Ayuda y accesos directos">
+      <button type="button" class="boton-ayuda boton-ayuda--grande" id="ayuda-lateral"
+        aria-haspopup="menu" aria-expanded="false" aria-controls="menu-ayuda">
+        <span class="boton-ayuda__icono"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-ayuda"></use></svg></span>
+        <span class="boton-ayuda__textos">
+          <strong>¿Necesitas ayuda?</strong>
+          <small>Guía de uso, problemas y fuentes</small>
+        </span>
+        <span class="boton-ayuda__flecha"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-abajo"></use></svg></span>
+      </button>
+
+      <a class="atajo atajo--neon" href="gasolina/">
+        <span class="atajo__fondo" aria-hidden="true"></span>
+        <span class="atajo__icono"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-surtidor"></use></svg></span>
+        <span class="atajo__titulo">¿Cuándo echo gasolina?</span>
+        <span class="atajo__texto" id="atajo-lateral-texto">Precios de todas las gasolineras, en un mapa</span>
+        <span class="atajo__flecha"><svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-flecha"></use></svg></span>
+      </a>
+    </aside>
   </div>
 
   <!-- Fondo oscuro detrás del panel de ajustes (en el móvil) -->
@@ -275,6 +496,180 @@
         <button type="submit" value="cancelar" class="boton boton--suave">Cancelar</button>
         <button type="submit" value="restaurar" class="boton boton--peligro">Restaurar</button>
       </div>
+    </form>
+  </dialog>
+
+  <!-- TU TARIFA: todo lo que cambia el precio de cada persona (lo maneja js/luz/editor-tarifa.js) -->
+  <dialog class="dialogo dialogo--hoja" id="dialogo-tarifa" aria-labelledby="titulo-hoja-tarifa">
+    <form class="hoja" id="formulario-tarifa" novalidate>
+      <header class="hoja__cabecera">
+        <h2 class="hoja__titulo" id="titulo-hoja-tarifa">Tu tarifa de la luz</h2>
+        <button type="button" class="boton-icono hoja__cerrar" data-cerrar aria-label="Cerrar sin guardar">
+          <svg class="icono" aria-hidden="true"><use href="iconos/iconos.svg#i-cerrar"></use></svg>
+        </button>
+      </header>
+
+      <div class="hoja__cuerpo">
+        <fieldset class="campo" data-campo="tipo">
+          <legend class="campo__titulo">¿Qué tarifa tienes?</legend>
+          <p class="campo__ayuda">Míralo en tu factura o en tu contrato.</p>
+          <div class="opciones">
+            <label class="opcion">
+              <input type="radio" name="tipo" value="pvpc">
+              <span class="opcion__caja"><strong>PVPC (regulada)</strong><small>El precio cambia cada hora. La tienen las comercializadoras de referencia.</small></span>
+            </label>
+            <label class="opcion">
+              <input type="radio" name="tipo" value="fija">
+              <span class="opcion__caja"><strong>Precio fijo</strong><small>Pagas lo mismo a cualquier hora.</small></span>
+            </label>
+            <label class="opcion">
+              <input type="radio" name="tipo" value="tramos">
+              <span class="opcion__caja"><strong>Tres tramos</strong><small>Un precio en punta, otro en llano y otro en valle.</small></span>
+            </label>
+            <label class="opcion">
+              <input type="radio" name="tipo" value="indexada">
+              <span class="opcion__caja"><strong>Indexada</strong><small>Mercado libre que sigue al mercado cada hora.</small></span>
+            </label>
+          </div>
+
+          <div class="subcampos" data-para="fija">
+            <label class="entrada">
+              <span class="entrada__nombre">Precio de la energía</span>
+              <span class="entrada__caja"><input id="precio-fijo" inputmode="decimal" autocomplete="off" placeholder="0,135"><span class="entrada__unidad">€/kWh</span></span>
+              <span class="entrada__nota" data-nota-de="precio-fijo"></span>
+            </label>
+          </div>
+          <div class="subcampos subcampos--tres" data-para="tramos">
+            <label class="entrada">
+              <span class="entrada__nombre"><span class="punto nivel--cara"></span>Punta</span>
+              <span class="entrada__caja"><input id="precio-punta" inputmode="decimal" autocomplete="off" placeholder="0,200"><span class="entrada__unidad">€/kWh</span></span>
+              <span class="entrada__nota" data-nota-de="precio-punta"></span>
+            </label>
+            <label class="entrada">
+              <span class="entrada__nombre"><span class="punto nivel--media"></span>Llano</span>
+              <span class="entrada__caja"><input id="precio-llano" inputmode="decimal" autocomplete="off" placeholder="0,130"><span class="entrada__unidad">€/kWh</span></span>
+              <span class="entrada__nota" data-nota-de="precio-llano"></span>
+            </label>
+            <label class="entrada">
+              <span class="entrada__nombre"><span class="punto nivel--barata"></span>Valle</span>
+              <span class="entrada__caja"><input id="precio-valle" inputmode="decimal" autocomplete="off" placeholder="0,090"><span class="entrada__unidad">€/kWh</span></span>
+              <span class="entrada__nota" data-nota-de="precio-valle"></span>
+            </label>
+          </div>
+          <div class="subcampos" data-para="indexada">
+            <label class="entrada">
+              <span class="entrada__nombre">Lo que suma tu compañía al precio del mercado</span>
+              <span class="entrada__caja"><input id="margen-indexada" inputmode="decimal" autocomplete="off" placeholder="0,020"><span class="entrada__unidad">€/kWh</span></span>
+              <span class="entrada__nota" data-nota-de="margen-indexada"></span>
+            </label>
+            <p class="campo__ayuda">Viene en tu contrato (margen, «fee» o costes de gestión). La app suma el precio del mercado de cada hora y los peajes y cargos oficiales de su tramo.</p>
+          </div>
+          <p class="campo__ayuda" data-para="fija tramos">Pon los precios <strong>sin impuestos</strong>, como vienen en tu contrato. Si los escribes en céntimos (13,5), los pasamos a euros.</p>
+          <p class="campo__error" id="error-tarifa" role="alert"></p>
+        </fieldset>
+
+        <fieldset class="campo" data-campo="zona">
+          <legend class="campo__titulo">¿Dónde vives?</legend>
+          <div class="chips-radio">
+            <label class="chip-radio"><input type="radio" name="zona" value="peninsula"><span>Península</span></label>
+            <label class="chip-radio"><input type="radio" name="zona" value="baleares"><span>Baleares</span></label>
+            <label class="chip-radio"><input type="radio" name="zona" value="canarias"><span>Canarias</span></label>
+            <label class="chip-radio"><input type="radio" name="zona" value="ceuta"><span>Ceuta</span></label>
+            <label class="chip-radio"><input type="radio" name="zona" value="melilla"><span>Melilla</span></label>
+          </div>
+          <p class="campo__ayuda" id="ayuda-zona">Cambian los impuestos y, en Ceuta y Melilla, las horas de cada tramo.</p>
+        </fieldset>
+
+        <fieldset class="campo" data-campo="bono">
+          <legend class="campo__titulo">Bono social</legend>
+          <div class="chips-radio">
+            <label class="chip-radio"><input type="radio" name="bono" value="no"><span>No tengo</span></label>
+            <label class="chip-radio"><input type="radio" name="bono" value="vulnerable"><span>Vulnerable (−42,5&nbsp;%)</span></label>
+            <label class="chip-radio"><input type="radio" name="bono" value="severo"><span>Vulnerable severo (−57,5&nbsp;%)</span></label>
+          </div>
+          <p class="campo__ayuda" id="ayuda-bono">Solo con el PVPC y hasta 10 kW. Descuentos de 2026, hasta el 31 de diciembre.</p>
+        </fieldset>
+
+        <fieldset class="campo" data-campo="impuestos">
+          <legend class="campo__titulo">Impuestos</legend>
+          <label class="casilla">
+            <input type="checkbox" id="ver-impuestos">
+            <span class="casilla__caja" aria-hidden="true"></span>
+            <span class="casilla__texto"><strong>Ver los precios con impuestos</strong><small>Lo que pagas de verdad por cada kWh. Sin marcar, verás los precios como los publica Red Eléctrica.</small></span>
+          </label>
+          <label class="casilla">
+            <input type="checkbox" id="rebaja-impuestos">
+            <span class="casilla__caja" aria-hidden="true"></span>
+            <span class="casilla__texto"><strong>Hay una rebaja temporal de impuestos</strong><small>IVA al 10&nbsp;% e impuesto eléctrico al 0,5&nbsp;%, como del 22 de marzo al 30 de junio de 2026. Ahora (noviembre de 2026) no la hay.</small></span>
+          </label>
+        </fieldset>
+
+        <fieldset class="campo" data-campo="potencia">
+          <legend class="campo__titulo">Tu contrato</legend>
+          <label class="entrada">
+            <span class="entrada__nombre">Potencia contratada</span>
+            <span class="entrada__caja"><input id="potencia-contratada" inputmode="decimal" autocomplete="off" placeholder="3,45"><span class="entrada__unidad">kW</span></span>
+          </label>
+          <div class="chips-rapidos" role="group" aria-label="Potencias habituales">
+            <button type="button" class="chip" data-potencia="2.3">2,3</button>
+            <button type="button" class="chip" data-potencia="3.45">3,45</button>
+            <button type="button" class="chip" data-potencia="4.6">4,6</button>
+            <button type="button" class="chip" data-potencia="5.75">5,75</button>
+            <button type="button" class="chip" data-potencia="6.9">6,9</button>
+            <button type="button" class="chip" data-potencia="9.2">9,2</button>
+          </div>
+          <label class="casilla casilla--pequena">
+            <input type="checkbox" id="potencia-distinta">
+            <span class="casilla__caja" aria-hidden="true"></span>
+            <span class="casilla__texto"><strong>Tengo otra potencia en valle</strong></span>
+          </label>
+          <label class="entrada" id="caja-potencia-valle" hidden>
+            <span class="entrada__nombre">Potencia en valle</span>
+            <span class="entrada__caja"><input id="potencia-valle" inputmode="decimal" autocomplete="off" placeholder="3,45"><span class="entrada__unidad">kW</span></span>
+          </label>
+
+          <div class="subcampos subcampos--dos" id="precios-potencia">
+            <p class="campo__ayuda subcampos__titulo">Precio de la potencia de tu compañía (opcional). Si lo dejas vacío, usamos el del PVPC.</p>
+            <label class="entrada">
+              <span class="entrada__nombre">Punta-llano</span>
+              <span class="entrada__caja"><input id="precio-potencia-punta" inputmode="decimal" autocomplete="off" placeholder="0,0844"><span class="entrada__unidad">€/kW día</span></span>
+              <span class="entrada__nota" data-nota-de="precio-potencia-punta"></span>
+            </label>
+            <label class="entrada">
+              <span class="entrada__nombre">Valle</span>
+              <span class="entrada__caja"><input id="precio-potencia-valle" inputmode="decimal" autocomplete="off" placeholder="0,0020"><span class="entrada__unidad">€/kW día</span></span>
+              <span class="entrada__nota" data-nota-de="precio-potencia-valle"></span>
+            </label>
+          </div>
+
+          <p class="campo__subtitulo" data-campo="contador">Contador</p>
+          <div class="chips-radio">
+            <label class="chip-radio"><input type="radio" name="contador" value="monofasico"><span>Alquilado, monofásico</span></label>
+            <label class="chip-radio"><input type="radio" name="contador" value="trifasico"><span>Alquilado, trifásico</span></label>
+            <label class="chip-radio"><input type="radio" name="contador" value="propio"><span>Es mío</span></label>
+          </div>
+
+          <label class="entrada" data-campo="consumo">
+            <span class="entrada__nombre">Lo que gastas al mes (opcional)</span>
+            <span class="entrada__caja"><input id="consumo-mes" inputmode="decimal" autocomplete="off" placeholder="250"><span class="entrada__unidad">kWh</span></span>
+            <span class="entrada__nota">Viene en tu factura. Con él calculamos tu factura aproximada.</span>
+          </label>
+        </fieldset>
+
+        <fieldset class="campo" data-campo="placas">
+          <legend class="campo__titulo">Placas solares</legend>
+          <label class="casilla">
+            <input type="checkbox" id="tengo-placas">
+            <span class="casilla__caja" aria-hidden="true"></span>
+            <span class="casilla__texto"><strong>Tengo placas solares (autoconsumo)</strong><small>Te avisaremos de que, con sol, lo más barato es usar tu propia luz.</small></span>
+          </label>
+        </fieldset>
+      </div>
+
+      <footer class="hoja__botones">
+        <button type="button" class="boton boton--suave" data-cerrar>Cancelar</button>
+        <button type="submit" class="boton">Guardar</button>
+      </footer>
     </form>
   </dialog>
 </body>

@@ -330,24 +330,7 @@ main > section + section {
   gap: 8px;
 }
 
-.chip {
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: var(--superficie-2);
-  font-size: 0.875rem;
-  font-weight: 650;
-  color: var(--tinta-suave);
-  transition: transform 140ms var(--salida), background-color 160ms ease, color 160ms ease;
-}
-
-.chip:active {
-  transform: scale(0.93);
-}
-
-.chip[aria-pressed="true"] {
-  background: var(--acento);
-  color: var(--sobre-acento);
-}
+/* (los «chips» están en comun.css) */
 
 .calculadora .coste {
   margin-top: 6px;
@@ -686,18 +669,6 @@ main > section + section {
   margin: 0 0 10px;
 }
 
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.chip .icono {
-  width: 16px;
-  height: 16px;
-  stroke-width: 2;
-}
-
 .chip--quitar {
   background: var(--acento-suave);
   color: var(--acento-texto);
@@ -887,9 +858,9 @@ main > section + section {
   font-size: 10px !important;
 }
 
-/* Separado de la esquina redondeada del mapa, para que no se corte */
-.leaflet-top.leaflet-right .leaflet-control-attribution {
-  margin: 8px 12px 0 0;
+/* Créditos debajo del zoom, en forma de pastilla */
+.leaflet-top.leaflet-left .leaflet-control-attribution {
+  margin: 8px 0 0 10px;
   padding: 1px 8px;
   border-radius: 999px;
 }
@@ -1448,5 +1419,410 @@ main > section + section {
   .pin--recomendada,
   .yo::after {
     animation: none;
+  }
+}
+
+
+/* ---------- Mis sitios ---------- */
+
+/* Botón «Mis sitios» en la esquina derecha del mapa (en el móvil) */
+.sitios-abrir {
+  position: absolute;
+  z-index: 1060; /* encima de los botones de Leaflet y de la pantalla vacía */
+  top: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px 8px 10px;
+  border-radius: 999px;
+  background: var(--superficie);
+  color: var(--tinta);
+  font-size: 0.875rem;
+  font-weight: 700;
+  box-shadow: var(--sombra-alta);
+  transition: transform 140ms var(--salida);
+}
+
+.sitios-abrir:active {
+  transform: scale(0.95);
+}
+
+.sitios-abrir .icono {
+  width: 18px;
+  height: 18px;
+  color: var(--acento);
+  stroke-width: 2;
+}
+
+.sitios-abrir[aria-expanded="true"] {
+  background: var(--acento);
+  color: var(--sobre-acento);
+}
+
+.sitios-abrir[aria-expanded="true"] .icono {
+  color: currentColor;
+}
+
+.sitios-abrir__numero {
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--acento-suave);
+  color: var(--acento-texto);
+  font-size: 0.75rem;
+  line-height: 20px;
+  text-align: center;
+}
+
+.sitios-abrir__numero:empty {
+  display: none;
+}
+
+/* El cuadro, encima del mapa y pegado a la derecha (en el móvil) */
+.sitios-hueco {
+  position: absolute;
+  z-index: 1150; /* encima de la tarjeta de la gasolinera */
+  top: 56px;
+  right: 10px;
+  bottom: 10px;
+  width: min(330px, calc(100% - 20px));
+  animation: sitios-entra 240ms var(--salida);
+}
+
+@keyframes sitios-entra {
+  from { opacity: 0; transform: translateX(16px); }
+}
+
+.sitios {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border-radius: var(--radio-grande);
+  background: var(--superficie);
+  box-shadow: var(--sombra);
+}
+
+.sitios--flotante {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  box-shadow: var(--sombra-alta);
+}
+
+.sitios__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sitios__titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.0625rem;
+  font-weight: 800;
+}
+
+.sitios__icono {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--acento-suave);
+  color: var(--acento-texto);
+}
+
+.sitios__icono .icono {
+  width: 20px;
+  height: 20px;
+}
+
+.sitios__cerrar {
+  width: 36px;
+  height: 36px;
+  background: var(--superficie-2);
+  box-shadow: none;
+}
+
+/* En la columna de la derecha no hace falta cerrarlo */
+.sitios:not(.sitios--flotante) .sitios__cerrar {
+  display: none;
+}
+
+.sitios__texto {
+  color: var(--tinta-suave);
+  font-size: 0.875rem;
+}
+
+.sitios__nuevo {
+  display: flex;
+  gap: 6px;
+}
+
+.sitios__caja {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  border: 1.5px solid var(--linea-base);
+  border-radius: 12px;
+  background: var(--superficie);
+  color: var(--tinta-tenue);
+}
+
+.sitios__caja:focus-within {
+  border-color: var(--acento);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--acento) 18%, transparent);
+}
+
+.sitios__caja .icono {
+  width: 18px;
+  height: 18px;
+}
+
+.sitios__entrada {
+  flex: 1;
+  min-width: 0;
+  height: 42px;
+  border: 0;
+  background: none;
+  color: var(--tinta);
+  font-size: 16px; /* así el iPhone no hace zoom */
+  outline: none;
+}
+
+.sitios__anadir {
+  padding: 0 12px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+}
+
+/* En la columna de la derecha hay menos sitio: el botón es solo el «+» */
+.sitios:not(.sitios--flotante) .sitios__anadir {
+  width: 44px;
+  padding: 0;
+}
+
+.sitios:not(.sitios--flotante) .sitios__anadir span {
+  display: none;
+}
+
+.sitios__sugerencias {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 14px;
+  background: var(--superficie-2);
+}
+
+.sitios__sugerencia {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.sitios__sugerencia strong {
+  font-size: 0.875rem;
+}
+
+.sitios__sugerencia small {
+  font-size: 0.75rem;
+  color: var(--tinta-tenue);
+}
+
+.sitios__aviso {
+  color: var(--acento-texto);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.sitios__aviso:empty {
+  display: none;
+}
+
+.sitios__actual {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border: 1.5px dashed var(--acento);
+  border-radius: 12px;
+  color: var(--acento-texto);
+  font-size: 0.8125rem;
+  text-align: left;
+}
+
+.sitios__actual .icono {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.sitios__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sitio {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.sitio__ir {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1.5px solid transparent;
+  border-radius: 14px;
+  background: var(--superficie-2);
+  text-align: left;
+  transition: transform 140ms var(--salida), border-color 160ms ease;
+}
+
+.sitio__ir:active {
+  transform: scale(0.98);
+}
+
+.sitio__ir[aria-current="true"] {
+  border-color: var(--acento);
+  background: var(--acento-velo);
+}
+
+.sitio__icono {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--superficie);
+  color: var(--acento);
+}
+
+.sitio__icono .icono {
+  width: 18px;
+  height: 18px;
+}
+
+.sitio__textos {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sitio__textos strong {
+  overflow: hidden;
+  font-size: 0.9375rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sitio__textos small {
+  overflow: hidden;
+  color: var(--tinta-tenue);
+  font-size: 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sitio__quitar {
+  width: 36px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: var(--tinta-tenue);
+}
+
+.sitio__quitar .icono {
+  width: 18px;
+  height: 18px;
+}
+
+.sitios__vacio {
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--superficie-2);
+  color: var(--tinta-tenue);
+  font-size: 0.8125rem;
+  text-align: center;
+}
+
+/* En la pantalla vacía del mapa: tus sitios como accesos rápidos */
+.mapa__mis-sitios {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.mapa__mis-sitios-titulo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--acento-texto);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.mapa__mis-sitios-titulo .icono {
+  width: 16px;
+  height: 16px;
+}
+
+.mapa__mis-sitios-lista {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.chip--sitio {
+  background: var(--acento);
+  color: var(--sobre-acento);
+  box-shadow: var(--sombra);
+}
+
+/* En pantallas anchas, «Mis sitios» está en la columna de la derecha */
+@media (min-width: 1280px) {
+  .sitios-abrir,
+  .sitios-hueco {
+    display: none !important;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sitio__ir:hover,
+  .sitios__sugerencia:hover {
+    border-color: var(--linea-base);
+    background: color-mix(in srgb, var(--tinta) 6%, var(--superficie-2));
+  }
+
+  .sitio__quitar:hover {
+    color: var(--cara-texto);
+    background: var(--cara-suave);
+  }
+}
+
+/* En móviles estrechos, con los botones «Luz» y «Ayuda», el logo no cabe: fuera */
+@media (max-width: 430px) {
+  .cabecera__logo--gasolina {
+    display: none;
   }
 }

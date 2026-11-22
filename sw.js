@@ -16,7 +16,7 @@
 
 // Cambia la versión si añades o quitas archivos de la lista.
 const PREFIJO = 'cuando-lavadora-';
-const CACHE = `${PREFIJO}v3`;
+const CACHE = `${PREFIJO}v5`;
 
 const ARCHIVOS = [
   // App de la luz
@@ -25,25 +25,36 @@ const ARCHIVOS = [
   './css/comun.css',
   './css/luz.css',
   './js/comun/ajustes.js',
+  './js/comun/ayuda.js',
   './js/comun/calendario.js',
+  './js/comun/guia.js',
   './js/comun/iconos.js',
   './js/comun/ordenar.js',
   './js/luz/app.js',
   './js/luz/api.js',
+  './js/luz/ayuda-luz.js',
   './js/luz/calculos.js',
+  './js/luz/editor-tarifa.js',
   './js/luz/electrodomesticos.js',
   './js/luz/interfaz.js',
   './js/luz/personalizar.js',
+  './js/luz/tarifas.js',
+  // Página «¿Para qué sirve la app?»
+  './ayuda/',
+  './ayuda/index.html',
+  './css/ayuda.css',
   // App de la gasolina
   './gasolina/',
   './gasolina/index.html',
   './css/gasolina.css',
   './js/gasolina/app.js',
+  './js/gasolina/ayuda-gasolina.js',
   './js/gasolina/calculos.js',
   './js/gasolina/estaciones.js',
   './js/gasolina/interfaz.js',
   './js/gasolina/linea.js',
   './js/gasolina/mapa.js',
+  './js/gasolina/sitios.js',
   './vendor/leaflet/leaflet.js',
   './vendor/leaflet/leaflet.css',
   './datos/gasolina.json',

@@ -2,7 +2,7 @@
 
 Web app (PWA) con dos partes:
 
-- **La luz:** el precio **PVPC** en España hora a hora, cuándo es más barato poner cada electrodoméstico y cuánto te costará.
+- **La luz:** el precio de la luz en España hora a hora (el **PVPC** o el de **tu tarifa**: precio fijo, tres tramos o indexada, con tu zona, impuestos, bono social y potencia), cuándo es más barato poner cada electrodoméstico y cuánto te costará.
 - **La gasolina** (*¿Cuándo echo gasolina?*): un **mapa con todas las gasolineras de España** y su precio, la más barata recomendada, la ficha y el historial de cada una, el precio medio de cada carburante y lo que cuesta repostar.
 
 Está hecha con **HTML, CSS y JavaScript sin frameworks ni compilación**: lo que ves en los archivos es exactamente lo que se ejecuta.
@@ -19,12 +19,21 @@ Está hecha con **HTML, CSS y JavaScript sin frameworks ni compilación**: lo qu
   - Te dice el **coste aproximado en euros**, en la mejor franja y si empiezas ya, y cuánto ahorras.
   - La **duración** y la **potencia** de cada aparato se pueden ajustar, y la app las recuerda.
 - **Gráfico** de las 24 horas en verde, amarillo o rojo. Toca o desliza el dedo para leer cada hora. Las pestañas son **Hoy**, **Mañana** y **calendario** (📅), que enseña los **dos últimos meses**, cada día con el color de su precio medio.
-- **Panel de ajustes**, a la izquierda. En el móvil se abre con el botón de arriba; en pantallas anchas está siempre visible.
+- **Tu tarifa:** una tarjeta con tu tarifa y el botón **Cambiar**, que abre un formulario con todo lo que hace que el precio sea distinto para cada persona:
+  - **Tipo de tarifa:** PVPC (cambia cada hora), **precio fijo** (el mismo a todas horas), **tres tramos** (punta, llano y valle) o **indexada** (precio del mercado de cada hora + lo que suma tu compañía).
+  - **Dónde vives:** península, Baleares, Canarias (IGIC en lugar de IVA y horas canarias), Ceuta o Melilla (IPSI y tramos una hora más tarde).
+  - **Bono social** (42,5 % o 57,5 % en 2026, solo con el PVPC), **impuestos** (ver los precios con o sin impuestos, y una casilla por si el Gobierno vuelve a rebajarlos), **potencia contratada** (también distinta en valle), precio de la potencia de tu compañía, **contador** y **consumo al mes**.
+  - **Placas solares:** te recuerda que con sol lo más barato es usar tu propia luz.
+  - Con eso, **todos los precios, colores, horas baratas y costes** pasan a ser los tuyos. La tarjeta enseña también el precio medio de hoy, **lo que pagas fijo al mes** y, si pones tu consumo, tu **factura aproximada**.
+- **Fines de semana y festivos:** los sábados, domingos y festivos nacionales todo el día es **valle**. Con tres tramos, la app te dice que cuesta lo mismo a cualquier hora; con PVPC o indexada, que el precio sigue cambiando pero sin el recargo de punta.
+- **Cosas a tener en cuenta:** desplegables que explican qué cambia el precio (tarifa fija o variable, fines de semana y festivos, horas punta, potencia, impuestos, bono social, contador, cómo se calcula el PVPC y placas solares), con las cifras oficiales de 2026.
+- **Panel de ajustes**, a la izquierda. En el móvil se abre con el botón de arriba; en pantallas anchas está siempre visible, a la izquierda del todo.
   - **Tema** claro, oscuro o automático (oscuro de 20:00 a 8:00).
   - **Tamaño de letra**, con una barra.
   - **Personalizar:** las tarjetas tiemblan como en el iPhone. Puedes **arrastrarlas** (por el asa ⋮⋮) o moverlas con las flechas. Con **−** y **＋** eliges qué aparatos van en la pantalla principal y cuáles en «Más». También se entra en este modo **manteniendo pulsado** un aparato.
   - **Restaurar todo:** lo deja todo como al principio. Aparece al lado de «Personalizar».
-  - **Acceso directo** a la app de la gasolina, con un borde de neón animado. También está en la pantalla principal y se puede mover con «Personalizar».
+  - **Acceso directo** a la app de la gasolina, con un borde de neón de un solo color (el de la app, que cambia con el tema claro u oscuro).
+- **Columna de la derecha** (en pantallas anchas): el botón de **ayuda** y otro acceso directo a la gasolina. En el móvil, el acceso a la gasolina está en la pantalla principal y la ayuda es el botón azul de arriba a la derecha.
 
 ### La gasolina (`gasolina/index.html`)
 
@@ -36,6 +45,16 @@ Está hecha con **HTML, CSS y JavaScript sin frameworks ni compilación**: lo qu
   - Su **historial** de 1 o 3 meses, con **gráfico** y **calendario**.
 - **Filtros:** marca, «Abiertas 24 h» y orden por precio o por distancia. La lista de las más baratas tiene **Ver más / Ver menos**.
 - **Precio medio de España:** tarjetas por carburante (Gasolina 95 y 98, Diésel, Diésel Premium y GLP), si es buen momento para repostar, **calculadora** de litros con lo que cuesta hoy y lo esperado en 7 días, y gráfico y calendario de 6 meses.
+- **Mis sitios:** guarda los sitios donde sueles repostar (un pueblo, un código postal, una marca o una gasolinera), escribiéndolos o con «Guardar lo que veo». Con un toque, el mapa los busca. En el móvil se abre con el botón «Mis sitios» de la esquina derecha del mapa; en pantallas anchas está en la columna de la derecha.
+
+### Ayuda (en las dos)
+
+El botón azul de ayuda abre un desplegable con:
+
+- **Tengo un problema:** soluciones a lo que suele fallar, algunas con un botón que lo arregla (reintentar, poner tu tarifa, actualizar la app…).
+- **Para qué sirve la app:** la página `ayuda/`, con un cuadro oscuro que explica la app de la luz y otro de color melocotón para la de la gasolina.
+- **Fuentes:** de dónde salen los datos, con un enlace para visitar cada una.
+- **Guía de uso:** oscurece la página e ilumina cada parte con un mensaje al lado. **Siguiente** pasa a la siguiente y **Saltar** sale. También con el teclado (→, ← y Escape). Se puede abrir directamente con `?guia=1` en la dirección.
 
 ## Cómo probarla en tu ordenador
 
@@ -60,30 +79,39 @@ En Mac o Linux, escribe `python3` en lugar de `python`. Abre **http://localhost:
 index.html                  App de la luz
 gasolina/index.html         App de la gasolina
 manifest.webmanifest        Ficha de la app instalable (con acceso directo a la gasolina)
+ayuda/index.html            Página «¿Para qué sirve la app?»
 sw.js                       Service worker: guarda la app para abrirla sin conexión
 
 css/
 ├── comun.css               Colores (tema claro y oscuro), botones, panel, calendario…
-├── luz.css                 Lo propio de la app de la luz (gráfico, aparatos, Personalizar)
-└── gasolina.css            Lo propio de la app de la gasolina
+├── luz.css                 Lo propio de la app de la luz (gráfico, aparatos, tarifa, Personalizar)
+├── gasolina.css            Lo propio de la app de la gasolina (mapa, Mis sitios…)
+└── ayuda.css               La página «¿Para qué sirve la app?»
 
 js/
 ├── comun/                  Piezas que usan las dos apps
 │   ├── ajustes.js          Panel de ajustes: tema, tamaño de letra y acceso directo
+│   ├── ayuda.js            Botón de ayuda: desplegable, «Tengo un problema» y «Fuentes»
+│   ├── guia.js             La guía de uso (oscurece la página e ilumina cada parte)
 │   ├── calendario.js       Calendario mensual con colores
 │   ├── ordenar.js          Arrastrar para cambiar el orden (con el dedo o el ratón)
 │   └── iconos.js           Para usar los iconos de iconos/iconos.svg
 ├── luz/
 │   ├── app.js              Punto de entrada: estado y coordinación
 │   ├── api.js              Descarga los precios de Red Eléctrica y guarda copia
-│   ├── calculos.js         Cuentas: niveles, horas baratas, mejor franja y coste
+│   ├── tarifas.js          Tu tarifa: cifras oficiales, tramos, festivos, impuestos y factura
+│   ├── editor-tarifa.js    El formulario «Tu tarifa de la luz»
+│   ├── calculos.js         Cuentas: niveles, horas baratas y mejor franja
 │   ├── electrodomesticos.js Lista de aparatos con su duración y potencia
 │   ├── interfaz.js         Pinta la pantalla
+│   ├── ayuda-luz.js        Problemas, fuentes y pasos de la guía de la luz
 │   └── personalizar.js     Modo Personalizar
 └── gasolina/
     ├── app.js              Punto de entrada: mapa, buscador, ficha y precio medio
     ├── estaciones.js       Carga las gasolineras, reconoce marcas, buscador e historial
     ├── mapa.js             El mapa (puntos de colores, precios, recomendada, tu ubicación)
+    ├── sitios.js           «Mis sitios»
+    ├── ayuda-gasolina.js   Problemas, fuentes y pasos de la guía de la gasolina
     ├── linea.js            Gráfico de líneas reutilizable (España y cada gasolinera)
     ├── calculos.js         Cuentas: niveles, recomendada, medias, tendencia
     └── interfaz.js         Pinta la pantalla
@@ -104,9 +132,10 @@ iconos/                     Iconos de la app y iconos.svg (todos los dibujos de 
 
 1. **`app.js`** arranca. Aplica tus ajustes, coloca las tarjetas como las dejaste y pide a **`api.js`** los precios de hoy.
 2. **`api.js`** mira si ya los tiene guardados en el navegador. Si no, los descarga de Red Eléctrica.
-3. **`calculos.js`** hace las cuentas: nivel de cada hora, las más baratas, la mejor franja y su coste.
-4. **`interfaz.js`** lo pinta.
-5. Cada 20 segundos, `app.js` comprueba si empezó otro cuarto de hora, si pasó la medianoche o, a partir de las 20:00, si ya están los precios de mañana.
+3. **`tarifas.js`** convierte cada hora al precio de tu tarifa (tramo, zona, bono social e impuestos).
+4. **`calculos.js`** hace las cuentas: nivel de cada hora, las más baratas y la mejor franja.
+5. **`interfaz.js`** lo pinta.
+6. Cada 20 segundos, `app.js` comprueba si empezó otro cuarto de hora, si pasó la medianoche o, a partir de las 20:00, si ya están los precios de mañana.
 
 ## Los datos
 
@@ -118,13 +147,22 @@ https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real
 ```
 
 - El PVPC es el indicador `id: "1001"`, en €/MWh. La app lo divide entre 1000 para pasarlo a €/kWh.
+- El precio del mercado diario es el `id: "600"`, cada 15 minutos. La app hace la media de cada hora y lo usa para la tarifa indexada.
+- El PVPC puede ser **negativo** algunas horas (pasó en octubre de 2026, a mediodía, con mucho sol). La app lo enseña tal cual y avisa de que la energía sale gratis.
 - Los días aún no publicados responden con un error 502. Los precios de mañana salen hacia las 20:30.
 - Para el calendario, la app pide los dos meses en tramos de 31 días, que es el máximo de REE, y los guarda en el navegador.
 - A veces el cortafuegos de Red Eléctrica rechaza alguna petición. La app reintenta y, si no lo consigue, muestra «Reintentar».
 
-**Qué precio es:** el PVPC de la tarifa 2.0TD en la península, con peajes y cargos, pero sin impuestos ni término de potencia.
+**Qué precio es:** el PVPC de la tarifa 2.0TD en la península, con peajes y cargos, pero sin impuestos ni término de potencia. Si cambias «Tu tarifa», la app lo convierte con `js/luz/tarifas.js`:
 
-**El coste de los aparatos** es aproximado. Se calcula como potencia media × horas × precio medio de la franja, y luego se suman el impuesto eléctrico (5,11 %) y el IVA (21 %). Lo puedes cambiar en `IMPUESTOS`, en `js/luz/calculos.js`.
+- **Tramos de la 2.0TD:** punta de 10 a 14 h y de 18 a 22 h, llano de 8 a 10 h, de 14 a 18 h y de 22 a 24 h, y valle de 0 a 8 h, de lunes a viernes. Sábados, domingos y festivos nacionales de fecha fija (1 y 6 de enero, 1 de mayo, 15 de agosto, 12 de octubre, 1 de noviembre y 6, 8 y 25 de diciembre), todo el día valle. En Ceuta y Melilla, una hora más tarde; en Canarias, en hora canaria. (Comprobado con los precios reales: el lunes 12 de octubre de 2026, festivo, el PVPC no llevó el recargo de punta.)
+- **Canarias, Ceuta y Melilla:** Red Eléctrica da el PVPC con los tramos de la península; la app cambia los peajes y cargos del tramo de la península por los del tramo de allí.
+- **Indexada:** precio del mercado de cada hora + peajes y cargos de su tramo + lo que suma la compañía.
+- **Impuestos:** impuesto especial sobre la electricidad (5,11 %, nunca menos de 1 €/MWh) e IVA (21 %), IGIC (0 % en viviendas de hasta 10 kW) o IPSI (1 %).
+
+**Las cifras oficiales** (peajes y cargos de 2026, potencia y margen del PVPC, contador, financiación y descuentos del bono social, impuestos) están juntas en `OFICIAL`, al principio de `js/luz/tarifas.js`, con su fuente. **Cambian casi siempre el 1 de enero:** entonces solo hay que tocar ese bloque.
+
+**El coste de los aparatos** es aproximado: potencia media × horas × precio medio de la franja, con los impuestos de tu zona. **La factura aproximada** suma la potencia, la energía (como si gastaras lo mismo a todas horas), la financiación del bono social, el impuesto eléctrico, el contador y el IVA (o IGIC o IPSI).
 
 ### Gasolina: Ministerio para la Transición Ecológica
 
@@ -148,7 +186,7 @@ El «precio esperado» es una recta ajustada a las últimas 4 semanas (regresió
 
 ### Colores
 
-- **Luz:** cada hora se compara con la media de su día. Verde si está al menos un 10 % por debajo, rojo si está un 10 % por encima y amarillo entre medias. Se cambia con `MARGEN`, en `js/luz/calculos.js`.
+- **Luz:** cada hora se compara con la media de su día. Verde si está al menos un 10 % por debajo, rojo si está un 10 % por encima y amarillo entre medias. Se cambia con `MARGEN`, en `js/luz/calculos.js`. Con tres tramos, el color es el de su tramo: verde valle, amarillo llano y rojo punta.
 - **Calendarios:** los días se reparten en tercios. El tercio más barato va en verde, el más caro en rojo y el resto en amarillo.
 - **Gasolina (precio medio):** el precio de hoy frente a la media de 6 meses, con un margen del 2 %.
 - **Mapa:** cada gasolinera frente a las demás de la zona que estás viendo, en cinco partes iguales: el 20 % más barato es «muy bajo» y el 20 % más caro, «muy alto».
@@ -167,10 +205,10 @@ El «precio esperado» es una recta ajustada a las últimas 4 semanas (regresió
 
 Con una cuenta gratuita, GitHub Pages solo funciona en repositorios **públicos**.
 
-**Al actualizar la app:** si añades o quitas archivos, añádelos a la lista `ARCHIVOS` de `sw.js` y sube la versión (`v3` → `v4`). El historial de las gasolineras no se guarda para usarlo sin conexión (son muchos archivos); todo lo demás sí.
+**Al actualizar la app:** si añades o quitas archivos, añádelos a la lista `ARCHIVOS` de `sw.js` y sube la versión (`v5` → `v6`). El historial de las gasolineras no se guarda para usarlo sin conexión (son muchos archivos); todo lo demás sí.
 
 ## Ideas para más adelante
 
-- Guardar gasolineras favoritas y avisar cuando bajen de precio.
+- Avisar cuando bajen de precio las gasolineras de «Mis sitios».
 - Avisos en el móvil cuando empiece tu franja barata.
-- Otras zonas para la luz: Canarias, Baleares, Ceuta y Melilla.
+- Tarifas de más de 15 kW (3.0TD, con seis tramos).

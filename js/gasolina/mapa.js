@@ -26,8 +26,9 @@ export function crearMapa(caja, { alElegir }) {
   const L = window.L;
   const mapa = L.map(caja, { preferCanvas: true, minZoom: 5, maxZoom: 18, zoomSnap: 0.5, attributionControl: false });
   mapa.fitBounds(ESPANA);
-  // Créditos del mapa arriba a la derecha (abajo los taparía la tarjeta de la gasolinera)
-  L.control.attribution({ position: 'topright', prefix: false }).addTo(mapa);
+  // Créditos del mapa arriba a la izquierda, debajo del zoom (abajo los taparía la tarjeta
+  // de la gasolinera, y arriba a la derecha está el botón «Mis sitios»)
+  L.control.attribution({ position: 'topleft', prefix: false }).addTo(mapa);
 
   // Fondo del mapa (el filtro de CSS de .teselas lo adapta al tema claro u oscuro)
   L.tileLayer(TESELAS, { attribution: ATRIBUCION, maxZoom: 19, className: 'teselas' }).addTo(mapa);

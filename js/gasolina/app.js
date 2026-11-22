@@ -14,8 +14,11 @@ import * as interfaz from './interfaz.js';
 import { crearLinea } from './linea.js';
 import { crearMapa } from './mapa.js';
 import { cargarEstaciones, sugerencias, distanciaKm, historialDe, normalizar, CARBURANTES } from './estaciones.js';
+import { crearSitios } from './sitios.js';
+import { datosAyudaGasolina } from './ayuda-gasolina.js';
 import { aplicarAjustes, iniciarPanel } from '../comun/ajustes.js';
 import { crearCalendario, nivelesPorTercios } from '../comun/calendario.js';
+import { iniciarAyuda } from '../comun/ayuda.js';
 
 const ARCHIVO = new URL('../../datos/gasolina.json', import.meta.url);
 const CLAVE = 'cuando-lavadora:gasolina';
@@ -132,6 +135,7 @@ function pintarMapa({ encuadrar = false } = {}) {
     interfaz.pintarFiltros({ zona: null, marca: null, solo24h: estado.solo24h, total: null });
     mapa.mostrar([], { encuadrar: false });
     cerrarEstacion();
+    sitios.pintar();
     return;
   }
   interfaz.mostrarMapaVacio(false);
@@ -151,6 +155,7 @@ function pintarMapa({ encuadrar = false } = {}) {
     if (itemsMapa.some((item) => item.estacion.id === estado.elegidaId)) elegirEstacion(estado.elegidaId, { acercar: false, recargar: false });
     else cerrarEstacion();
   }
+  sitios.pintar(); // «Guardar lo que veo» y el sitio que se está viendo
 }
 
 /** Cambia la zona y repinta (encuadrando el mapa en ella) */
@@ -399,6 +404,58 @@ function cercaDeMi() {
 $('#cerca-de-mi').addEventListener('click', cercaDeMi);
 
 
+/* ---------- Mis sitios ---------- */
+
+/** Un sitio guardado a partir de una sugerencia del buscador */
+function sitioDeSugerencia(s) {
+  if (s.tipo === 'municipio' || s.tipo === 'provincia') {
+    return { nombre: s.texto, detalle: s.detalle, zona: { tipo: s.tipo, valor: s.valor, nombre: s.texto } };
+  }
+  if (s.tipo === 'cp') {
+    return { nombre: `C. P. ${s.valor}`, detalle: s.detalle, zona: { tipo: 'cp', valor: s.valor, nombre: `C. P. ${s.valor}` } };
+  }
+  if (s.tipo === 'marca') {
+    return { nombre: s.texto, detalle: s.detalle, zona: { tipo: 'espana', valor: null, nombre: 'Toda España' }, marca: s.valor };
+  }
+  const estacion = estado.estaciones.lista.find((e) => e.id === s.valor);
+  return {
+    nombre: s.texto, detalle: s.detalle, estacion: estacion.id,
+    zona: { tipo: 'municipio', valor: estacion.municipio.id, nombre: estacion.municipio.nombre },
+  };
+}
+
+/** Lo que se está viendo en el mapa, como sitio (para «Guardar lo que veo») */
+function sitioActual() {
+  const zona = estado.zona;
+  if (!zona || zona.tipo === 'cerca' || !estado.estaciones) return null;
+  const marca = estado.marca ? estado.estaciones.marcas.get(estado.marca)?.nombre ?? estado.marca : null;
+  let nombre = zona.nombre;
+  if (marca) nombre = zona.tipo === 'espana' ? marca : `${marca} · ${zona.nombre.replace(/^Provincia de /, '')}`;
+  const cuantas = itemsMapa.length;
+  return { nombre, detalle: `${cuantas.toLocaleString('es-ES')} ${cuantas === 1 ? 'gasolinera' : 'gasolineras'}`, zona, marca: estado.marca ?? null };
+}
+
+/** Enseña un sitio guardado en el mapa */
+async function irASitio(sitio) {
+  if (!(await asegurarEstaciones())) return;
+  entrada.value = sitio.marca && sitio.zona.tipo === 'espana' ? sitio.nombre : sitio.zona.nombre.replace(/^Provincia de /, '');
+  $('#borrar-busqueda').hidden = !entrada.value;
+  estado.marca = sitio.marca ?? null;
+  await ponerZona(sitio.zona, { quitarMarca: false });
+  if (sitio.estacion && estado.estaciones.lista.some((e) => e.id === sitio.estacion)) elegirEstacion(sitio.estacion);
+  interfaz.irA('#bloque-mapa', 'start');
+}
+
+const sitios = crearSitios({
+  huecos: { lateral: $('#lateral-sitios'), mapa: $('#hueco-sitios-mapa'), vacio: $('#mapa-vacio-sitios') },
+  boton: $('#abrir-sitios'),
+  buscar: async (texto) => ((await asegurarEstaciones()) ? sugerencias(texto, estado.estaciones) : []),
+  deSugerencia: sitioDeSugerencia,
+  actual: sitioActual,
+  alElegir: irASitio,
+});
+
+
 /* ---------- Botones del mapa ---------- */
 
 // Pantalla vacía del mapa: «Cerca de mí» y ciudades rápidas
@@ -631,7 +688,7 @@ $('#destacado').addEventListener('click', (evento) => {
 /* ---------- ¡Arrancamos! ---------- */
 
 aplicarAjustes();
-iniciarPanel({
+const panel = iniciarPanel({
   atajo: {
     href: '../',
     clase: 'atajo--luz',
@@ -640,6 +697,25 @@ iniciarPanel({
     texto: 'Precio de la luz por horas',
   },
 });
+
+// Botón de ayuda: problemas, para qué sirve, fuentes y guía de uso
+iniciarAyuda(datosAyudaGasolina({
+  buscar: () => {
+    interfaz.irA('.buscador', 'start');
+    entrada.focus({ preventScroll: true });
+  },
+  cercaDeMi: () => cercaDeMi(),
+  recargar: () => location.reload(),
+  abrirSitios: () => {
+    if (window.matchMedia('(min-width: 1280px)').matches) $('#sitios .sitios__entrada').focus();
+    else {
+      interfaz.irA('#bloque-mapa', 'start');
+      sitios.abrir();
+    }
+  },
+  cerrarPanel: () => panel.cerrar(),
+}));
+
 cargar();
 if (estado.zona) {
   asegurarEstaciones().then((ok) => {

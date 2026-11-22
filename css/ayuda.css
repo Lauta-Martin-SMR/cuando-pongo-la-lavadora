@@ -1,0 +1,206 @@
+/* ==========================================================================
+   Página «¿Para qué sirve la app?» (ayuda/index.html)
+   Un cuadro oscuro para la luz y otro, de otro color, para la gasolina.
+   ========================================================================== */
+
+.pagina-ayuda {
+  max-width: 720px;
+}
+
+.intro {
+  margin: 0 4px 22px;
+  color: var(--tinta-suave);
+  font-size: 1.0625rem;
+}
+
+.intro strong {
+  color: var(--tinta);
+}
+
+.explica {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px 22px 22px;
+  border-radius: var(--radio-grande);
+  box-shadow: var(--sombra-alta);
+}
+
+.explica + .explica {
+  margin-top: 22px;
+}
+
+/* Burbuja de luz en la esquina */
+.explica::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -90px;
+  right: -70px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.16), transparent);
+}
+
+/* La luz: un cuadro oscuro (en los dos temas) */
+.explica--luz {
+  background:
+    radial-gradient(120% 80% at 0% 100%, rgb(116 221 168 / 0.12), transparent 60%),
+    linear-gradient(150deg, #1d2140 0%, #262859 60%, #322a6e 100%);
+  color: #dcdcf5;
+}
+
+.explica--luz strong,
+.explica--luz .explica__titulo {
+  color: #ffffff;
+}
+
+/* La gasolina: un cuadro melocotón (oscurecido en el tema oscuro) */
+.explica--gasolina {
+  background: linear-gradient(140deg, #ffe0b8 0%, #ffc6a5 55%, #f9b3c2 100%);
+  color: #4a3214;
+}
+
+.explica--gasolina strong,
+.explica--gasolina .explica__titulo {
+  color: #2b1a06;
+}
+
+:root[data-tema="oscuro"] .explica--gasolina {
+  background: linear-gradient(140deg, #4a2e19 0%, #4b2627 55%, #42213d 100%);
+  color: #f3d9c2;
+}
+
+:root[data-tema="oscuro"] .explica--gasolina strong,
+:root[data-tema="oscuro"] .explica--gasolina .explica__titulo {
+  color: #ffefe0;
+}
+
+.explica__cabecera {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.explica__icono {
+  width: 54px;
+  height: 54px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 17px;
+  background: rgb(255 255 255 / 0.14);
+}
+
+.explica--gasolina .explica__icono {
+  background: rgb(255 255 255 / 0.65);
+}
+
+:root[data-tema="oscuro"] .explica--gasolina .explica__icono {
+  background: rgb(255 255 255 / 0.1);
+}
+
+.explica__icono .icono {
+  width: 30px;
+  height: 30px;
+  stroke-width: 1.9;
+}
+
+.explica__etiqueta {
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.explica__titulo {
+  font-size: 1.375rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.explica__resumen {
+  font-size: 1.0625rem;
+}
+
+.explica__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.explica__lista li {
+  display: flex;
+  gap: 10px;
+}
+
+.explica__lista li::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex: none;
+  margin-top: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+.explica__como {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgb(255 255 255 / 0.09);
+  font-size: 0.9375rem;
+}
+
+.explica--gasolina .explica__como {
+  background: rgb(255 255 255 / 0.5);
+}
+
+:root[data-tema="oscuro"] .explica--gasolina .explica__como {
+  background: rgb(255 255 255 / 0.07);
+}
+
+.explica__botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.boton--explica {
+  background: #8b8ff0;
+  color: #14151d;
+  box-shadow: 0 10px 22px -10px rgb(139 143 240 / 0.8);
+}
+
+.explica--gasolina .boton--explica {
+  background: #e07a3c;
+  color: #2b1408;
+  box-shadow: 0 10px 22px -10px rgb(224 122 60 / 0.8);
+}
+
+.boton--claro {
+  background: rgb(255 255 255 / 0.14);
+  color: inherit;
+  box-shadow: none;
+}
+
+.explica--gasolina .boton--claro {
+  background: rgb(255 255 255 / 0.6);
+}
+
+:root[data-tema="oscuro"] .explica--gasolina .boton--claro {
+  background: rgb(255 255 255 / 0.12);
+}
+
+@media (min-width: 600px) {
+  .explica {
+    padding: 28px 30px 26px;
+  }
+}

@@ -142,7 +142,7 @@ Si quieres actualizarlos a mano (hace falta [Node.js](https://nodejs.org) 22 o m
 
 **Tamaño del repositorio:** el historial ocupa unos 35 MB (unos 390 KB por día) y los días de más de 90 se borran solos. Aun así, Git guarda todo lo que se ha subido alguna vez, así que el repositorio crece unos 80 KB comprimidos al día (unos 30 MB al año). GitHub recomienda que un repositorio no pase de 1 GB, así que hay margen para muchos años. Si algún día quieres menos días, cambia `DIAS_HISTORIAL` en el script.
 
-**El mapa** usa [Leaflet](https://leafletjs.com) (copiado en `vendor/`) y las imágenes del mapa de [CARTO](https://carto.com/attributions), hechas con datos de © OpenStreetMap. Tienen un estilo claro y otro oscuro, que cambia con el tema. Son gratuitas para un uso personal como este.
+**El mapa** usa [Leaflet](https://leafletjs.com) (copiado en `vendor/`) y las imágenes del mapa de [OpenStreetMap](https://www.openstreetmap.org/copyright), que son gratis y no piden clave. En el tema oscuro se oscurecen con un filtro de CSS (`.teselas`, en `css/gasolina.css`). Su servidor está pensado para un uso ligero como el de una app personal; si algún día la usara muchísima gente, habría que pasar a un proveedor de mapas propio (casi todos piden una clave).
 
 El «precio esperado» es una recta ajustada a las últimas 4 semanas (regresión lineal) y proyectada 7 días. Es orientativo.
 

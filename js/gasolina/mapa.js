@@ -2,8 +2,9 @@
  * mapa.js
  * ------------------------------------------------------------------
  * El mapa de gasolineras. Usa Leaflet (vendor/leaflet), una librería libre
- * para mapas, y las imágenes del mapa (teselas) de CARTO, hechas con datos de
- * OpenStreetMap: un estilo claro y otro oscuro, según el tema de la app.
+ * para mapas, y las imágenes del mapa (teselas) de OpenStreetMap, que son
+ * gratis y no piden clave. En el tema oscuro se oscurecen con un filtro de
+ * CSS (.teselas, en css/gasolina.css).
  *
  *   const mapa = crearMapa(caja, { alElegir: (id) => … });
  *   mapa.mostrar(lista, { recomendada });   // lista: [{ estacion, nivel, precio }]
@@ -15,11 +16,8 @@
 
 import { precio } from './interfaz.js';
 
-const TESELAS = {
-  claro: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-  oscuro: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-};
-const ATRIBUCION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
+const TESELAS = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+const ATRIBUCION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
 const ESPANA = [[35.95, -9.4], [43.8, 3.3]];
 const ZOOM_ETIQUETAS = 14;   // a partir de este zoom se ve el precio encima de cada punto
 const MAXIMO_ETIQUETAS = 140;
@@ -31,20 +29,14 @@ export function crearMapa(caja, { alElegir }) {
   // Créditos del mapa arriba a la derecha (abajo los taparía la tarjeta de la gasolinera)
   L.control.attribution({ position: 'topright', prefix: false }).addTo(mapa);
 
-  // Fondo del mapa: claro u oscuro según el tema (y cambia si cambias el tema)
-  let teselas = null;
-  function ponerTeselas() {
-    const tema = document.documentElement.dataset.tema === 'oscuro' ? 'oscuro' : 'claro';
-    if (teselas?.tema === tema) return;
-    teselas?.remove();
-    teselas = L.tileLayer(TESELAS[tema], { attribution: ATRIBUCION, subdomains: 'abcd', maxZoom: 19 });
-    teselas.tema = tema;
-    teselas.addTo(mapa);
-    // Los colores de los puntos también cambian con el tema
+  // Fondo del mapa (el filtro de CSS de .teselas lo adapta al tema claro u oscuro)
+  L.tileLayer(TESELAS, { attribution: ATRIBUCION, maxZoom: 19, className: 'teselas' }).addTo(mapa);
+
+  // Al cambiar el tema, los puntos cambian de color
+  document.addEventListener('cambiotema', () => {
     pintarPuntos();
     pintarEncima();
-  }
-  document.addEventListener('cambiotema', ponerTeselas);
+  });
 
   const lienzo = L.canvas({ padding: 0.5 });
   const capaPuntos = L.layerGroup().addTo(mapa);
@@ -132,7 +124,6 @@ export function crearMapa(caja, { alElegir }) {
     pintarEtiquetas();
     pintarEncima();
   });
-  ponerTeselas();
 
   return {
     /** Enseña unas gasolineras. encuadrar: mover el mapa para que se vean todas */

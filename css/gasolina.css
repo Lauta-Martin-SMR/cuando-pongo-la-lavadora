@@ -850,6 +850,15 @@ main > section + section {
   to { transform: scale(1.6); opacity: 0; }
 }
 
+/* Fondo del mapa (OpenStreetMap): más suave en el tema claro y oscurecido en el oscuro */
+.teselas {
+  filter: saturate(0.55) brightness(1.03);
+}
+
+:root[data-tema="oscuro"] .teselas {
+  filter: invert(1) hue-rotate(180deg) saturate(0.45) brightness(0.9) contrast(0.85);
+}
+
 /* Leaflet con los colores de la app (botones de zoom y créditos) */
 .leaflet-container {
   font-family: var(--fuente);
@@ -876,6 +885,13 @@ main > section + section {
   background: color-mix(in srgb, var(--superficie) 85%, transparent) !important;
   color: var(--tinta-tenue) !important;
   font-size: 10px !important;
+}
+
+/* Separado de la esquina redondeada del mapa, para que no se corte */
+.leaflet-top.leaflet-right .leaflet-control-attribution {
+  margin: 8px 12px 0 0;
+  padding: 1px 8px;
+  border-radius: 999px;
 }
 
 .leaflet-control-attribution a {

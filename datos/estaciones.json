@@ -6658,10 +6658,6 @@
    "Les Borges Blanques",
    "25"
   ],
-  "3858": [
-   "Camarasa",
-   "25"
-  ],
   "3862": [
    "Castelldans",
    "25"
@@ -6736,10 +6732,6 @@
   ],
   "3916": [
    "Lleida",
-   "25"
-  ],
-  "3917": [
-   "Lles de Cerdanya",
    "25"
   ],
   "3920": [
@@ -9314,10 +9306,6 @@
    "Oia",
    "36"
   ],
-  "5304": [
-   "Pazos de Borbén",
-   "36"
-  ],
   "5305": [
    "Poio",
    "36"
@@ -9580,10 +9568,6 @@
   ],
   "5652": [
    "Vecinos",
-   "37"
-  ],
-  "5658": [
-   "Villaflores",
    "37"
   ],
   "5661": [
@@ -10658,10 +10642,6 @@
    "Ólvega",
    "42"
   ],
-  "6282": [
-   "Los Rábanos",
-   "42"
-  ],
   "6294": [
    "San Esteban de Gormaz",
    "42"
@@ -11668,10 +11648,6 @@
   ],
   "7005": [
    "Anna",
-   "46"
-  ],
-  "7008": [
-   "Atzeneta d'Albaida",
    "46"
   ],
   "7009": [
@@ -13910,7 +13886,6 @@
 [1017,"PLENERGY","Avenida Avenida Marques de Valdecilla, 149",5817,"39100",43.46644,-3.88086,"L-D: 24H","P"],
 [1020,"PETROPRIX","Calle Repuente, 35",5819,"39012",43.46456,-3.83325,"L-D: 24H","P"],
 [1025,"CARREFOUR","Calle el Empalme",5819,"39011",43.44644,-3.85375,"L-S: 07:00-23:00; D: 09:00-21:00","P"],
-[1026,"CARREFOUR","Calle Joaquín Rodriguo, 2",5819,"39011",43.45631,-3.86336,"L-S: 07:00-23:00; D: 09:00-21:00","P"],
 [1029,"GASOLINERA ALISAL","Avenida Vicente Trueba, s/n",5819,"39011",43.45708,-3.85692,"L-D: 07:00-23:00","P"],
 [1032,"REPSOL","Carretera CA-148 Km. 0,3",5772,"39795",43.42608,-3.52244,"L-D: 06:00-22:00","P"],
 [1034,"REPSOL","Carretera 6316 Km.2 Km. 2",5820,"39314",43.37828,-4.05975,"L-D: 07:00-21:00","P"],
@@ -14275,7 +14250,6 @@
 [1556,"MEROIL","Avenida Prat de la Riba, 100",961,"08400",41.60172,2.27778,"L-D: 24H","P"],
 [1557,"E.S. SANT GUIM","Carretera Calaf, 35 Km.",3976,"25270",41.655,1.42194,"L-D: 24H","P"],
 [1559,"GALP","Carretera N-240 Km. 77,800",4010,"25141",41.56433,0.78825,"L-D: 24H","P"],
-[1560,"BENZINERA MARTINET","Carretera N-260 Km. 205,7",3917,"25726",42.36444,1.68114,"L-D: 07:00-22:00","P"],
 [1561,"MOEVE","Carretera C -17 Km. 93",2587,"17500",42.18478,2.19653,"L-D: 07:00-22:00","P"],
 [1562,"BONAREA","Crta. C-13, (C.c. Bon Area) Km 84,25",4014,"25633",42.14725,0.89367,"L-D: 24H","P"],
 [1563,"PETROVOLTREGÀ - ÀREA DEL COLLSACABRA","Carretera Vic-Olot Km. 15,70",1119,"08511",42.03206,2.36292,"L-D: 24H","P"],
@@ -14426,7 +14400,6 @@
 [1795,"REPSOL","Carretera C-66 Km. 24",2627,"17852",42.16508,2.74514,"L-D: 06:00-22:00","P"],
 [1797,"REPSOL","Carretera B-124 Km. 5,3",915,"08211",41.59517,2.08853,"L-D: 06:00-22:00","P"],
 [1798,"REPSOL","Carretera GE-610 Km. 6,85",2568,"17494",42.31011,3.1265,"L-D: 06:00-22:00","P"],
-[1799,"SEGRE OIL","Carretera C-13 Km. 9,6",3858,"25613",41.88022,0.87878,"L-D: 24H","P"],
 [1800,"PETROCAT","Carretera C-32 Km. 49,61",955,"08850",41.28847,2.00069,"L-D: 06:00-22:00","P"],
 [1801,"PETROCAT","Cr C-32, 49,61",955,"08850",41.28708,2.00178,"L-D: 00:00-23:59","P"],
 [1802,"BP VILADECANS","Calle Agricultura, 19",1160,"08840",41.31017,2.01836,"L-D: 24H","P"],
@@ -15103,7 +15076,7 @@
 [2672,"BALLENOIL","Calle Trajiners, s/n",838,"07420",39.77147,3.01694,"L-D: 24H","P"],
 [2673,"BP","Carrera PM-503 Km. 5,5",840,"07260",39.52006,3.01958,"L-V: 06:00-22:00; S: 06:00-21:00; D: 07:00-22:00","P"],
 [2675,"MOEVE","Carretera Llucmajor, Km10 Km. 10",836,"07199",39.53497,2.75069,"L-S: 06:00-22:00; D: 08:00-14:00","P"],
-[2676,"BP MUNAR CAPO","Cr Sta. Margarita-Petra Km 10,7",851,"07450",39.70156,3.10075,"L-S: 07:00-21:00","P"],
+[2676,"BP","Cr Sta. Margarita-Petra Km 10,7",851,"07450",39.70156,3.10075,"L-S: 07:00-21:00","P"],
 [2677,"BP PLAYA DE PALMA","Calle Manuela de los Herreros, 15",836,"07610",39.53272,2.72725,"L-D: 06:00-01:00","P"],
 [2678,"REPSOL","Ronda Ronda del Oeste, 123",827,"07680",39.54767,3.33944,"L-D: 06:00-22:00","P"],
 [2679,"CEPSA","Avenida Francesc de Borja Moll, 61",842,"07640",39.34133,3.04639,"L-S: 08:00-20:00","P"],
@@ -15253,7 +15226,6 @@
 [2854,"CEPSA","Carretera N-230 Km. 124,7",3957,"25520",42.40428,0.74258,"L-D: 06:00-22:00","P"],
 [2855,"E.S. AVINYÓ -CEPSA-","Calle Antoni Pont (B-431, Pk 53), s/n",873,"08279",41.86747,1.97239,"L-S: 06:00-22:00; D: 07:00-22:00","P"],
 [2856,"MOEVE","Carretera N-141-c Km. 27,3",989,"08180",41.80931,2.10214,"L-D: 05:00-23:00","P"],
-[2857,"BALLENOIL","Carretera C-55 Km. 24,9",978,"08240",41.69419,1.83964,"L-D: 24H","P"],
 [2858,"CEPSA","Carretera C-55 Km. 24,9",978,"08240",41.69383,1.83881,"L-V: 07:00-15:00","P"],
 [2859,"GALP","Carretera C-225 Km. 42",2560,"17230",41.86406,3.13661,"L-D: 06:00-22:00","P"],
 [2860,"FULL ENERGY BELLCAIRE D'EMPORDA","Carretera GI-632 Km. 2,4",2464,"17141",42.071,3.09386,"L-D: 24H","P"],
@@ -15523,7 +15495,6 @@
 [3226,"Q8","Carretera Ctra Comarcal 246 Km.",6509,"43700",41.21539,1.54647,"L-D: 24H","P"],
 [3227,"PETROENERGY","Carretera C-42 Km. 5",6501,"43500",40.76475,0.56992,"L-D: 24H","P"],
 [3228,"MOEVE","Carretera C/230 Km. 17400",6501,"43500",40.80797,0.51019,"L-D: 06:00-22:00","P"],
-[3229,"MOEVE","Rambla Felip Pedrell, 164",6501,"43500",40.81933,0.52389,"L-D: 05:00-23:00","P"],
 [3230,"CEPSA","Autopista Ap 7 Km. 237",6355,"43893",41.13606,1.35181,"L-D: 24H","P"],
 [3234,"GM FUEL STATIONS","Carretera Nacional 340 Km. 1196,525",920,"08729",41.24628,1.58575,"L-V: 06:00-23:00; S-D: 07:00-23:00","P"],
 [3235,"REPSOL","Cr TV-3405, 0,5",6358,"43870",40.70614,0.59178,"L-D: 06:00-22:00","P"],
@@ -16081,6 +16052,7 @@
 [4007,"ANNA","Carretera 580 Km. 2",7005,"46820",39.01356,-0.64608,"L-D: 06:00-21:30","P"],
 [4008,"BP","Cami del Mar, s/n",7162,"46530",39.61297,-0.28572,"L-D: 07:00-22:00","P"],
 [4009,"GALP","Polg.ind.entrevias Parc.3 Km 11",7177,"46190",39.54233,-0.55608,"L-D: 06:00-22:00","P"],
+[4011,"CEPSA","Avenida del Cid, 5",7214,"46018",39.467,-0.39081,"L-D: 24H","P"],
 [4012,"BP PUERTO DE SAGUNTO","Avenida Periodista Azzati",7183,"46500",39.66825,-0.22497,"L-V: 06:00-22:00; S-D: 07:00-22:00","P"],
 [4013,"AUTOIL PAIPORTA","Calle Acequia de Robella, 11",7145,"46200",39.42842,-0.40431,"L-D: 24H","P"],
 [4014,"BP AMAYVI II","Avenida Comarques del Pais Valencia, 241",7166,"46930",39.4725,-0.51525,"L-D: 06:00-22:00","P"],
@@ -16157,7 +16129,6 @@
 [4100,"CEPSA","Autovia A-3 (Mrg.dcho.) Km. 283",7176,"46340",39.52372,-1.14522,"L-D: 06:00-22:00","P"],
 [4101,"MOEVE","Autovia A-3 (Mrg.izdo.) Km. 283",7176,"46340",39.5265,-1.14325,"L-D: 24H","P"],
 [4102,"BALLENOIL","Carretera N-332 Km. 204,6",7226,"46770",39.04692,-0.22564,"L-D: 24H","P"],
-[4103,"MOEVE","Avenida Nou d'Octubre, 18",7166,"46930",39.48103,-0.44836,"L: 06:00-22:00; S-D: 08:00-22:00","P"],
 [4104,"REPSOL","Autopista AP-7 (Mrg. Izdo.) Km. 479,5",7183,"46500",39.65144,-0.30139,"L-D: 24H","P"],
 [4106,"REPSOL","Carretera N-332 Km. 246",7073,"46400",39.14353,-0.27819,"L-D: 06:00-22:00","P"],
 [4108,"BP FARO DE CULLERA","C/ Sueca, 34",7073,"46400",39.17306,-0.26136,"L-S: 06:00-22:00; D: 07:00-22:00","P"],
@@ -17248,6 +17219,7 @@
 [5560,"ENI","Carretera Cra. N-432 Badajoz - Granada Km. 239,5",2063,"14320",38.09156,-4.86461,"L-D: 24H","P"],
 [5561,"GASOLINERA EL EJIDO","Calle Avellano, 492",317,"04700",36.77472,-2.80231,"L-D: 06:00-22:00","P"],
 [5562,"E.S. Mª AUXILIADORA","Carretera Palma del Rio Km. 32",2095,"14730",37.80492,-5.10531,"L-D: 06:00-23:00","P"],
+[5563,"FC GO","Carretera Cr. A-343 Km 10,7 Km. 10",2055,"14940",37.47242,-4.45539,"L-D: 06:00-22:00","P"],
 [5566,"LUXOIL","Avenida de Portugal, 93",3277,"21510",37.44422,-7.09858,"L-D: 06:00-22:00","P"],
 [5567,"Q8","Carretera a 431 Km. 132",3224,"21400",37.217,-7.39219,"L-D: 24H","P"],
 [5569,"Q8","Carretera N-IV Km 428, Margen N Km. 428",2059,"14191",37.69811,-4.91958,"L-D: 06:00-22:00","P"],
@@ -17466,7 +17438,7 @@
 [5853,"CARREFOUR","Carretera Ctra. de Circunvalación, s/n Km. s/n",784,"06712",38.97133,-5.80867,"L-D: 24H","P"],
 [5854,"CARREFOUR","Carretera Ctra. Valencia- Alcántara, Km. s/n",1579,"10001",39.46819,-6.39631,"L-D: 24H","P"],
 [5855,"CARREFOUR","Calle C/ Julian Besteiro s/n, s/n",1689,"10600",40.03725,-6.07869,"L-D: 24H","P"],
-[5858,"MEROIL","Carretera Ex205 Km. 16,800",1747,"10890",40.21444,-6.87464,"L: 07:00-22:00","P"],
+[5858,"BASADIGA","Calle el Cercado, 48",1747,"10890",40.21442,-6.87453,"L: 07:00-22:00","P"],
 [5859,"REPSOL","Avenida Extremadura, 67",688,"06910",38.30483,-5.59408,"L-S: 08:00-14:00 y 16:00-21:00","P"],
 [5860,"CEPSA","Carretera Badajoz-Granada Km. 42,7",752,"06150",38.61789,-6.64222,"L-D: 07:00-22:00","P"],
 [5861,"IDS","Avenida Antonio Nevado, 35",644,"06006",38.90142,-6.99431,"L-D: 24H","P"],
@@ -17805,7 +17777,6 @@
 [6331,"REPSOL","Carretera N-630 Km. 342",5585,"37008",40.94775,-5.66994,"L-V: 06:00-23:00; S-D: 07:00-23:00","P"],
 [6333,"MUELAS DEL PAN","Carretera N-122A Km. 475,190",7692,"49167",41.54122,-5.92172,"L-D: 07:00-23:00","P"],
 [6334,"REPSOL","Avenida Salamanca, s/n",5424,"37500",40.60411,-6.52881,"L-D: 24H","P"],
-[6335,"GASOLINERA VILLAFLORES","Carretera Ctra.SA-812 Km 27,i Km. 28",5658,"37406",41.08394,-5.22933,"L-D: 24H","P"],
 [6336,"CARAMANZANA MARKETING Y MEDIO AMBIENTE, S.L.","Carretera Cn 620 Km. 203",7601,"49440",41.17139,-5.36861,"L-V: 07:00-19:00; S-D: 09:00-19:00","P"],
 [6337,"REPSOL","Carretera N 620 Km. 244",5585,"37008",40.95106,-5.72736,"L-V: 07:30-21:30; S-D: 08:00-15:00","P"],
 [6339,"REPSOL","Cr CL-601, 22,7",7349,"47160",41.47583,-4.59817,"L-D: 06:30-22:30","P"],
@@ -17816,7 +17787,7 @@
 [6345,"REPSOL","Autovia A-11 Km. 349",7401,"47320",41.59158,-4.60706,"L-S: 07:00-22:00","P"],
 [6346,"REPSOL","Carretera N-620 Km. 76",5117,"34220",41.98664,-4.41664,"L-V: 07:00-22:00; S: 08:00-22:00; D: 09:00-22:00","P"],
 [6349,"REPSOL","Avenida Abusejo, 5",5625,"37600",40.65992,-6.11392,"L-D: 07:00-23:00","P"],
-[6350,"REPSOL","Cl Avenida Raimundo Borgoña, 48 i",5585,"37005",40.97839,-5.66317,"L-D: 06:00-00:00","P"],
+[6350,"REPSOL","Avenida Raimundo de Borgoña 42",5585,"37005",40.97839,-5.66317,"L-D: 06:00-00:00","P"],
 [6351,"REPSOL","Cl Avda. San Agustin, 78",5585,"37005",40.97894,-5.65822,"L-D: 07:00-23:00","P"],
 [6353,"REPSOL","Carretera N-122 Km. 222",6294,"42330",41.569,-3.19256,"L-D: 07:00-23:00","P"],
 [6354,"REPSOL","N-2 Km 150",6256,"42240",41.16897,-2.42117,"L-D: 24H","P"],
@@ -17892,7 +17863,6 @@
 [6447,"GALP","Carretera A-495 Km. 32,50",3220,"21530",37.59197,-7.12019,"L-D: 24H","P"],
 [6448,"BP ALFACAR","Carretera de Alfacar a Granada Km 1",2679,"18170",37.23217,-3.57089,"L-D: 24H","P"],
 [6449,"BP VENTA DEL PERAL I","Autovia A/92 Granada Murcia Km. 354",2724,"18850",37.55419,-2.60894,"L-D: 07:00-23:00","P"],
-[6450,"GASOLIVIA","Carretera Ctra. Chucena-Hinojos ( Crta. A-481 Km 0.2) Km. 0,2",3238,"21891",37.34911,-6.39042,"L-D: 06:00-21:00","P"],
 [6451,"CEPSA","Carretera Nacional 433. Sevilla a Lisboa.cruce Jabugo Km. 105",3265,"21291",37.92883,-6.73708,"L-D: 24H","P"],
 [6452,"CEPSA","Calle Almonte, 8",3268,"21700",37.38153,-6.55217,"L-D: 06:00-22:00","P"],
 [6453,"AGD","Carretera A472 Km. 34,90",3261,"21890",37.38703,-6.39969,"L-D: 24H","P"],
@@ -18236,7 +18206,6 @@
 [6899,"REPSOL","Avenida de Sevilla, 45",1800,"11560",36.87172,-6.17172,"L-D: 06:00-23:00","P"],
 [6900,"REPSOL","Carretera A-384 Km. 43,500",1766,"11680",36.87764,-5.42583,"L-D: 06:30-22:30","P"],
 [6901,"REPSOL","Avenida Avenida de Salobreña, 1",2685,"18690",36.73692,-3.68747,"L: 07:00-23:00","P"],
-[6902,"REPSOL","Carretera A-330 Km. 54 Km. 33661",2808,"18820",37.95722,-2.43444,"L: 07:00-22:00","P"],
 [6903,"REPSOL","A-132 Km 14",3468,"22810",42.21192,-0.54847,"L-V: 06:30-21:00; S-D: 07:30-21:00","P"],
 [6904,"REPSOL","Avenida Andalucia, s/n",2745,"18015",37.19758,-3.63875,"L-D: 06:00-22:00","P"],
 [6905,"REPSOL","Avenida Andalucía, s/n",2745,"18015",37.19828,-3.63792,"L-D: 06:00-22:00","P"],
@@ -18899,7 +18868,6 @@
 [7794,"BP EL CALERO","Calle Callejon del Castillo, 215",5258,"35214",27.99817,-15.40344,"L-D: 06:00-22:00","P"],
 [7795,"REPSOL SAN MATEO","Calle el Retiro, s/n",5265,"35320",28.00903,-15.53572,"L-S: 06:00-23:00; D: 07:00-22:00","P"],
 [7796,"BP ALTAVISTA","Calle Obispo Romo - Esq.echegaray, s/n",5249,"35011",28.11394,-15.43433,"L-D: 06:00-22:00","P"],
-[7797,"BP COOPERATIVA TAXIS S. CRISTOBAL","Calle Diego Vega Sarmiento, 70",5249,"35014",28.09797,-15.44272,"L-D: 24H","P"],
 [7798,"BP SAN JOSE","Calle Blas Cabrera Felipe, 2",5249,"35016",28.07556,-15.41728,"L-D: 24H","P"],
 [7799,"OCÉANO SARDINA SUR","Calle Fernando Guanarteme, 82",5254,"35110",27.85608,-15.44331,"L-D: 24H","P"],
 [7800,"BP CIUDAD JARDIN (CAN)","Calle Leon y Castillo, 273",5249,"35005",28.12661,-15.42994,"L-D: 24H","P"],
@@ -19075,7 +19043,7 @@
 [8085,"COMBUSTIBLES MONEGROS, S.L.","Carretera Carretera a 129 Km. 66,5",3459,"22200",41.79961,-0.16614,"L-D: 24H","P"],
 [8086,"HIPER-OIL","Carretera A-139 Km. 5,6",3389,"22436",42.22603,0.35472,"L-D: 24H","P"],
 [8088,"REPSOL","Avenida Biescas, s/n",3445,"22600",42.53975,-0.35542,"L-D: 07:00-23:00","P"],
-[8094,"MEROIL","Ctra. de Jaen Km 0,95",3592,"23630",37.9375,-3.73983,"L-D: 24H","P"],
+[8094,"EXPLOTACIONES JAME S.L.","Ctra. de Jaen Km 0,95",3592,"23630",37.9375,-3.73983,"L-D: 24H","P"],
 [8095,"GASOLINERA SANTANA","Avda. 1º Mayo s/n",3549,"23700",38.10431,-3.62244,"L-D: 06:00-22:00","P"],
 [8097,"EL JUCAR","Carretera CM-3201 47,1 Km. 47,1",58,"02210",39.20317,-1.43322,"L-D: 08:00-20:00","P"],
 [8101,"CEPSA","Paseo Dr. Begiristain, 66",3157,"20014",43.29597,-1.96681,"L-D: 00:00-23:59","P"],
@@ -19108,7 +19076,6 @@
 [8157,"AREA DE SERVICIO LAS NIEVES *","Carretera A-473 Km. 2,800",6069,"41805",37.36206,-6.2005,"L-D: 24H","P"],
 [8160,"MOEVE","Poligono C/Guarnicioneros, 18,19",6125,"41640",37.24547,-5.10906,"L-V: 06:30-20:30; S: 08:00-14:00; D: 09:00-14:00","P"],
 [8164,"GM FUEL STATIONS","Carretera Nacional 340 Km. 1187",6509,"43880",41.18625,1.51347,"L-D: 24H","P"],
-[8165,"MONTSIA","Carretera Diputacion Km. 2,45",6483,"43877",40.69081,0.72169,"L-D: 24H","P"],
 [8169,"REPSOL","Autovia V-31 (Pista de Silla) Km 11,275",7187,"46910",39.42433,-0.374,"L-D: 06:00-22:00","P"],
 [8170,"MEROIL","Carretera la Playa Km. 1,5",7226,"46770",39.04056,-0.21553,"L: 06:00-22:00","P"],
 [8171,"OCTAPLUS","Avenida de la Vila, s/n",7183,"46500",39.67833,-0.26536,"L-D: 07:00-22:00","P"],
@@ -19455,7 +19422,6 @@
 [9008,"BV-CARBURANTES / \" DTO %\"","Calle Galerna en Lerma, 6",1322,"09340",42.0375,-3.76678,"L-D: 24H","P"],
 [9009,"VALCARCE","Carretera N-IV Km. 280",3533,"23210",38.19467,-3.6715,"L-D: 24H","P"],
 [9011,"COOPERATIVA SAN ATILANO","Pg. Cunchillos, s/n",8061,"50500",41.90669,-1.71469,"L-D: 24H","P"],
-[9014,"MONTSIA","Carretera TV-3408 Km. 0,8",6358,"43870",40.70339,0.58772,"L: 24H","P"],
 [9016,"SENERSA S.L","Calle Extramuros, 0",7875,"50177",41.49833,-0.14808,"L-D: 24H","P"],
 [9018,"COOPERATIVA CABANES","Calle Clara Campoamor, 1",1836,"12180",40.15628,0.03992,"L-D: 24H","P"],
 [9019,"COOP. AGRARIA SAN ISIDRO DE VALL D'ALBA, COOP.V.","Avenida Vilafranca, 66",1921,"12194",40.17831,-0.03358,"L-D: 24H","P"],
@@ -19771,7 +19737,6 @@
 [9571,"REPSOL","Camino General Km Km 14 Poligono el Ruedo",1722,"10319",40.03086,-5.48453,"L-D: 07:00-22:00","P"],
 [9572,"REPSOL","Carretera Km 38 Carretera Fuencemillan-Espinosa s/n",2929,"19192",40.91022,-3.07572,"L-D: 07:00-21:00","P"],
 [9573,"AN ENERGETICOS - ARGUEDAS","Camino Bardenas Reales, s/n",4631,"31513",42.17114,-1.58794,"L-D: 24H","P"],
-[9574,"A CHAN DE AMOEDO","Carretera Redondela - Pazos Km. 5",5304,"36841",42.29356,-8.55194,"L-D: 07:00-23:00","P"],
 [9575,"GRUPO CACHO - MOEVE","Carretera Manzanares Km. s/n",2023,"13240",38.94469,-3.25253,"L-D: 6:30-22:30","P"],
 [9578,"S. COOP. LITXARRA","Camino de Lerin. s/n",4811,"31250",42.60808,-1.95223,"L-D: 24H","P"],
 [9579,"GRUPO CACHO - MOEVE","Carretera Nacional 430 Km. 371,100",1996,"13230",38.96228,-3.30544,"L-D: 24H","P"],
@@ -20553,7 +20518,6 @@
 [11048,"CEPSA","Carretera N-322 Km. 349",54,"02004",38.97017,-1.91978,"L-V: 07:30-21:30; S-D: 08:00-21:00","P"],
 [11050,"GALP","Calle Salvador Segui,1",861,"08630",41.51531,1.89756,"L-D: 24H","P"],
 [11051,"GALP","Calle de França, 5",1102,"08770",41.43556,1.77811,"L-D: 24H","P"],
-[11052,"COOP. DELCAMPO SAN ISIDRO DE VALENCIA DEL VENTOSO","Ctra. de Vcia. del Ventoso - Zafra Km 0,8",772,"06330",38.27433,-6.46667,"L-D: 24H","P"],
 [11053,"MOEVE","Autopista AP-36 (Mrg.izdo.) Km. 34",6816,"45880",39.72425,-3.13281,"L-D: 07:00-23:00","P"],
 [11054,"CEPSA","Autopista AP-36 (Mrg.dcho.) Km. 120",2366,"16670",39.41219,-2.589,"L-D: 07:00-23:00","P"],
 [11055,"E.S. PETRONACHIL","Camino del Jau s/n",2816,"18320",37.19272,-3.72597,"L-D: 07:00-23:00","P"],
@@ -20671,7 +20635,6 @@
 [11216,"AGROPECUARIA","Camino Torrente, s/n",3384,"22520",41.51608,0.344,"L-S: 08:00-13:00 y 16:00-19:10","P"],
 [11217,"AVIA","AS-110 Km 7,8 Poligono de Tabaza Ii, Parcela 28",4977,"33438",43.55,-5.83467,"L-V: 06:30-21:00; S: 07:00-15:00","P"],
 [11218,"E.S.MIBECOSL","CV-14 Km 12,400",1861,"12310",40.66358,-0.19042,"L-D: 24H","P"],
-[11219,"BP","Calle Camino Real, 7",4581,"30876",37.56083,-1.37908,"L-D: 07:00-21:00","P"],
 [11220,"E.S JESMAR","Carretera de Gorafe Km 105",2832,"18539",37.55544,-3.09233,"L-D: 08:00-20:00","P"],
 [11223,"EROSKI","Carretera Peralta Km. 128",4813,"31350",42.33594,-1.78997,"L-D: 24H","P"],
 [11225,"MOEVE","Autovia A-8 Km. 521",5003,"33710",43.53519,-6.69342,"L-D: 06:00-23:00","P"],
@@ -21315,7 +21278,6 @@
 [12157,"BALLENOIL","Calle Cabo Rufino Lazaro, 7",4399,"28230",40.49967,-3.88744,"L-D: 24H","P"],
 [12158,"REPSOL","Autopista AP-1 Km. 129",3142,"20500",43.06333,-2.47611,"L-D: 24H","P"],
 [12159,"REPSOL","Autopista AP-1 Km. 121,500",3164,"20540",43.01694,-2.53528,"L-D: 24H","P"],
-[12160,"AVIA","Poligono Pol. Ind. de Navalcaballo Parcela 19",6282,"42290",41.67397,-2.53339,"L-V: 08:00-19:30","P"],
 [12162,"LABOIL, S.L.","Autopista A-126 Km. 37,850",8062,"50660",41.89364,-1.24578,"L-D: 24H","P"],
 [12165,"MOEVE- E.S. EL CERRO","Calle Ingenieria, 1",6105,"41210",37.55464,-6.03583,"L-D: 24H","P"],
 [12168,"REPSOL","Avenida Cortes Valencianas, 60",272,"03183",37.99136,-0.67494,"L-D: 06:00-22:00","P"],
@@ -21398,7 +21360,6 @@
 [12278,"BALLENOIL","Avenida Pirineos (De Los), 21",4406,"28700",40.55197,-3.61008,"L-D: 24H","P"],
 [12279,"AN ENERGETICOS - ARTAJONA","Travesía San Isidro Labrador, s/n",4637,"31140",42.58697,-1.76608,"L-D: 24H","P"],
 [12280,"PETRO7 - PETROLIS INDEPENDENTS","Carrer Cr. BP-1503 de Rubi a Terrassa, 325",1141,"08228",41.53447,2.03378,"L-D: 24H","P"],
-[12282,"INFINITY OIL","Carretera Cv618 Km. 1,2",7008,"46869",38.83867,-0.49617,"L-D: 24H","P"],
 [12283,"REPSOL","Calle Fortuny, s/n",152,"03009",38.37533,-0.49944,"L-D: 06:00-22:00","P"],
 [12284,"BP CHURRA","Avenida Don Juan de Borbon, S/",4585,"30110",38.01853,-1.1375,"L-D: 06:00-22:00","P"],
 [12286,"CARREFOUR","Avenida Aguamarina, s/n",4479,"29639",36.60281,-4.54158,"L: 09:00-21:30","P"],
@@ -21682,7 +21643,6 @@
 [12652,"PETROALACANT","Avenida Aeropuerto del Torrellano, 125",203,"03195",38.28747,-0.56347,"L: 24H","P"],
 [12653,"GALP","Avenida Prado de la Feria, 6",1785,"11170",36.47067,-5.94586,"L-D: 06:00-22:00","P"],
 [12654,"GAS AUTO","Calle Isaac Albeniz, 2",3255,"21001",37.23908,-6.95247,"L-D: 24H","P"],
-[12655,"ESTACIONES DE SERVICIO GASOLIVIA","Avenida Pablo Iglesias, 80",6074,"41730",36.97631,-5.94894,"L-D: 24H","P"],
 [12656,"PETROCAR","Carretera Miajadas Km. 1,750",1579,"10005",39.45575,-6.36728,"L-D: 24H","P"],
 [12658,"ECOZOIL","Calle Alameda, 5",1945,"13600",39.38136,-3.20739,"L-D: 24H","P"],
 [12659,"WASHMAX","Carretera AS-247 Km. 1",4987,"33203",43.54192,-5.63817,"L-D: 07:00-23:00","P"],
@@ -23688,6 +23648,7 @@
 [15360,"GASAMP","Calle Orleans, 2",6358,"43870",40.70225,0.55858,"L-V: 07:00-21:00","P"],
 [15361,"COMBUSTIBLES VILLAMANRIQUE","Poligono las Cañadas, 3",6154,"41850",37.23922,-6.30144,"L-D: 24H","P"],
 [15364,"ALKARTASUNA USURBILGO BASERRITARREN KOOPERATIBA","Poligono Atallu, 26",3205,"20170",43.26778,-2.04769,"L-D: 24H","P"],
+[15365,"COALTRANS S COOP AND","Carretera Nacional 340 Poligono Industrial el Apolo Km. s/n",324,"04280",37.16992,-1.9305,"L-D: 24H","P"],
 [15366,"SECOTRANS","Calle Colombia -pg.ind en Alcantarilla, 1706",4559,"30820",37.95217,-1.19614,"L-D: 24H","P"],
 [15367,"SIN ROTULO","Carretera N-340 Xativa-Llosa de Ranes Km. s/n",7225,"46800",39.00172,-0.52686,"L-D: 24H","P"],
 [15368,"REPSOL","Carretera Nacional 120 Logroño -Vigo Km. 145",1449,"09123",42.39944,-4.03806,"L-S: 07:00-22:00; D: 08:00-22:00","P"],
@@ -23741,6 +23702,7 @@
 [15459,"LIBRE","Lugar Penasinceira - Pq Galegos, 1",4242,"27650",42.96594,-7.01764,"L-D: 09:00-23:00","P"],
 [15460,"ANDALUZA DE TRANSPORTES SCA","Camino Albolote-Atarfe - Pago Tinar, Parcela 16 Poligono 18, s/n",2673,"18220",37.22494,-3.66164,"L-D: 24H","P"],
 [15465,"GASOLEOS SOTOMONTES,S.L.","Carretera Matagorda - Guardias Viejas s/n Km. s/n",317,"04715",36.77072,-2.79794,"L: 07:30-22:30","P"],
+[15467,"AUTOIL","Carretera Carretera Piles N5 Km.5 Km. 5",7002,"46715",38.93819,-0.14919,"L-D: 24H","P"],
 [15468,"PETRO7","Calle Textil, 3",1005,"08270",41.75125,1.91258,"L-D: 24H","P"],
 [15469,"TRANSRUMAR","Poligono Industrial. Area de Transportes, 0",285,"04800",37.38811,-2.14175,"L-D: 24H","P"],
 [15471,"E.S. SANT MARTI D'ALBARS","Carretera C-62 Km. 13",1086,"08515",42.01236,2.07247,"L-D: 24H","P"],
@@ -23915,6 +23877,7 @@
 [15718,"PETROLOWCOST SL","Avinguda Compte del Llobregat, 35",980,"08760",41.48489,1.91581,"L-D: 24H","P"],
 [15719,"MANZANEDA - SIONLLA","Rua Pais Vasco, 63",2196,"15707",42.90978,-8.49314,"L-D: 07:00-22:00","P"],
 [15720,"HAM","Autopista Ap7 Pk44 Km. 44",1835,"12530",39.86586,-0.12103,"L-D: 24H","P"],
+[15721,"SHELL","Poligono Ind Camino Morente, 1",2085,"14600",38.00589,-4.38147,"L-D: 24H","P"],
 [15722,"PETROL RED","Carretera Argamasilla Km. 50",2013,"13500",38.70433,-4.1,"L-D: 07:00-23:00","P"],
 [15723,"LOWXEN","Poligono Polígono de Nantes, Parcela 643, 643",5318,"36966",42.43528,-8.806,"L-D: 07:00-23:00","P"],
 [15724,"PLENERGY","Calle Santiago-la Llanada, 1",5762,"39311",43.33319,-4.06619,"L-D: 24H","P"],
@@ -24664,6 +24627,7 @@
 [16552,"PLENERGY","Carretera Carretera Pinar de los Franceses Km. s/n",1776,"11130",36.44086,-6.14369,"L-D: 24H","P"],
 [16553,"BALLENOIL","Avenida Marina Baixa, 106",231,"03530",38.60683,-0.12917,"L-D: 24H","P"],
 [16555,"H2EXAGON AEROPUERTO TENERIFE NORTE","Calle Ctra. Campo de Golf, 174. Pol. 31 Cruz Grande., 174",5723,"38330",28.49083,-16.34883,"L-D: 24H","P"],
-[16557,"BALLENOIL","Carretera N-525 Km. 232,2",4942,"32911",42.29781,-7.86967,"L-D: 24H","P"]
+[16557,"BALLENOIL","Carretera N-525 Km. 232,2",4942,"32911",42.29781,-7.86967,"L-D: 24H","P"],
+[16559,"NIEVES","Calle Bañales Auzoa, 38",7545,"48530",43.31661,-3.06458,"L-D: 24H","P"]
  ]
 }

@@ -8714,6 +8714,10 @@
    "Avilés",
    "33"
   ],
+  "4968": [
+   "Belmonte de Miranda",
+   "33"
+  ],
   "4970": [
    "Boal",
    "33"
@@ -19920,6 +19924,7 @@
 [9907,"AGROCANTABRIA","Barrio Charola, s/n",5842,"39640",43.23778,-3.82422,"L-D: 24H","P"],
 [9915,"GALP","Autovia Cv35 Km. 32,5",7108,"46160",39.65636,-0.65081,"L-D: 06:00-22:00","P"],
 [9916,"REPSOL","Autovia A-49 Km Km. 53",3291,"21850",37.35111,-6.59822,"L-S: 06:00-21:00; D: 07:00-21:00","P"],
+[9917,"GALP","Carretera Ctra del Puerto s/n Km. 1",4968,"33830",43.28686,-6.21833,"L: 24H","P"],
 [9918,"SAN AGUSTIN","Carretera Fuente el Sol Km. s/n",7242,"47210",41.18044,-4.81044,"L-D: 24H","P"],
 [9920,"BP CABO BLANCO","Carretera General Valle San Lorenzo-Guaza,380 Km. 380",5696,"38626",28.06075,-16.66733,"L-D: 24H","P"],
 [9921,"MEROIL","Calle Galileu, 210",881,"08028",41.38183,2.13342,"L-D: 24H","P"],
@@ -20651,6 +20656,7 @@
 [11216,"AGROPECUARIA","Camino Torrente, s/n",3384,"22520",41.51608,0.344,"L-S: 08:00-13:00 y 16:00-19:10","P"],
 [11217,"AVIA","AS-110 Km 7,8 Poligono de Tabaza Ii, Parcela 28",4977,"33438",43.55,-5.83467,"L-V: 06:30-21:00; S: 07:00-15:00","P"],
 [11218,"E.S.MIBECOSL","CV-14 Km 12,400",1861,"12310",40.66358,-0.19042,"L-D: 24H","P"],
+[11219,"BP","Calle Camino Real, 7",4581,"30876",37.56083,-1.37908,"L-D: 07:00-21:00","P"],
 [11220,"E.S JESMAR","Carretera de Gorafe Km 105",2832,"18539",37.55544,-3.09233,"L-D: 08:00-20:00","P"],
 [11223,"EROSKI","Carretera Peralta Km. 128",4813,"31350",42.33594,-1.78997,"L-D: 24H","P"],
 [11225,"MOEVE","Autovia A-8 Km. 521",5003,"33710",43.53519,-6.69342,"L-D: 06:00-23:00","P"],
@@ -24644,6 +24650,7 @@
 [16555,"H2EXAGON AEROPUERTO TENERIFE NORTE","Calle Ctra. Campo de Golf, 174. Pol. 31 Cruz Grande., 174",5723,"38330",28.49083,-16.34883,"L-D: 24H","P"],
 [16557,"BALLENOIL","Carretera N-525 Km. 232,2",4942,"32911",42.29781,-7.86967,"L-D: 24H","P"],
 [16559,"NIEVES","Calle Bañales Auzoa, 38",7545,"48530",43.31661,-3.06458,"L-D: 24H","P"],
+[16560,"PLENERGY","Carretera Madrid Km. 85",644,"06008",38.87956,-6.94467,"L-D: 24H","P"],
 [16562,"MOEVE","Poligono Parcela 439 Poligono 1, 1",7618,"49030",41.35956,-5.71558,"L-D: 06:00-22:00","P"],
 [16569,"PLENERGY","Poligono la Industrial Barca, 20",3235,"21450",37.28697,-7.16647,"L-D: 24H","P"]
  ]
